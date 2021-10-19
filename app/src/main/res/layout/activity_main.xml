@@ -19,6 +19,26 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="text" />
+    <EditText
+        android:id="@+id/edit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/edit_habit_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Add Habit Title"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/edit_habit_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Add Habit Reason"
+        android:inputType="text" />
+
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
