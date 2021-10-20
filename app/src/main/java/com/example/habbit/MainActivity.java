@@ -1,14 +1,26 @@
 package com.example.habbit;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final FloatingActionButton addMedicineButton = findViewById(R.id.add_habit_button);
+        addMedicineButton.setOnClickListener(view -> AddHabitFragment.newInstance(null)
+                .show(getSupportFragmentManager(), "ADD_HABIT"));
+    }
+
+    @Override
+    public void onAddOkPressed(@Nullable Habit habit) {
+        // TODO: add the habit to Firebase here
     }
 }
