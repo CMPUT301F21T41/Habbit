@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentInteractionListener, HabitDetailsFragment.OnHabitClickListener {
 
     //private final DocumentReference myDocRef = FirebaseFirestore.getInstance().document("users");
     //db = FirebaseFirestore.getInstance();
@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
         addMedicineButton.setOnClickListener(view -> AddHabitFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
+
+        // TODO: add .setOnItemClickListener to ListView of Habits here to open the HabitDetailsFragment
 
         //**GET USER LOGIN -- ADD LATER**
         userLoggedIn = "seanwruther9";
@@ -146,6 +148,16 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
 
             }
         });
+    }
+
+    @Override
+    public void onDeletePressed(Habit habit){
+
+    }
+
+    @Override
+    public void onEditHabitPressed(Habit habit){
+
     }
 
 
