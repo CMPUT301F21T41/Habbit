@@ -4,10 +4,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentInteractionListener {
+
+    // Declared variables
+    ListView habitList;
+    ArrayAdapter<Habit> habitAdapter;
+    ArrayList<Habit> habitArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
