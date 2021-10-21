@@ -99,7 +99,9 @@ public class AddHabitFragment extends DialogFragment {
             boolean errorFlag = false;
 
             /* validate each field */
-            if (habitTitleText.length() == 0 || habitReasonText.length() > 20) {
+
+            if (habitTitleText.length() == 0 || habitTitleText.length() > 20) {
+
                 habitTitleField.requestFocus();
                 habitTitleField.setError("Habit title cannot be empty or more than 20 characters");
                 errorFlag = true;
