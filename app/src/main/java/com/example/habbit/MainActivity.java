@@ -37,5 +37,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
     @Override
     public void onAddOkPressed(@Nullable Habit habit) {
         // TODO: add the habit to Firebase here
+        habitDataList.add(habit);
+        habitList.setAdapter(habitAdapter);
     }
 }
