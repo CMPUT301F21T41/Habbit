@@ -14,10 +14,26 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a list of habits
+ */
 public class CustomHabitList extends ArrayAdapter<Habit> {
+    /**
+     * This variable is an {@link ArrayList} containing
+     * {@link Habit} objects
+     */
     private ArrayList<Habit> habits;
+
+    /**
+     * This is a {@link Context}
+     */
     private Context context;
 
+    /**
+     *
+     * @param context
+     * @param habits
+     */
     public CustomHabitList(Context context, ArrayList<Habit> habits) {
         super(context, 0, habits);
         this.habits = habits;
@@ -36,10 +52,12 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
 
         Habit habit = habits.get(position);
 
+        // Linking xml text fields to text views in CustomHabitList.java
         TextView habitTitle = view.findViewById(R.id.habbitTitle);
         TextView habitReason = view.findViewById(R.id.habbitReason);
         TextView habitDate = view.findViewById(R.id.habbitDate);
 
+        // Set texts
         habitTitle.setText(habit.getTitle());
         habitReason.setText(habit.getReason());
         habitDate.setText(habit.getDate());
