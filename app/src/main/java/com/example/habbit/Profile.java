@@ -1,6 +1,8 @@
 package com.example.habbit;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Profile {
     private String userID;
@@ -11,4 +13,9 @@ public class Profile {
     // list of friends goes here later
 
     // list of habits goes here later
+    //private List<Habit> myHabits = new ArrayList<>();
+
+    public void setName(String name){
+        this.name = name;
+    }
 }
