@@ -13,6 +13,31 @@ public class User extends Profile {
         this.myHabits.add(habit);
     }
 
+    public boolean checkForHabits(String habitTitle){
+        for(Habit habit : this.myHabits){
+            if(habit.getTitle().equals(habitTitle)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String printHabits(){
+        String ret = "Habits: ";
+        for(Habit habit: this.myHabits){
+            ret = ret.concat(habit.getTitle() + " " + habit.getReason() + " " + habit.getDate() + "\r\n");
+        }
+        return ret;
+    }
+
+    public void setUsername(String username){
+        this.username = username;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
+    }
+
 
 
 

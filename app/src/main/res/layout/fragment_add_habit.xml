@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddHabitFragment"
+    android:orientation="vertical"
+    android:paddingHorizontal="30dp"
+    android:paddingVertical="30dp">
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/edit_habit_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="@string/habit_title"
+        android:autofillHints="@string/habit_title" />
+
+    <EditText
+        android:id="@+id/edit_habit_date"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="textPersonName"
+        android:hint="@string/start_date"/>
+
+    <EditText
+        android:id="@+id/edit_habit_reason"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:inputType="text|textMultiLine"
+        android:hint="@string/habit_reason"
+        android:autofillHints="@string/habit_reason"
+        android:gravity="top"/>
+
+</LinearLayout>

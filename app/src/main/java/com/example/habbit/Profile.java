@@ -15,4 +15,7 @@ public class Profile {
     // list of habits goes here later
     //private List<Habit> myHabits = new ArrayList<>();
 
+    public void setName(String name){
+        this.name = name;
+    }
 }
