@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
     // Declared variables
     ListView habitList;
     ArrayAdapter<Habit> habitAdapter;
-    ArrayList<Habit> habitArrayList;
+    ArrayList<Habit> habitDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,12 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
         final FloatingActionButton addMedicineButton = findViewById(R.id.add_habit_button);
         addMedicineButton.setOnClickListener(view -> AddHabitFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
+
+        //
+        habitList = findViewById(R.id.habbitListView);
+        habitDataList = new ArrayList<>();
+        habitAdapter = new CustomHabitList(this, habitDataList);
+        habitList.setAdapter(habitAdapter);
     }
 
     @Override
