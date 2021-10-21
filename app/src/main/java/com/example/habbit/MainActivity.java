@@ -1,5 +1,6 @@
 package com.example.habbit;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentInteractionListener {
 
     //private final DocumentReference myDocRef = FirebaseFirestore.getInstance().document("users");
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
         final FloatingActionButton addMedicineButton = findViewById(R.id.add_habit_button);
         addMedicineButton.setOnClickListener(view -> AddHabitFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
+
 
         //**GET USER LOGIN -- ADD LATER**
         userLoggedIn = "seanwruther9";
@@ -85,12 +89,11 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
 
             }
         });
-
-
     }
 
     @Override
     public void onAddOkPressed(@Nullable Habit habit) {
+
 
         if (habit == null) throw new AssertionError();
         String titleText = habit.getTitle();
@@ -143,9 +146,6 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
 
             }
         });
-
-
-
     }
 
 
