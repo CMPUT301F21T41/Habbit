@@ -88,7 +88,7 @@ public class HabitDetailsFragment extends DialogFragment {
         AlertDialog viewDialog = new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setTitle("View Habit")
-                .setNeutralButton("Cancel",null)
+                .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", null)
                 .setPositiveButton("Edit",null)
                 .show();
