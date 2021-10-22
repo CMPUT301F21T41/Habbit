@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
             }
         });
 
+        // TODO: add .setOnItemClickListener to ListView of Habits here to open the HabitDetailsFragment
+
         //**GET USER LOGIN -- ADD LATER**
         userLoggedIn = "seanwruther9";
 
