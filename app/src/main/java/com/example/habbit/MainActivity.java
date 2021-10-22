@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 
@@ -24,9 +26,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -39,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
     User user = new User();
     String userLoggedIn;
 
+    ListView habitList;
+    ArrayAdapter<Habit> habitAdapter;
+    List<Habit> habitDataList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +55,11 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
         final FloatingActionButton addMedicineButton = findViewById(R.id.add_habit_button);
         addMedicineButton.setOnClickListener(view -> AddHabitFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
+
+        habitList = findViewById(R.id.habbitListView);
+        habitDataList = user.getMyHabits();
+        habitAdapter = new CustomHabitList(this, (ArrayList<Habit>) habitDataList);
+        habitList.setAdapter(habitAdapter);
 
 
         //**GET USER LOGIN -- ADD LATER**
@@ -78,7 +91,9 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
 
                                             //temp = data.get(document.getId());
                                             user.addHabit( habit) ;
+
                                         }
+                                        habitAdapter.notifyDataSetChanged();
                                         Log.d(TAG,user.printHabits());
                                     }
                                 } else {
@@ -136,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
                                             //temp = data.get(document.getId());
                                             user.addHabit( habit) ;
                                         }
+                                        habitAdapter.notifyDataSetChanged();
                                         Log.d(TAG,user.printHabits());
                                     }
                                 } else {
