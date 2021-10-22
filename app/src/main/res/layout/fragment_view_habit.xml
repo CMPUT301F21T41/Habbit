@@ -14,18 +14,26 @@
     <TextView
         android:id="@+id/habit_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingVertical="10dp"/>
 
     <TextView
         android:id="@+id/habit_date"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        android:textSize="15sp"
+        android:paddingVertical="10dp"/>
 
     <TextView
         android:id="@+id/habit_reason"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:gravity="top"/>
+        android:gravity="top"
+        android:scrollbars="vertical"
+        android:textSize="15sp"
+        android:paddingVertical="10dp"/>
 
     <!-- TODO: Add buttons (Exit, Delete, Edit) ? -->
 
