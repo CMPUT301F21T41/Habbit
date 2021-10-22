@@ -53,9 +53,9 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         Habit habit = habits.get(position);
 
         // Linking xml text fields to text views in CustomHabitList.java
-        TextView habitTitle = view.findViewById(R.id.habbitTitle);
-        TextView habitReason = view.findViewById(R.id.habbitReason);
-        TextView habitDate = view.findViewById(R.id.habbitDate);
+        TextView habitTitle = view.findViewById(R.id.habit_title);
+        TextView habitReason = view.findViewById(R.id.habit_reason);
+        TextView habitDate = view.findViewById(R.id.habit_date);
 
         // Set texts
         habitTitle.setText(habit.getTitle());
