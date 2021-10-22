@@ -29,7 +29,9 @@ public class User extends Profile {
         }
         return ret;
     }
-
+    public List<Habit> getMyHabits(){
+        return this.myHabits;
+    }
     public void setUsername(String username){
         this.username = username;
     }
