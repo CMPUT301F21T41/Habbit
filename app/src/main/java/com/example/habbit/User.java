@@ -7,7 +7,7 @@ public class User extends Profile {
     private String username;
     private String password;
 
-    private List<Habit> myHabits = new ArrayList<>();
+    private ArrayList<Habit> myHabits = new ArrayList<>();
 
     public void addHabit(Habit habit){
         this.myHabits.add(habit);
@@ -35,6 +35,10 @@ public class User extends Profile {
         return false;
     }
 
+    public void clearHabits(){
+        myHabits.clear();
+    }
+
     public String printHabits(){
         String ret = "Habits: ";
         for(Habit habit: this.myHabits){
@@ -42,7 +46,7 @@ public class User extends Profile {
         }
         return ret;
     }
-    public List<Habit> getMyHabits(){
+    public ArrayList<Habit> getMyHabits(){
         return this.myHabits;
     }
     public void setUsername(String username){
