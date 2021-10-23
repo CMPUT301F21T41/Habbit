@@ -13,6 +13,15 @@ public class User extends Profile {
         this.myHabits.add(habit);
     }
 
+    public void deleteHabit(Habit habit) {
+        this.myHabits.remove(habit);
+    }
+
+//    //Bugged for some reason
+//    public void editHabit(Habit ogHabit, Habit newHabit) {
+//        this.myHabits.set(this.myHabits.indexOf(ogHabit), newHabit);
+//    }
+
     public boolean checkForHabits(String habitTitle){
         for(Habit habit : this.myHabits){
             if(habit.getTitle().equals(habitTitle)){

@@ -1,13 +1,11 @@
 package com.example.habbit;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -16,20 +14,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,11 +175,72 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
 
     @Override
     public void onDeletePressed(Habit habit){
-
+        DocumentReference userDoc = collectionReference.document(userLoggedIn);
+        userDoc.collection("Habits").document(habit.getTitle())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(@NonNull Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                        user.deleteHabit(habit);
+                        habitAdapter.notifyDataSetChanged();
+                        Log.d(TAG,user.printHabits());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
     }
 
     @Override
-    public void onEditHabitPressed(Habit habit){
+    public void onEditHabitPressed(Habit ogHabit, Habit newHabit){
+        if (newHabit == null) throw new AssertionError();
+        String titleText = newHabit.getTitle();
+        String reasonText = newHabit.getReason();
+        String dateText = newHabit.getDate();
+        //Log.d(TAG, "og="+ogHabit.getTitle()+", new="+newHabit.getTitle());
+
+        HashMap<String, Object> habitData = new HashMap<>();
+
+        if(!titleText.isEmpty() && !reasonText.isEmpty() && !dateText.isEmpty() ){
+            habitData.put(titleText,newHabit);
+            DocumentReference userDoc = collectionReference.document(userLoggedIn);
+            userDoc.collection("Habits").document(ogHabit.getTitle())
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(@NonNull Void aVoid) {
+                            Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                            userDoc.collection("Habits").document(titleText)
+                                    .set(habitData)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(@NonNull Void unused) {
+                                            user.deleteHabit(ogHabit);  //bug with editHabit()
+                                            habitAdapter.notifyDataSetChanged();
+                                            Log.d(TAG,user.printHabits());
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error replacing document (step add)", e);
+                                        }
+                                    });
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error replacing document (step del)", e);
+                        }
+                    });
+        }
+
 
     }
 
