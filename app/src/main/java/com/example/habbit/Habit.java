@@ -1,8 +1,9 @@
 package com.example.habbit;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Habit {
+public class Habit implements Serializable {
     private String title; // up to 20 characters
     private String reason; // up to 30 characters
     private String date;

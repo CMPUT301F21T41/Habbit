@@ -81,7 +81,7 @@ public class AddHabitFragment extends DialogFragment {
         habitDateField = view.findViewById(R.id.edit_habit_date);
         habitReasonField = view.findViewById(R.id.edit_habit_reason);
 
-        /* initialize add medicine dialog */
+        /* initialize add habit dialog */
         AlertDialog addDialog = new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setTitle("Add Habit")

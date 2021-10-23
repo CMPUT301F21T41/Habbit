@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentInteractionListener, HabitDetailsFragment.OnHabitClickListener {
 
     //private final DocumentReference myDocRef = FirebaseFirestore.getInstance().document("users");
     //db = FirebaseFirestore.getInstance();
@@ -52,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final FloatingActionButton addMedicineButton = findViewById(R.id.add_habit_button);
-        addMedicineButton.setOnClickListener(view -> AddHabitFragment.newInstance(null)
+        final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
+        addHabitButton.setOnClickListener(view -> AddHabitFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
         habitList = findViewById(R.id.habbitListView);
@@ -61,6 +62,16 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
         habitAdapter = new CustomHabitList(this, (ArrayList<Habit>) habitDataList);
         habitList.setAdapter(habitAdapter);
 
+        /* instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected */
+        habitList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Habit viewHabit = habitAdapter.getItem(i);
+                HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
+            }
+        });
+
+        // TODO: add .setOnItemClickListener to ListView of Habits here to open the HabitDetailsFragment
 
         //**GET USER LOGIN -- ADD LATER**
         userLoggedIn = "seanwruther9";
@@ -162,6 +173,16 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
 
             }
         });
+    }
+
+    @Override
+    public void onDeletePressed(Habit habit){
+
+    }
+
+    @Override
+    public void onEditHabitPressed(Habit habit){
+
     }
 
 
