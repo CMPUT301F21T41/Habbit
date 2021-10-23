@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -37,8 +39,6 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentInteractionListener, HabitDetailsFragment.OnHabitClickListener {
 
-    //private final DocumentReference myDocRef = FirebaseFirestore.getInstance().document("users");
-    //db = FirebaseFirestore.getInstance();
     private static final String TAG = "MyActivity";
     final CollectionReference collectionReference = FirebaseFirestore.getInstance().collection("users");
     User user = new User();
@@ -46,21 +46,24 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
 
     ListView habitList;
     ArrayAdapter<Habit> habitAdapter;
-    List<Habit> habitDataList;
+    ArrayList<Habit> habitDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        habitList = findViewById(R.id.habbitListView);
+        habitDataList = user.getMyHabits();
+        habitAdapter = new CustomHabitList(this, habitDataList);
+        habitList.setAdapter(habitAdapter);
+
+        //**GET USER LOGIN -- ADD LATER**
+        userLoggedIn = "seanwruther9";
+
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> AddHabitFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
-
-        habitList = findViewById(R.id.habbitListView);
-        habitDataList = user.getMyHabits();
-        habitAdapter = new CustomHabitList(this, (ArrayList<Habit>) habitDataList);
-        habitList.setAdapter(habitAdapter);
 
         /* instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected */
         habitList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -71,55 +74,27 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
             }
         });
 
-        // TODO: add .setOnItemClickListener to ListView of Habits here to open the HabitDetailsFragment
-
-        //**GET USER LOGIN -- ADD LATER**
-        userLoggedIn = "seanwruther9";
-
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        collectionReference.document(userLoggedIn).collection("Habits").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                    FirebaseFirestoreException error) {
-                //final Map<String,Object> get = new HashMap<>();
-                DocumentReference userDoc = collectionReference.document(userLoggedIn);
-                userDoc.collection("Habits")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                Map<String,String> data;
-                                Object temp;
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Log.d(TAG, document.getId() + " => " + document.getData().get(document.getId()));
-                                        Log.d(TAG, "Message" + document.getData().get(document.getId()));
-                                        data = (Map<String, String>) document.getData().get(document.getId());
-                                        if(user.checkForHabits(document.getId()) == false){
-
-                                           Habit habit = new Habit(data.get("title"),data.get("reason"),data.get("date"));
-                                            //temp = (Habit) temp;
-                                            //Collection<Habit> coll = data.values();
-
-                                            //temp = data.get(document.getId());
-                                            user.addHabit( habit) ;
-
-                                        }
-                                        habitAdapter.notifyDataSetChanged();
-                                        Log.d(TAG,user.printHabits());
-                                    }
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
-                            }
-                        });
-
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                user.clearHabits();
+                Map<String,String> data;
+                for(QueryDocumentSnapshot document:value){
+                    Log.d(TAG, document.getId() + " => " + document.getData().get(document.getId()));
+                    Log.d(TAG, "Message" + document.getData().get(document.getId()));
+                    data = (Map<String, String>) document.getData().get(document.getId());
+                    Habit habit = new Habit(data.get("title"),data.get("reason"),data.get("date"));
+                    user.addHabit(habit);
+                }
+                habitDataList=user.getMyHabits();
+                habitAdapter.notifyDataSetChanged();
+                Log.d(TAG,user.printHabits());
             }
         });
     }
 
     @Override
     public void onAddOkPressed(@Nullable Habit habit) {
-
 
         if (habit == null) throw new AssertionError();
         String titleText = habit.getTitle();
@@ -131,48 +106,23 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
         if(!titleText.isEmpty() && !reasonText.isEmpty() && !dateText.isEmpty() ){
             Habit newHabit = new Habit(titleText,reasonText,dateText);
             habitData.put(titleText,newHabit);
-            collectionReference.document(userLoggedIn).collection("Habits").document(titleText).set(habitData);
+
+            collectionReference.document(userLoggedIn).collection("Habits")
+                    .document(titleText)
+                    .set(habitData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
         }
-
-
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                    FirebaseFirestoreException error) {
-                //final Map<String,Object> get = new HashMap<>();
-                DocumentReference userDoc = collectionReference.document(userLoggedIn);
-                userDoc.collection("Habits")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                Map<String,String> data;
-                                Object temp;
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Log.d(TAG, document.getId() + " => " + document.getData().get(document.getId()));
-                                        Log.d(TAG, "Message" + document.getData().get(document.getId()));
-                                        data = (Map<String, String>) document.getData().get(document.getId());
-                                        if(user.checkForHabits(document.getId()) == false){
-
-                                            Habit habit = new Habit(data.get("title"),data.get("reason"),data.get("date"));
-                                            //temp = (Habit) temp;
-                                            //Collection<Habit> coll = data.values();
-
-                                            //temp = data.get(document.getId());
-                                            user.addHabit( habit) ;
-                                        }
-                                        habitAdapter.notifyDataSetChanged();
-                                        Log.d(TAG,user.printHabits());
-                                    }
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
-                            }
-                        });
-
-            }
-        });
     }
 
     @Override
