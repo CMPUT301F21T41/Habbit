@@ -240,10 +240,5 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
                         }
                     });
         }
-
-
     }
-
-
-
 }
