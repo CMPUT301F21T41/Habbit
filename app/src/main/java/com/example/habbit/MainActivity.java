@@ -182,15 +182,36 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
                     @Override
                     public void onSuccess(@NonNull Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                        user.deleteHabit(habit);
-                        habitAdapter.notifyDataSetChanged();
-                        Log.d(TAG,user.printHabits());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
+                        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot value, @Nullable
+                                    FirebaseFirestoreException error) {
+                                userDoc.collection("Habits")
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                Map<String, String> data;
+                                                if (task.isSuccessful()) {
+                                                    user.clearHabit();
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData().get(document.getId()));
+                                                        Log.d(TAG, "Message" + document.getData().get(document.getId()));
+                                                        data = (Map<String, String>) document.getData().get(document.getId());
+                                                        if (!user.checkForHabits(document.getId())) {
+                                                            Habit habit = new Habit(data.get("title"), data.get("reason"), data.get("date"));
+                                                            user.addHabit(habit);
+                                                        }
+                                                        habitAdapter.notifyDataSetChanged();
+                                                        Log.d(TAG, user.printHabits());
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                                }
+                                            }
+                                        });
+                            }
+                        });
                     }
                 });
     }
@@ -219,9 +240,36 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(@NonNull Void unused) {
-                                            user.deleteHabit(ogHabit);  //bug with editHabit()
-                                            habitAdapter.notifyDataSetChanged();
-                                            Log.d(TAG,user.printHabits());
+                                            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onEvent(@Nullable QuerySnapshot value, @Nullable
+                                                        FirebaseFirestoreException error) {
+                                                    userDoc.collection("Habits")
+                                                            .get()
+                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    Map<String, String> data;
+                                                                    if (task.isSuccessful()) {
+                                                                        user.clearHabit();
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            Log.d(TAG, document.getId() + " => " + document.getData().get(document.getId()));
+                                                                            Log.d(TAG, "Message" + document.getData().get(document.getId()));
+                                                                            data = (Map<String, String>) document.getData().get(document.getId());
+                                                                            if (!user.checkForHabits(document.getId())) {
+                                                                                Habit habit = new Habit(data.get("title"), data.get("reason"), data.get("date"));
+                                                                                user.addHabit(habit);
+                                                                            }
+                                                                            habitAdapter.notifyDataSetChanged();
+                                                                            Log.d(TAG, user.printHabits());
+                                                                        }
+                                                                    } else {
+                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            });
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {

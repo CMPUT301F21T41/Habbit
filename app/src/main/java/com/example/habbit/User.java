@@ -13,9 +13,13 @@ public class User extends Profile {
         this.myHabits.add(habit);
     }
 
-    public void deleteHabit(Habit habit) {
-        this.myHabits.remove(habit);
+    public void clearHabit() {
+        this.myHabits.clear();
     }
+
+//    public void deleteHabit(Habit habit) {
+//        this.myHabits.remove(habit);
+//    }
 
 //    //Bugged for some reason
 //    public void editHabit(Habit ogHabit, Habit newHabit) {
