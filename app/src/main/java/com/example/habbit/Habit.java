@@ -1,12 +1,19 @@
 package com.example.habbit;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Habit implements Serializable {
     private String title; // up to 20 characters
     private String reason; // up to 30 characters
     private String date;
+    private String id;
+    private ArrayList<HabitEvent> habitEvents;
+    private boolean checked = false; // TODO: this is temporary, habit behaviour is too complicated for me to think about right now
+
+    // empty constructor needed to use Firestore add()
+    public Habit() {}
 
     public Habit(String title, String reason, String date) {
         this.title = title;
@@ -37,4 +44,33 @@ public class Habit implements Serializable {
     public void setDate(String date) {
         this.date = date;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public ArrayList<HabitEvent> getHabitEvents() {
+        return habitEvents;
+    }
+
+    public void setHabitEvents(ArrayList<HabitEvent> habitEvents) {
+        this.habitEvents = habitEvents;
+    }
+
+    public void addHabitEvent(HabitEvent habitEvent) {
+        habitEvents.add(habitEvent);
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
 }

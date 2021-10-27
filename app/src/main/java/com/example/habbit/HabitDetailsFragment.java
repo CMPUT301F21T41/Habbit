@@ -90,7 +90,7 @@ public class HabitDetailsFragment extends DialogFragment {
                 .setNegativeButton("Delete", (dialogInterface, i) ->
                         listener.onDeletePressed(selected))
                 .setPositiveButton("Edit",(dialogInterface, i) -> {
-                    AddHabitFragment.newInstance(selected).
+                    HabitEntryFragment.newInstance(selected).
                             show(requireActivity().getSupportFragmentManager(),"ADD_HABIT");
                     //listener.onEditHabitPressed(selected);
                 })

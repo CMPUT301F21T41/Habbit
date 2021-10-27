@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -56,6 +58,17 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         TextView habitTitle = view.findViewById(R.id.habit_title);
         TextView habitReason = view.findViewById(R.id.habit_reason);
         TextView habitDate = view.findViewById(R.id.habit_date);
+
+        // setting checkbox behaviour
+        final CheckBox checkBox = view.findViewById(R.id.habit_checkbox);
+        checkBox.setChecked(habit.isChecked());
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                // TODO: Inflate the habit event layout fragment
+
+            }
+        });
 
         // Set texts
         habitTitle.setText(habit.getTitle());

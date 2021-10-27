@@ -1,20 +1,19 @@
 package com.example.habbit;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class User extends Profile {
     private String username;
     private String password;
 
-    private ArrayList<Habit> myHabits = new ArrayList<>();
+    private ArrayList<Habit> userHabits = new ArrayList<>();
 
     public void addHabit(Habit habit){
-        this.myHabits.add(habit);
+        this.userHabits.add(habit);
     }
 
     public void clearHabit() {
-        this.myHabits.clear();
+        this.userHabits.clear();
     }
 
 //    public void deleteHabit(Habit habit) {
@@ -27,7 +26,7 @@ public class User extends Profile {
 //    }
 
     public boolean checkForHabits(String habitTitle){
-        for(Habit habit : this.myHabits){
+        for(Habit habit : this.userHabits){
             if(habit.getTitle().equals(habitTitle)){
                 return true;
             }
@@ -36,18 +35,18 @@ public class User extends Profile {
     }
 
     public void clearHabits(){
-        myHabits.clear();
+        userHabits.clear();
     }
 
     public String printHabits(){
         String ret = "Habits: ";
-        for(Habit habit: this.myHabits){
+        for(Habit habit: this.userHabits){
             ret = ret.concat(habit.getTitle() + " " + habit.getReason() + " " + habit.getDate() + "\r\n");
         }
         return ret;
     }
-    public ArrayList<Habit> getMyHabits(){
-        return this.myHabits;
+    public ArrayList<Habit> getUserHabits(){
+        return this.userHabits;
     }
     public void setUsername(String username){
         this.username = username;
