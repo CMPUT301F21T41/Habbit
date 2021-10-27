@@ -3,7 +3,6 @@ package com.example.habbit;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,11 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.Serializable;
 
@@ -29,14 +24,11 @@ import java.io.Serializable;
 
 public class HabitDetailsFragment extends DialogFragment {
 
-    private TextView viewTitle;
-    private TextView viewDate;
-    private TextView viewReason;
     private OnHabitClickListener listener;
 
     public interface OnHabitClickListener {
         void onDeletePressed(Habit habit);
-        void onEditHabitPressed(Habit habit);
+        //void onEditHabitPressed(Habit habit);
     }
 
     @Override
@@ -77,9 +69,9 @@ public class HabitDetailsFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_view_habit,null);
 
         /* connect TextViews to xml text fields */
-        viewTitle = view.findViewById(R.id.habit_title);
-        viewDate = view.findViewById(R.id.habit_date);
-        viewReason = view.findViewById(R.id.habit_reason);
+        TextView viewTitle = view.findViewById(R.id.habit_title);
+        TextView viewDate = view.findViewById(R.id.habit_date);
+        TextView viewReason = view.findViewById(R.id.habit_reason);
 
         /* get the habit of the details, if there are any to get */
         final Habit selected = (Habit) (getArguments() != null ?
@@ -95,19 +87,14 @@ public class HabitDetailsFragment extends DialogFragment {
                 .setView(view)
                 .setTitle("View Habit")
                 .setNeutralButton("Close",null)
-                .setNegativeButton("Delete", null)
-                .setPositiveButton("Edit",null)
+                .setNegativeButton("Delete", (dialogInterface, i) ->
+                        listener.onDeletePressed(selected))
+                .setPositiveButton("Edit",(dialogInterface, i) -> {
+                    AddHabitFragment.newInstance(selected).
+                            show(requireActivity().getSupportFragmentManager(),"ADD_HABIT");
+                    //listener.onEditHabitPressed(selected);
+                })
                 .create();
-
-//        Button delButton = viewDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-//        delButton.setOnClickListener(view1 -> {
-//            // TODO: implement Delete Fragment / Action on click
-//        });
-
-//        Button editButton = viewDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-//        editButton.setOnClickListener(view1 -> {
-//            // TODO: implement Edit Fragment on click
-//        });
 
         return viewDialog;
     }

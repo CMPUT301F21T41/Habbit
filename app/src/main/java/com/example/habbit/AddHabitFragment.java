@@ -34,6 +34,7 @@ public class AddHabitFragment extends DialogFragment {
 
     public interface OnFragmentInteractionListener {
         void onAddOkPressed(@Nullable Habit habit);
+        void onEditHabitPressed(Habit ogHabit, Habit newHabit);
     }
 
     @Override
@@ -74,20 +75,34 @@ public class AddHabitFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_habit, null);
 
         /* get habit details from args if there are any to get */
-        final Habit existingHabit = (Habit) (getArguments() != null ?
+        Habit existingHabit = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
         habitTitleField = view.findViewById(R.id.edit_habit_title);
         habitDateField = view.findViewById(R.id.edit_habit_date);
         habitReasonField = view.findViewById(R.id.edit_habit_reason);
 
+
         /* initialize add habit dialog */
-        AlertDialog addDialog = new AlertDialog.Builder(getContext())
-                .setView(view)
-                .setTitle("Add Habit")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("OK", null)
-                .show();
+        AlertDialog addDialog;
+        if (existingHabit != null) {
+            addDialog = new AlertDialog.Builder(getContext())
+                    .setView(view)
+                    .setTitle("Edit Habit")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Edit", null)
+                    .show();
+            habitTitleField.setText(existingHabit.getTitle());
+            habitDateField.setText((existingHabit.getDate()));
+            habitReasonField.setText((existingHabit.getReason()));
+        } else {
+            addDialog = new AlertDialog.Builder(getContext())
+                    .setView(view)
+                    .setTitle("Add Habit")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
 
         /* set button behaviour separately in order to implement data validation */
         Button positiveButton = addDialog.getButton(AlertDialog.BUTTON_POSITIVE);
@@ -128,11 +143,13 @@ public class AddHabitFragment extends DialogFragment {
             } else {
                 /* check if we are creating a new medicine object or adjusting an existing one */
                 if (existingHabit != null) {
+                    Habit ogHabit = new Habit(existingHabit.getTitle()
+                            , existingHabit.getReason(), existingHabit.getDate());
                     existingHabit.setTitle(habitTitleText);
                     existingHabit.setDate(habitDateText);
                     existingHabit.setReason(habitReasonText);
                     /* since this is an edit, we do not add a brand new medicine to the list */
-                    listener.onAddOkPressed(null);
+                    listener.onEditHabitPressed(ogHabit, existingHabit);
                 } else {
                     listener.onAddOkPressed(new Habit(
                             habitTitleText,

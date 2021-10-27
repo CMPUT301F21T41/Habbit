@@ -7,11 +7,24 @@ public class User extends Profile {
     private String username;
     private String password;
 
-    private List<Habit> myHabits = new ArrayList<>();
+    private ArrayList<Habit> myHabits = new ArrayList<>();
 
     public void addHabit(Habit habit){
         this.myHabits.add(habit);
     }
+
+    public void clearHabit() {
+        this.myHabits.clear();
+    }
+
+//    public void deleteHabit(Habit habit) {
+//        this.myHabits.remove(habit);
+//    }
+
+//    //Bugged for some reason
+//    public void editHabit(Habit ogHabit, Habit newHabit) {
+//        this.myHabits.set(this.myHabits.indexOf(ogHabit), newHabit);
+//    }
 
     public boolean checkForHabits(String habitTitle){
         for(Habit habit : this.myHabits){
@@ -22,6 +35,10 @@ public class User extends Profile {
         return false;
     }
 
+    public void clearHabits(){
+        myHabits.clear();
+    }
+
     public String printHabits(){
         String ret = "Habits: ";
         for(Habit habit: this.myHabits){
@@ -29,7 +46,7 @@ public class User extends Profile {
         }
         return ret;
     }
-    public List<Habit> getMyHabits(){
+    public ArrayList<Habit> getMyHabits(){
         return this.myHabits;
     }
     public void setUsername(String username){
