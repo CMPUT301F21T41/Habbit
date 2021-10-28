@@ -1,17 +1,21 @@
 package com.example.habbit;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Habit implements Serializable {
+    /* attributes that define a Habit object */
     private String title; // up to 20 characters
     private String reason; // up to 30 characters
     private String date;
     private String id;
+
+    /* to be implemented */
     // TODO: Should we use this arraylist, or just use Firestore to track habitEvents?
     private ArrayList<HabitEvent> habitEvents;
-    private boolean checked = false; // TODO: this is temporary, habit behaviour is too complicated for me to think about right now
+    private boolean checked = false; // TODO: this is temporary, habit behaviour is too complicated for to think about right now
 
     // empty constructor needed to use Firestore add()
     public Habit() {}

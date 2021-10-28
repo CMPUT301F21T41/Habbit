@@ -9,8 +9,6 @@
     android:paddingHorizontal="30dp"
     android:paddingVertical="30dp">
 
-
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/habit_title"
         android:layout_width="match_parent"
@@ -34,9 +32,5 @@
         android:scrollbars="vertical"
         android:textSize="15sp"
         android:paddingVertical="10dp"/>
-
-    <!-- TODO: Add buttons (Exit, Delete, Edit) ? -->
-
-
 
 </LinearLayout>

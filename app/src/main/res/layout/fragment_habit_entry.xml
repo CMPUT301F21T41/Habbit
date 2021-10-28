@@ -18,10 +18,13 @@
 
     <EditText
         android:id="@+id/edit_habit_date"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/start_date"
-        android:inputType="textPersonName" />
+        android:hint="@string/start_date" />
 
     <EditText
         android:id="@+id/edit_habit_reason"

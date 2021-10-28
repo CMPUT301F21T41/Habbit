@@ -30,7 +30,7 @@ public class HabitEventEntryFragment extends DialogFragment {
     private EditText commentField;
     private OnHabitEventFragmentInteractionListener listener;
 
-    // TODO: can consolidate all of these interaection listeners into one class per activity I think
+    // TODO: can we consolidate all of the interaction listeners?
     public interface OnHabitEventFragmentInteractionListener {
         void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit);
     }

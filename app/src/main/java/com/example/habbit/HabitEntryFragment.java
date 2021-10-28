@@ -1,6 +1,7 @@
 package com.example.habbit;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +18,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,13 +31,13 @@ public class HabitEntryFragment extends DialogFragment {
 
     /* declare variables here so we have access throughout class */
     private EditText habitTitleField;
-    // TODO: Implement habit date field properly
     private EditText habitDateField;
     private EditText habitReasonField;
     private OnHabitEntryFragmentInteractionListener listener;
+    private Calendar myCalendar;
 
     public interface OnHabitEntryFragmentInteractionListener {
-        void onAddOkPressed(@Nullable Habit habit);
+        void onAddHabitPressed(Habit habit);
         void onEditHabitPressed(Habit existingHabit);
     }
 
@@ -67,6 +71,14 @@ public class HabitEntryFragment extends DialogFragment {
         return fragment;
     }
 
+    /* determines how date should be shown in the EditText field */
+    private void updateLabel() {
+        String myFormat = "yyyy-MM-dd"; // format of date desired
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        habitDateField.setText(sdf.format(myCalendar.getTime()));
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -77,10 +89,23 @@ public class HabitEntryFragment extends DialogFragment {
         Habit existingHabit = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
-        habitTitleField = view.findViewById(R.id.edit_habit_title);
+        /* Initializes DatePicker dialog to enforce valid user input */
+        myCalendar = Calendar.getInstance();
         habitDateField = view.findViewById(R.id.edit_habit_date);
-        habitReasonField = view.findViewById(R.id.edit_habit_reason);
+        DatePickerDialog.OnDateSetListener date = (datePicker, year, month, day) -> {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, month);
+            myCalendar.set(Calendar.DAY_OF_MONTH, day);
+            updateLabel();
+        };
 
+        habitDateField.setOnClickListener(v -> new DatePickerDialog(getActivity(), date,
+                myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show());
+
+        /* get EditTextFields for simple text entries */
+        habitTitleField = view.findViewById(R.id.edit_habit_title);
+        habitReasonField = view.findViewById(R.id.edit_habit_reason);
 
         /* initialize add habit dialog */
         AlertDialog addDialog;
@@ -145,7 +170,7 @@ public class HabitEntryFragment extends DialogFragment {
                     listener.onEditHabitPressed(existingHabit);
                 } else {
                     Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText);
-                    listener.onAddOkPressed(newHabit);
+                    listener.onAddHabitPressed(newHabit);
                 }
 
                 /* if everything is looking good, we can dismiss the dialog */
