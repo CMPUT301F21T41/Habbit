@@ -1,6 +1,7 @@
 package com.example.habbit;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,38 +18,41 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AddHabitFragment#newInstance} factory method to
+ * Use the {@link HabitEntryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddHabitFragment extends DialogFragment {
+public class HabitEntryFragment extends DialogFragment {
 
     /* declare variables here so we have access throughout class */
     private EditText habitTitleField;
-    // TODO: Implement habit date field properly
     private EditText habitDateField;
     private EditText habitReasonField;
-    private OnFragmentInteractionListener listener;
+    private OnHabitEntryFragmentInteractionListener listener;
+    private Calendar myCalendar;
 
-    public interface OnFragmentInteractionListener {
-        void onAddOkPressed(@Nullable Habit habit);
-        void onEditHabitPressed(Habit ogHabit, Habit newHabit);
+    public interface OnHabitEntryFragmentInteractionListener {
+        void onAddHabitPressed(Habit habit);
+        void onEditHabitPressed(Habit existingHabit);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            listener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnHabitEntryFragmentInteractionListener) {
+            listener = (OnHabitEntryFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnHabitEntryFragmentInteractionListener");
         }
     }
 
-    public AddHabitFragment() {
+    public HabitEntryFragment() {
         // Required empty public constructor
     }
 
@@ -59,29 +63,49 @@ public class AddHabitFragment extends DialogFragment {
      * @param habit Habit
      * @return A new instance of fragment AddHabitFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static AddHabitFragment newInstance(Habit habit) {
-        AddHabitFragment fragment = new AddHabitFragment();
+    public static HabitEntryFragment newInstance(Habit habit) {
+        HabitEntryFragment fragment = new HabitEntryFragment();
         Bundle args = new Bundle();
         args.putSerializable("habit", (Serializable) habit);
         fragment.setArguments(args);
         return fragment;
     }
 
+    /* determines how date should be shown in the EditText field */
+    private void updateLabel() {
+        String myFormat = "yyyy-MM-dd"; // format of date desired
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        habitDateField.setText(sdf.format(myCalendar.getTime()));
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         /* inflate layout for fragment */
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_habit, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_habit_entry, null);
 
         /* get habit details from args if there are any to get */
         Habit existingHabit = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
-        habitTitleField = view.findViewById(R.id.edit_habit_title);
+        /* Initializes DatePicker dialog to enforce valid user input */
+        myCalendar = Calendar.getInstance();
         habitDateField = view.findViewById(R.id.edit_habit_date);
-        habitReasonField = view.findViewById(R.id.edit_habit_reason);
+        DatePickerDialog.OnDateSetListener date = (datePicker, year, month, day) -> {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, month);
+            myCalendar.set(Calendar.DAY_OF_MONTH, day);
+            updateLabel();
+        };
 
+        habitDateField.setOnClickListener(v -> new DatePickerDialog(getActivity(), date,
+                myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show());
+
+        /* get EditTextFields for simple text entries */
+        habitTitleField = view.findViewById(R.id.edit_habit_title);
+        habitReasonField = view.findViewById(R.id.edit_habit_reason);
 
         /* initialize add habit dialog */
         AlertDialog addDialog;
@@ -90,7 +114,7 @@ public class AddHabitFragment extends DialogFragment {
                     .setView(view)
                     .setTitle("Edit Habit")
                     .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Edit", null)
+                    .setPositiveButton("Confirm", null)
                     .show();
             habitTitleField.setText(existingHabit.getTitle());
             habitDateField.setText((existingHabit.getDate()));
@@ -100,7 +124,7 @@ public class AddHabitFragment extends DialogFragment {
                     .setView(view)
                     .setTitle("Add Habit")
                     .setNegativeButton("Cancel", null)
-                    .setPositiveButton("OK", null)
+                    .setPositiveButton("Confirm", null)
                     .show();
         }
 
@@ -116,26 +140,22 @@ public class AddHabitFragment extends DialogFragment {
             /* validate each field */
 
             if (habitTitleText.length() == 0 || habitTitleText.length() > 20) {
-
-                habitTitleField.requestFocus();
                 habitTitleField.setError("Habit title cannot be empty or more than 20 characters");
                 errorFlag = true;
             }
 
             if (habitReasonText.length() == 0 || habitReasonText.length() > 30) {
-                habitReasonField.requestFocus();
                 habitReasonField.setError("Habit reason cannot be empty or more than 30 characters");
                 errorFlag = true;
             }
 
             if (habitDateText.length() == 0 || habitDateText.equals("0")) {
-                habitDateField.requestFocus();
                 habitDateField.setError("Habit start date must be set");
                 errorFlag = true;
             }
 
             /*
-             if there are any errors, do not add the medicine to the list yet
+             if there are any errors, do not add the habit to the list yet
              and do not dismiss the dialog
             */
             if (errorFlag) {
@@ -143,19 +163,14 @@ public class AddHabitFragment extends DialogFragment {
             } else {
                 /* check if we are creating a new medicine object or adjusting an existing one */
                 if (existingHabit != null) {
-                    Habit ogHabit = new Habit(existingHabit.getTitle()
-                            , existingHabit.getReason(), existingHabit.getDate());
                     existingHabit.setTitle(habitTitleText);
                     existingHabit.setDate(habitDateText);
                     existingHabit.setReason(habitReasonText);
                     /* since this is an edit, we do not add a brand new medicine to the list */
-                    listener.onEditHabitPressed(ogHabit, existingHabit);
+                    listener.onEditHabitPressed(existingHabit);
                 } else {
-                    listener.onAddOkPressed(new Habit(
-                            habitTitleText,
-                            habitReasonText,
-                            habitDateText
-                    ));
+                    Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText);
+                    listener.onAddHabitPressed(newHabit);
                 }
 
                 /* if everything is looking good, we can dismiss the dialog */
