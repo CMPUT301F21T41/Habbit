@@ -6,4 +6,5 @@
     <string name="start_date">Start Date</string>
     <string name="habit_reason">Habit Reason</string>
     <string name="habit_date">habit date</string>
+    <string name="habit_event_comment">Comments</string>
 </resources>

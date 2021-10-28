@@ -9,6 +9,7 @@ public class Habit implements Serializable {
     private String reason; // up to 30 characters
     private String date;
     private String id;
+    // TODO: Should we use this arraylist, or just use Firestore to track habitEvents?
     private ArrayList<HabitEvent> habitEvents;
     private boolean checked = false; // TODO: this is temporary, habit behaviour is too complicated for me to think about right now
 
@@ -19,6 +20,7 @@ public class Habit implements Serializable {
         this.title = title;
         this.reason = reason;
         this.date = date;
+        habitEvents = new ArrayList<HabitEvent>();
     }
 
     public String getTitle() {

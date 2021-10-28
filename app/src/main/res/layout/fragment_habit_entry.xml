@@ -8,7 +8,6 @@
     android:paddingHorizontal="30dp"
     android:paddingVertical="30dp">
 
-    <!-- TODO: Update blank fragment layout -->
     <EditText
         android:id="@+id/edit_habit_title"
         android:layout_width="match_parent"

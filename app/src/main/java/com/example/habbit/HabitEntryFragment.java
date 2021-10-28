@@ -30,9 +30,9 @@ public class HabitEntryFragment extends DialogFragment {
     // TODO: Implement habit date field properly
     private EditText habitDateField;
     private EditText habitReasonField;
-    private OnFragmentInteractionListener listener;
+    private OnHabitEntryFragmentInteractionListener listener;
 
-    public interface OnFragmentInteractionListener {
+    public interface OnHabitEntryFragmentInteractionListener {
         void onAddOkPressed(@Nullable Habit habit);
         void onEditHabitPressed(Habit existingHabit);
     }
@@ -40,11 +40,11 @@ public class HabitEntryFragment extends DialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            listener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnHabitEntryFragmentInteractionListener) {
+            listener = (OnHabitEntryFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnHabitEntryFragmentInteractionListener");
         }
     }
 
@@ -59,7 +59,6 @@ public class HabitEntryFragment extends DialogFragment {
      * @param habit Habit
      * @return A new instance of fragment AddHabitFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static HabitEntryFragment newInstance(Habit habit) {
         HabitEntryFragment fragment = new HabitEntryFragment();
         Bundle args = new Bundle();

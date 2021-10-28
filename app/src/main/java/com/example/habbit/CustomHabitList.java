@@ -12,8 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 /**
@@ -31,6 +29,12 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
      */
     private Context context;
 
+    private OnCheckboxClickListener listener;
+
+    public interface OnCheckboxClickListener {
+        void onCheckboxClick(Habit habit);
+    }
+
     /**
      *
      * @param context
@@ -40,6 +44,7 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         super(context, 0, habits);
         this.habits = habits;
         this.context = context;
+        this.listener = (OnCheckboxClickListener) context;
     }
 
     @NonNull
@@ -56,7 +61,6 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
 
         // Linking xml text fields to text views in CustomHabitList.java
         TextView habitTitle = view.findViewById(R.id.habit_title);
-        TextView habitReason = view.findViewById(R.id.habit_reason);
         TextView habitDate = view.findViewById(R.id.habit_date);
 
         // setting checkbox behaviour
@@ -65,14 +69,14 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                // TODO: Inflate the habit event layout fragment
-
+                if (b) {
+                    listener.onCheckboxClick(habit);
+                }
             }
         });
 
         // Set texts
         habitTitle.setText(habit.getTitle());
-        habitReason.setText(habit.getReason());
         habitDate.setText(habit.getDate());
 
         return view;
