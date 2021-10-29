@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D8D5DA"
+    android:orientation="vertical"
+    tools:context=".LogInActivity">
+
+    <TextView
+        android:id="@+id/app_flavour_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingLeft="120dp"
+        android:paddingTop="100dp"
+        android:text="A habit tracker"
+        android:textColor="@color/black"
+        android:textSize="10sp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/app_title_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingLeft="120dp"
+        android:paddingBottom="5dp"
+        android:text="Habbit"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        android:textStyle="bold">
+
+    </TextView>
+
+</LinearLayout>
