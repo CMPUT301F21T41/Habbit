@@ -90,6 +90,7 @@ public class HabitDetailsFragment extends DialogFragment {
             public void onClick(View view) {
 
                 Intent i = new Intent(getContext(), HabitEventsActivity.class);
+                // make the selected habit available in the next activity
                 i.putExtra("habit", selected);
                 startActivity(i);
             }

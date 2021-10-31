@@ -32,14 +32,15 @@ public class HabitEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_events);
 
-
+        // initialize views
         ListView habitEventList = findViewById(R.id.habit_events_list);
         Button btnBackToHabits = findViewById(R.id.btn_back_to_habits);
 
+        // get the habit containing desired habit events
         Habit habit = (Habit) getIntent().getSerializableExtra("habit");
         habitEventDataList = habit.getHabitEvents();
 
-
+        // set the adapter
         habitEventAdapter = new CustomHabitEventList(this, habitEventDataList);
         habitEventList.setAdapter(habitEventAdapter);
 
@@ -48,7 +49,7 @@ public class HabitEventsActivity extends AppCompatActivity {
         String userLoggedIn = "seanwruther9";
 
 
-        System.out.println("test");
+        // initialize/update the list every time there is a change made to the habit events
         userCollectionReference.document(userLoggedIn).collection("Habits").document(habit.getId())
                 .collection("Habit Events").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -71,13 +72,15 @@ public class HabitEventsActivity extends AppCompatActivity {
                         habit.addHabitEvent(habitEvent);
                     }
                 }
+                // update the data list
                 habitEventDataList = habit.getHabitEvents();
+
+                // notify the adapter
                 habitEventAdapter.notifyDataSetChanged();
-                Log.d(TAG,habit.printHabitEvents());
             }
         });
-        System.out.println("test");
 
+        // button onclick for going back to habits
         btnBackToHabits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
