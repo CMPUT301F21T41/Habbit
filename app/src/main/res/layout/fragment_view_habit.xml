@@ -9,6 +9,12 @@
     android:paddingHorizontal="30dp"
     android:paddingVertical="30dp">
 
+    <Button
+        android:id="@+id/btn_see_habit_events"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="See Habit Events" />
+
     <TextView
         android:id="@+id/habit_title"
         android:layout_width="match_parent"
