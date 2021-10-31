@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -21,7 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class HabitEventsActivity extends AppCompatActivity {
+public class HabitEventsActivity extends AppCompatActivity implements HabitEventDetailsFragment.OnHabitEventDetailInteraction {
 
     CustomHabitEventList habitEventAdapter;
     ArrayList<HabitEvent> habitEventDataList;
@@ -48,6 +49,14 @@ public class HabitEventsActivity extends AppCompatActivity {
         //**GET USER LOGIN -- ADD LATER**
         String userLoggedIn = "seanwruther9";
 
+        /* instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected */
+        habitEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                HabitEvent viewHabitEvent = (HabitEvent) habitEventAdapter.getItem(i);
+                HabitEventDetailsFragment.newInstance(viewHabitEvent).show(getSupportFragmentManager(),"VIEW_HABIT_EVENT");
+            }
+        });
 
         // initialize/update the list every time there is a change made to the habit events
         userCollectionReference.document(userLoggedIn).collection("Habits").document(habit.getId())
@@ -88,5 +97,10 @@ public class HabitEventsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onDeleteHabitEventPressed(HabitEvent habitEvent){
+        // TODO: delete habit event
     }
 }

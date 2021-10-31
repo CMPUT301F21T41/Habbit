@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/comment_lbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Comments:" />
+
+    <TextView
+        android:id="@+id/habit_event_comment_frag"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/COT_lbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Completed on Time:" />
+
+    <TextView
+        android:id="@+id/completed_on_time_frag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+</LinearLayout>
