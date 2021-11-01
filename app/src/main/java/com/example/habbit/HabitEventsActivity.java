@@ -13,7 +13,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -22,11 +24,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class HabitEventsActivity extends AppCompatActivity implements HabitEventDetailsFragment.OnHabitEventDetailInteraction {
+public class HabitEventsActivity extends AppCompatActivity implements HabitEventDetailsFragment.OnHabitEventDetailInteraction,
+        HabitEventEntryFragment.OnHabitEventFragmentInteractionListener {
 
     CustomHabitEventList habitEventAdapter;
     ArrayList<HabitEvent> habitEventDataList;
-
+    String userLoggedIn;
+    Habit habit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,7 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
         Button btnBackToHabits = findViewById(R.id.btn_back_to_habits);
 
         // get the habit containing desired habit events
-        Habit habit = (Habit) getIntent().getSerializableExtra("habit");
+        habit = (Habit) getIntent().getSerializableExtra("habit");
         habitEventDataList = habit.getHabitEvents();
 
         // set the adapter
@@ -47,7 +51,7 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
 
 
         //**GET USER LOGIN -- ADD LATER**
-        String userLoggedIn = "seanwruther9";
+        userLoggedIn = "seanwruther9";
 
         /* instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected */
         habitEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -100,7 +104,48 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
     }
 
     @Override
+    public void onHabitEventConfirmed(@Nullable HabitEvent habitEvent) {
+        DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
+        assert habitEvent != null;
+        userDoc.collection("Habits").document(habit.getId())
+                .collection("Habit Events").add(habitEvent)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Habit event logged succesfully!", Toast.LENGTH_SHORT).show();
+                    documentReference.update("id", documentReference.getId());
+                })
+                .addOnFailureListener(documentReference -> {
+                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    @Override
     public void onDeleteHabitEventPressed(HabitEvent habitEvent){
-        // TODO: delete habit event
+        //Log.d("HabitEventsActivity", "habit id = " + habit.getId());
+        DocumentReference userDoc = userCollectionReference.document(userLoggedIn)
+                .collection("Habits").document(habit.getId());
+        //Log.d("HabitEventsActivity", "habitEvent id = " + habitEvent.getId());
+        userDoc.collection("Habit Events").document(habitEvent.getId())
+                .delete()
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Successfully deleted habit event", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(documentReference -> {
+                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    @Override
+    public void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent) {
+        /* get updated values */
+        assert newHabitEvent != null;
+        String commentText = newHabitEvent.getComment();
+
+        /* update FireStore */
+        DocumentReference userDoc = userCollectionReference.document(userLoggedIn)
+                .collection("Habits").document(habit.getId());
+        //Log.d("HabitEventsActivity", "habitEvent id = " + habitEvent.getId());
+        userDoc.collection("Habit Events").document(newHabitEvent.getId())
+                .update("comment", commentText);
+        Log.d(TAG, newHabitEvent.getId());
     }
 }

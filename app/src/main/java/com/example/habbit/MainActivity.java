@@ -1,6 +1,8 @@
 package com.example.habbit;
 
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,8 +31,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements HabitEntryFragment.OnHabitEntryFragmentInteractionListener,
-        HabitDetailsFragment.OnHabitDetailInteraction, CustomHabitList.OnCheckboxClickListener,
-        HabitEventEntryFragment.OnHabitEventFragmentInteractionListener {
+        HabitDetailsFragment.OnHabitDetailInteraction,
+        CustomHabitList.OnCheckboxClickListener {
 
     private static final String TAG = "MyActivity";
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 user.clearHabits();
                 Map<String,Object> habitData;
+                assert value != null;
                 for(QueryDocumentSnapshot document:value) {
                     habitData = document.getData();
                     Log.d(TAG, document.getId() + " => " + habitData);
@@ -139,35 +142,5 @@ public class MainActivity extends AppCompatActivity
     // TODO: is this the right way to interact with a fragment
     public void onCheckboxClick(Habit habit) {
         HabitEventEntryFragment.newInstance(null, habit).show(getSupportFragmentManager(),"HABIT_EVENT_ENTRY");
-    }
-
-
-    @Override
-    public void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit) {
-        DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
-        assert habitEvent != null;
-        userDoc.collection("Habits").document(habit.getId())
-                .collection("Habit Events").add(habitEvent)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Habit event logged succesfully!", Toast.LENGTH_SHORT);
-                    documentReference.update("id", documentReference.getId());
-                })
-                .addOnFailureListener(documentReference -> {
-                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT);
-                });
-    }
-
-    @Override
-    public void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent, Habit habit) {
-        /* get updated values */
-        String commentText = newHabitEvent.getComment();
-
-        /* update FireStore */
-        DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
-        assert newHabitEvent != null;
-        userDoc.collection("Habits").document(habit.getId())
-                .collection("Habit Events").document(newHabitEvent.getId())
-                .update("comment", commentText);
-        Log.d(TAG, newHabitEvent.getId());
     }
 }

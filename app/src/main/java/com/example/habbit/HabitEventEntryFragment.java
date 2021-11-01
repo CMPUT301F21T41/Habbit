@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +33,14 @@ public class HabitEventEntryFragment extends DialogFragment {
 
     // TODO: can we consolidate all of the interaction listeners?
     public interface OnHabitEventFragmentInteractionListener {
-        void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit);
-        void onEditHabitEventPressed(@Nullable HabitEvent habitEvent, Habit habit);
+        void onHabitEventConfirmed(@Nullable HabitEvent habitEvent);
+        void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        Log.d("HabitEventEntryFragment", "current context = " + context.toString());
         if (context instanceof OnHabitEventFragmentInteractionListener) {
             listener = (OnHabitEventFragmentInteractionListener) context;
         } else {
@@ -76,9 +78,6 @@ public class HabitEventEntryFragment extends DialogFragment {
         /* get the habit event and habit details from args if exists */
         HabitEvent existingHabitEvent = (HabitEvent) (getArguments() !=null ?
                 getArguments().getSerializable("habitEvent") : null);
-
-        Habit existingHabit = (Habit) (getArguments() != null?
-                getArguments().getSerializable("habit") : null);
 
         commentField = view.findViewById(R.id.edit_habit_event_comment);
 
@@ -127,14 +126,13 @@ public class HabitEventEntryFragment extends DialogFragment {
 
                 if (existingHabitEvent != null) {
                     existingHabitEvent.setComment(comment);
-                    listener.onEditHabitEventPressed(existingHabitEvent, existingHabit);
+                    listener.onEditHabitEventPressed(existingHabitEvent);
                 } else {
                     HabitEvent habitEvent = new HabitEvent(comment);
                     /* get habit associated if there are any to get */
                     // TODO: should we change this to be similar to what we have in HabitEntryFragment
-                    assert getArguments() != null;
-                    Habit habit = (Habit) getArguments().getSerializable("habit");
-                    listener.onHabitEventConfirmed(habitEvent, habit);
+                    //Habit habit = (Habit) getArguments().getSerializable("habit");
+                    listener.onHabitEventConfirmed(habitEvent);
                 }
 
                 addDialog.dismiss();
