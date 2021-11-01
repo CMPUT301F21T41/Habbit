@@ -63,12 +63,24 @@ public class Habit implements Serializable {
         return habitEvents;
     }
 
+    public String printHabitEvents(){
+        String ret = "Habit Events: ";
+        for(HabitEvent habitEvent: this.habitEvents){
+            ret = ret.concat(habitEvent.getComment() + " " + habitEvent.isCompletedOnTime() +"\r\n");
+        }
+        return ret;
+    }
+
     public void setHabitEvents(ArrayList<HabitEvent> habitEvents) {
         this.habitEvents = habitEvents;
     }
 
     public void addHabitEvent(HabitEvent habitEvent) {
         habitEvents.add(habitEvent);
+    }
+
+    public void clearHabitEvents(){
+        habitEvents.clear();
     }
 
     public boolean isChecked() {

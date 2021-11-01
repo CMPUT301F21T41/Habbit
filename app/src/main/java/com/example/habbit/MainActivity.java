@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         HabitEventEntryFragment.OnHabitEventFragmentInteractionListener {
 
     private static final String TAG = "MyActivity";
-    final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
+    static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     User user = new User();
     String userLoggedIn;
 
