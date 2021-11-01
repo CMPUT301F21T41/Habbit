@@ -33,12 +33,13 @@ public class HabitEventEntryFragment extends DialogFragment {
     // TODO: can we consolidate all of the interaction listeners?
     public interface OnHabitEventFragmentInteractionListener {
         void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit);
+        void onEditHabitEventPressed(@Nullable HabitEvent habitEvent, Habit habit);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof HabitEventEntryFragment.OnHabitEventFragmentInteractionListener) {
+        if (context instanceof OnHabitEventFragmentInteractionListener) {
             listener = (OnHabitEventFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
@@ -72,16 +73,36 @@ public class HabitEventEntryFragment extends DialogFragment {
         /* inflate layout for fragment */
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_habit_event_entry, null);
 
+        /* get the habit event and habit details from args if exists */
+        HabitEvent existingHabitEvent = (HabitEvent) (getArguments() !=null ?
+                getArguments().getSerializable("habitEvent") : null);
+
+        Habit existingHabit = (Habit) (getArguments() != null?
+                getArguments().getSerializable("habit") : null);
+
         commentField = view.findViewById(R.id.edit_habit_event_comment);
+
 
         /* initialize add habit event dialog */
         AlertDialog addDialog;
-        addDialog = new AlertDialog.Builder(getContext())
-                .setView(view)
-                .setTitle("Log Habit Event")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Confirm", null)
-                .show();
+
+        if (existingHabitEvent != null) {
+            System.out.println("HEY WE MADE IT HERE");
+            addDialog = new AlertDialog.Builder(getContext())
+                    .setView(view)
+                    .setTitle("Edit Habit Event")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Confirm", null)
+                    .show();
+            commentField.setText(existingHabitEvent.getComment());
+        } else {
+            addDialog = new AlertDialog.Builder(getContext())
+                    .setView(view)
+                    .setTitle("Log Habit Event")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Confirm", null)
+                    .show();
+        }
 
         // when a user confirms adding a habit event, we should add it to the list of habit events
         // associated with that Habit
@@ -102,15 +123,24 @@ public class HabitEventEntryFragment extends DialogFragment {
             if (errorFlag) {
                 Toast.makeText(getActivity(), "Please fix errors", Toast.LENGTH_SHORT).show();
             } else {
-                HabitEvent habitEvent = new HabitEvent(comment);
-                /* get habit associated if there are any to get */
-                // TODO: should we change this to be similar to what we have in HabitEntryFragment
-                assert getArguments() != null;
-                Habit habit = (Habit) getArguments().getSerializable("habit");
-                listener.onHabitEventConfirmed(habitEvent, habit);
+                /* part where either create a new habit event OR adjusting an existing one */
+
+                if (existingHabitEvent != null) {
+                    existingHabitEvent.setComment(comment);
+                    listener.onEditHabitEventPressed(existingHabitEvent, existingHabit);
+                } else {
+                    HabitEvent habitEvent = new HabitEvent(comment);
+                    /* get habit associated if there are any to get */
+                    // TODO: should we change this to be similar to what we have in HabitEntryFragment
+                    assert getArguments() != null;
+                    Habit habit = (Habit) getArguments().getSerializable("habit");
+                    listener.onHabitEventConfirmed(habitEvent, habit);
+                }
+
                 addDialog.dismiss();
             }
         });
+
         return addDialog;
     }
 }

@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity
         HabitEventEntryFragment.OnHabitEventFragmentInteractionListener {
 
     private static final String TAG = "MyActivity";
-    final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
+    static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     User user = new User();
     String userLoggedIn;
 
@@ -154,5 +155,19 @@ public class MainActivity extends AppCompatActivity
                 .addOnFailureListener(documentReference -> {
                     Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT);
                 });
+    }
+
+    @Override
+    public void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent, Habit habit) {
+        /* get updated values */
+        String commentText = newHabitEvent.getComment();
+
+        /* update FireStore */
+        DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
+        assert newHabitEvent != null;
+        userDoc.collection("Habits").document(habit.getId())
+                .collection("Habit Events").document(newHabitEvent.getId())
+                .update("comment", commentText);
+        Log.d(TAG, newHabitEvent.getId());
     }
 }

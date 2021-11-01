@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Habbit">
         <activity
+            android:name=".HabitEventsActivity"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

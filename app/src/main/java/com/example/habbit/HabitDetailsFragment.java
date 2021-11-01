@@ -3,6 +3,7 @@ package com.example.habbit;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -67,10 +69,11 @@ public class HabitDetailsFragment extends DialogFragment {
         /* Inflate layout for fragment */
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_view_habit,null);
 
-        /* connect TextViews to xml text fields */
+        /* connect Views to xml text fields */
         TextView viewTitle = view.findViewById(R.id.habit_title);
         TextView viewDate = view.findViewById(R.id.habit_date);
         TextView viewReason = view.findViewById(R.id.habit_reason);
+        Button btnHabitEvents = view.findViewById(R.id.btn_see_habit_events);
 
         /* get the habit of the details, if there are any to get */
         final Habit selected = (Habit) (getArguments() != null ?
@@ -80,6 +83,18 @@ public class HabitDetailsFragment extends DialogFragment {
         viewTitle.setText(selected != null ? selected.getTitle():null);
         viewDate.setText(selected != null ? selected.getDate():null);
         viewReason.setText(selected != null ? selected.getReason():null);
+
+        // see habit events on click -> go to habit events screen
+        btnHabitEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(getContext(), HabitEventsActivity.class);
+                // make the selected habit available in the next activity
+                i.putExtra("habit", selected);
+                startActivity(i);
+            }
+        });
 
         /* initialize the "View Habit" dialog */
         AlertDialog viewDialog = new AlertDialog.Builder(getContext())
@@ -93,7 +108,6 @@ public class HabitDetailsFragment extends DialogFragment {
                             show(requireActivity().getSupportFragmentManager(),"ADD_HABIT");
                 })
                 .create();
-
         return viewDialog;
     }
 
