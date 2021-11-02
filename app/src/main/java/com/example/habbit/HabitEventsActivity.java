@@ -104,7 +104,7 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
     }
 
     @Override
-    public void onHabitEventConfirmed(@Nullable HabitEvent habitEvent) {
+    public void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit) {
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         assert habitEvent != null;
         userDoc.collection("Habits").document(habit.getId())

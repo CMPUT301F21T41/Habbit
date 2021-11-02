@@ -33,7 +33,7 @@ public class HabitEventEntryFragment extends DialogFragment {
 
     // TODO: can we consolidate all of the interaction listeners?
     public interface OnHabitEventFragmentInteractionListener {
-        void onHabitEventConfirmed(@Nullable HabitEvent habitEvent);
+        void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit);
         void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent);
     }
 
@@ -131,8 +131,8 @@ public class HabitEventEntryFragment extends DialogFragment {
                     HabitEvent habitEvent = new HabitEvent(comment);
                     /* get habit associated if there are any to get */
                     // TODO: should we change this to be similar to what we have in HabitEntryFragment
-                    //Habit habit = (Habit) getArguments().getSerializable("habit");
-                    listener.onHabitEventConfirmed(habitEvent);
+                    Habit habit = (Habit) getArguments().getSerializable("habit");
+                    listener.onHabitEventConfirmed(habitEvent, habit);
                 }
 
                 addDialog.dismiss();
