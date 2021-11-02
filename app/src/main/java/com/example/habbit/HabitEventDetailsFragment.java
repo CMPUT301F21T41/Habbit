@@ -20,9 +20,9 @@ public class HabitEventDetailsFragment extends DialogFragment {
 
     private OnHabitEventDetailInteraction listener;
 
-        public interface OnHabitEventDetailInteraction {
-            void onDeleteHabitEventPressed(HabitEvent habitEvent);
-        }
+    public interface OnHabitEventDetailInteraction {
+        void onDeleteHabitEventPressed(HabitEvent habitEvent);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
