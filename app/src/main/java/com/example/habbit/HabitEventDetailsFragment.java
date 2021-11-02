@@ -20,7 +20,7 @@ public class HabitEventDetailsFragment extends DialogFragment {
 
     private OnHabitEventDetailInteraction listener;
 
-        public interface OnHabitEventDetailInteraction {
+    public interface OnHabitEventDetailInteraction {
         void onDeleteHabitEventPressed(HabitEvent habitEvent);
     }
 
@@ -67,13 +67,16 @@ public class HabitEventDetailsFragment extends DialogFragment {
         TextView lblComment = view.findViewById(R.id.comment_lbl);
         TextView lblCOT = view.findViewById(R.id.COT_lbl);
 
-        /* get the habit of the details, if there are any to get */
-        final HabitEvent selected = (HabitEvent) (getArguments() != null ?
+        /* get the details of the habit, if there are any to get */
+        final HabitEvent selectedHabitEvent = (HabitEvent) (getArguments() != null ?
                 getArguments().getSerializable("viewEvent") : null);
 
+        final Habit selectedHabit = (Habit) (getArguments() != null ?
+                getArguments().getSerializable("viewHabit") : null);
+
         /* set the text for the TextViews (null if habit is null) */
-        viewComment.setText(selected != null ? selected.getComment():null);
-        viewCOT.setText(selected != null ? String.valueOf(selected.isCompletedOnTime()):null);
+        viewComment.setText(selectedHabitEvent != null ? selectedHabitEvent.getComment():null);
+        viewCOT.setText(selectedHabitEvent != null ? String.valueOf(selectedHabitEvent.isCompletedOnTime()):null);
 
 
         /* initialize the "View HabitEvent" dialog */
@@ -82,12 +85,12 @@ public class HabitEventDetailsFragment extends DialogFragment {
                 .setTitle("View Habit Event")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                        listener.onDeleteHabitEventPressed(selected))
+                        listener.onDeleteHabitEventPressed(selectedHabitEvent))
                 .setPositiveButton("Edit",(dialogInterface, i) -> {
-
+                    HabitEventEntryFragment.newInstance(selectedHabitEvent, selectedHabit).
+                            show(requireActivity().getSupportFragmentManager(), "ADD_HABIT_EVENT");
                 })
                 .create();
-
         return viewDialog;
     }
 

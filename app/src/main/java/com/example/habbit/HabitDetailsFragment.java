@@ -108,7 +108,6 @@ public class HabitDetailsFragment extends DialogFragment {
                             show(requireActivity().getSupportFragmentManager(),"ADD_HABIT");
                 })
                 .create();
-
         return viewDialog;
     }
 
