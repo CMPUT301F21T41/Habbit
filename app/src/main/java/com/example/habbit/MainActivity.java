@@ -45,13 +45,15 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        userLoggedIn = (String) (savedInstanceState==null ? "seanwruther9" : savedInstanceState.getSerializable("Username"));
+
         habitList = findViewById(R.id.habitListView);
         habitDataList = user.getUserHabits();
         habitAdapter = new CustomHabitList(this, habitDataList);
         habitList.setAdapter(habitAdapter);
 
         //**GET USER LOGIN -- ADD LATER**
-        userLoggedIn = "seanwruther9";
+//        userLoggedIn = "seanwruther9";
 
         /* add habit button */
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);

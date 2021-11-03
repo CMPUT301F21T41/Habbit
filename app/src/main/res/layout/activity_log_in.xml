@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:background="#D8D5DA"
     android:orientation="vertical"
-    tools:context=".LogInActivity">
+    tools:context=".LogInActivity"
+    android:id="@+id/activity_log_in">
 
     <TextView
         android:id="@+id/app_flavour_text"
@@ -16,7 +17,7 @@
         android:paddingTop="100dp"
         android:text="A habit tracker"
         android:textColor="@color/black"
-        android:textSize="10sp">
+        android:textSize="20sp">
 
     </TextView>
 
@@ -34,4 +35,8 @@
 
     </TextView>
 
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

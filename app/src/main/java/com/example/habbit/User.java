@@ -5,8 +5,15 @@ import java.util.ArrayList;
 public class User extends Profile {
     private String username;
     private String password;
+    private String email;
 
     private ArrayList<Habit> userHabits = new ArrayList<>();
+
+    public User(String email, String username, String password){
+    
+    }
+
+    public User(){}
 
     public void addHabit(Habit habit){
         this.userHabits.add(habit);
@@ -16,14 +23,6 @@ public class User extends Profile {
         this.userHabits.clear();
     }
 
-//    public void deleteHabit(Habit habit) {
-//        this.myHabits.remove(habit);
-//    }
-
-//    //Bugged for some reason
-//    public void editHabit(Habit ogHabit, Habit newHabit) {
-//        this.myHabits.set(this.myHabits.indexOf(ogHabit), newHabit);
-//    }
 
     public boolean checkForHabits(String habitTitle){
         for(Habit habit : this.userHabits){
@@ -51,10 +50,10 @@ public class User extends Profile {
     public void setUsername(String username){
         this.username = username;
     }
-
     public void setPassword(String password){
         this.password = password;
     }
+    public void setEmail(String email) { this.email = email; }
 
 
 

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".LogInFragment"
     android:orientation="vertical"
-    android:paddingTop="200dp">
+    android:paddingTop="70dp">
 
     <TextView
         android:id="@+id/log_title"
