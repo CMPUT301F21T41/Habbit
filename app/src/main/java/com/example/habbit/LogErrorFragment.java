@@ -31,12 +31,12 @@ public class LogErrorFragment extends DialogFragment {
    @NonNull
    @Override
    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
-//        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_log_error,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_log_error,null);
 
         String errMessage = (String) (getArguments() != null ? getArguments().getSerializable("Log error") : "Unknown error");
 
        AlertDialog errDialog = new AlertDialog.Builder(getContext())
-//               .setView(view)
+               .setView(view)
                .setMessage(errMessage)
                .setPositiveButton("Ok",null)
                .show();

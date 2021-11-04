@@ -45,15 +45,21 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userLoggedIn = (String) (savedInstanceState==null ? "seanwruther9" : savedInstanceState.getSerializable("Username"));
+        Toast.makeText(this,"Got here!",Toast.LENGTH_LONG).show();
+
+        Bundle b = getIntent().getExtras();
+        if (b==null){
+            userLoggedIn = "seanwruther9";
+        } else {
+            userLoggedIn = b.get("Username").toString();
+        }
+
+        Toast.makeText(this,userLoggedIn, Toast.LENGTH_LONG).show();
 
         habitList = findViewById(R.id.habitListView);
         habitDataList = user.getUserHabits();
         habitAdapter = new CustomHabitList(this, habitDataList);
         habitList.setAdapter(habitAdapter);
-
-        //**GET USER LOGIN -- ADD LATER**
-//        userLoggedIn = "seanwruther9";
 
         /* add habit button */
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
