@@ -21,7 +21,6 @@ import java.io.Serializable;
 
 /**
  * A simple {@link Fragment} subclass
- * Use the
  */
 public class LogInFragment extends Fragment {
 
@@ -73,6 +72,7 @@ public class LogInFragment extends Fragment {
             }
         });
 
+        /* switch to the RegisterFragment if the changeFrag button is pressed */
         changeFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

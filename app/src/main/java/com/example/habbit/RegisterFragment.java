@@ -11,6 +11,10 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+
+/**
+ * A simple {@link Fragment} subclass
+ */
 public class RegisterFragment extends Fragment {
 
     EditText regEmail;
@@ -66,6 +70,7 @@ public class RegisterFragment extends Fragment {
             }
         });
 
+        /* switch to the LogInFragment if the changeFrag button is pressed */
         changeFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

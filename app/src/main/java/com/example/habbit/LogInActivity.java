@@ -37,9 +37,8 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     }
 
     private void startMainActivity(String userName){
+        /* start the MainActivity class and pass it the username of the logged in user */
         Intent intent = new Intent(this, MainActivity.class);
-//        Bundle args = new Bundle();
-//        args.putSerializable("Username",userName);
         intent.putExtra("Username",userName);
         startActivity(intent);
     }
@@ -60,24 +59,17 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
 
     @Override
     public void OnLogInPressed(String userName, String password){
-//        String message = "userName: "+userName+", password: "+password;
-        Toast.makeText(this,userName,Toast.LENGTH_LONG).show();
-        Toast.makeText(this,password,Toast.LENGTH_LONG).show();
         userCollectionReference.document(userName).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful() && task.getResult().exists()){
-                    Toast.makeText(getApplicationContext(), "Found user!", Toast.LENGTH_LONG).show();
                     String validPass = task.getResult().get("Password").toString();
                     if (password.equals(validPass)){
-                        Toast.makeText(getApplicationContext(),"user validated!",Toast.LENGTH_LONG).show();
                         startMainActivity(userName);
                     } else {
-                        Toast.makeText(getApplicationContext(),"invalid password",Toast.LENGTH_LONG).show();
                         LogErrorFragment.newInstance("Invalid Password").show(getSupportFragmentManager(),"WRONG_PASS");
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(),"Something went wrong",Toast.LENGTH_LONG).show();
                     LogErrorFragment.newInstance("User Not Found").show(getSupportFragmentManager(),"NO_USER");
                 }
             }
@@ -90,15 +82,11 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),"task success",Toast.LENGTH_LONG).show();
                     if (task.getResult().exists()){
-                        Toast.makeText(getApplicationContext(),"User exists",Toast.LENGTH_LONG).show();
                         LogErrorFragment.newInstance("Username Already Exists").show(getSupportFragmentManager(),"USER_TAKEN");
                     } else {
                         if (password.equals(passConfirm)){
-                            Toast.makeText(getApplicationContext(),"good to go",Toast.LENGTH_LONG).show();
                             addUser(email,userName,password);
-                            Toast.makeText(getApplicationContext(),"added user",Toast.LENGTH_LONG).show();
                             startMainActivity(userName);
                         } else {
                             LogErrorFragment.newInstance("Password Does Not Match").show(getSupportFragmentManager(),"PASS_CONFIRM_FAIL");

@@ -10,7 +10,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
+/**
+ * A simple {@link Fragment} subclass
+ */
 public class LogErrorFragment extends DialogFragment {
 
     @Override

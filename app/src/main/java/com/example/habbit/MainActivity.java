@@ -41,8 +41,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toast.makeText(this,"Got here!",Toast.LENGTH_LONG).show();
+//        Toast.makeText(this,"Got here!",Toast.LENGTH_LONG).show();
 
+        /* load in the username from the Activity Bundle parameter */
+        // TODO: Implement (or remove?) a method for checking if b is null (no username given)
         Bundle b = getIntent().getExtras();
         if (b==null){
             userLoggedIn = "seanwruther9";
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity
             userLoggedIn = b.get("Username").toString();
         }
 
-        Toast.makeText(this,userLoggedIn, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this,userLoggedIn, Toast.LENGTH_LONG).show();
 
         habitList = findViewById(R.id.habitListView);
         habitDataList = user.getUserHabits();
