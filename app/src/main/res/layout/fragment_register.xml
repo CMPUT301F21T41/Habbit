@@ -7,15 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".RegisterFragment"
     android:orientation="vertical"
-    android:paddingTop="200dp">
+    android:paddingTop="70dp">
 
     <TextView
         android:id="@+id/reg_title"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="15dp"
-        android:textSize="25sp"
+        android:paddingBottom="25dp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:text="REGISTER ACCOUNT"/>
 
@@ -57,7 +57,9 @@
         android:layout_marginTop="15dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/btn_custom"
-        android:text="Register Account"/>
+        android:text="Register Account"
+        android:focusable="true"
+        android:clickable="true"/>
 
     <LinearLayout
         android:layout_height="40dp"
@@ -91,7 +93,9 @@
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/btn_custom"
-        android:text="Log In"/>
+        android:text="Log In"
+        android:focusable="true"
+        android:clickable="true"/>
 
 
 </LinearLayout>

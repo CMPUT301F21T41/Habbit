@@ -46,7 +46,7 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        view = inflater.inflate(R.layout.activity_log_in,container, false);
+        view = inflater.inflate(R.layout.fragment_register,container, false);
         regEmail = view.findViewById(R.id.reg_email);
         regUser = view.findViewById(R.id.reg_username);
         regPass = view.findViewById(R.id.reg_pass);
@@ -69,10 +69,9 @@ public class RegisterFragment extends Fragment {
         changeFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LogInFragment fragment = new LogInFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(view.getId(),LogInFragment.class,null)
-                        .setReorderingAllowed(true)
-                        .addToBackStack(null)
+                        .replace(R.id.fragment_container,fragment)
                         .commit();
             }
         });

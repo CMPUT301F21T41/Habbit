@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:paddingLeft="120dp"
-        android:paddingTop="100dp"
+        android:paddingTop="50dp"
         android:text="A habit tracker"
         android:textColor="@color/black"
         android:textSize="20sp">
@@ -35,8 +35,15 @@
 
     </TextView>
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
+        class="com.example.habbit.LogInFragment"
+        android:tag="log_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+<!--    <FrameLayout-->
+<!--        android:id="@+id/fragment_container"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"/>-->
 </LinearLayout>

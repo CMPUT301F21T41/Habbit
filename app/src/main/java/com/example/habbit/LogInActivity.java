@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,9 +34,6 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-//        LogInFragment fragment = new LogInFragment();
-//        getSupportFragmentManager().beginTransaction()
-//                .add(R.id.fragment_container,fragment).commit();
     }
 
     private void startMainActivity(String userName){

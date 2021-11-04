@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".LogInFragment"
     android:orientation="vertical"
     android:paddingTop="70dp">
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingBottom="25dp"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:text="LOGIN"/>
 
@@ -40,7 +40,9 @@
         android:layout_marginTop="15dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/btn_custom"
-        android:text="Log in"/>
+        android:text="Log in"
+        android:focusable="true"
+        android:clickable="true"/>
 
     <LinearLayout
         android:layout_height="40dp"
@@ -74,7 +76,9 @@
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/btn_custom"
-        android:text="Register"/>
+        android:text="Register"
+        android:focusable="true"
+        android:clickable="true"/>
 
 
 </LinearLayout>
