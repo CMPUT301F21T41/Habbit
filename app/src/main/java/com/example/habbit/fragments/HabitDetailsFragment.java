@@ -30,17 +30,17 @@ import java.io.Serializable;
 
 public class HabitDetailsFragment extends DialogFragment {
 
-    private OnHabitDetailInteraction listener;
+    private OnHabitDetailInteractionListener listener;
 
-    public interface OnHabitDetailInteraction {
-        void onDeleteHabitPressed(Habit habit);
+    public interface OnHabitDetailInteractionListener {
+        void deleteHabit(Habit habit);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnHabitDetailInteraction) {
-            listener = (OnHabitDetailInteraction) context;
+        if (context instanceof OnHabitDetailInteractionListener) {
+            listener = (OnHabitDetailInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnHabitClickListener");
@@ -106,7 +106,7 @@ public class HabitDetailsFragment extends DialogFragment {
                 .setTitle("View Habit")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                        listener.onDeleteHabitPressed(selected))
+                        listener.deleteHabit(selected))
                 .setPositiveButton("Edit",(dialogInterface, i) -> {
                     HabitEntryFragment.newInstance(selected).
                             show(requireActivity().getSupportFragmentManager(),"ADD_HABIT");
