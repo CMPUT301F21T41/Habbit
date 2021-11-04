@@ -1,6 +1,8 @@
 package com.example.habbit;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -16,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +28,8 @@ public class MainActivity extends AppCompatActivity
         implements HabitEntryFragment.OnHabitEntryFragmentInteractionListener,
         HabitDetailsFragment.OnHabitDetailInteraction,
         HabitEventEntryFragment.OnHabitEventFragmentInteractionListener,
-        CustomHabitList.OnCheckboxClickListener {
+        CustomHabitList.OnCheckboxClickListener,
+        Serializable {
 
     private static final String TAG = "MyActivity";
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
@@ -53,6 +57,18 @@ public class MainActivity extends AppCompatActivity
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
+
+        user.setUsername(userLoggedIn);
+        final FloatingActionButton profileNavButton = findViewById(R.id.profile_nav_button);
+        profileNavButton.setOnClickListener(view -> {
+            Intent intent = new Intent(this,ProfileActivity.class);
+            //Bundle bundle = new Bundle();
+            intent.putExtra("USER", userLoggedIn);
+            startActivity(intent);
+        });
+            //.show(getSupportFragmentManager(), "PROFILE"));
+
+
 
         /* instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected */
         habitList.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -145,4 +161,6 @@ public class MainActivity extends AppCompatActivity
     public void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent) {
 
     }
+
+
 }
