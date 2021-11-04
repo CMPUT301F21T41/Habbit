@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Objects;
 
 
+/**
+ * This class maintains a listview of Habits belonging to the class {@link Habit}
+ */
 public class MainActivity extends AppCompatActivity
         implements HabitEntryFragment.OnHabitEntryFragmentInteractionListener,
         HabitDetailsFragment.OnHabitDetailInteraction,
@@ -91,6 +94,11 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+
+    /**
+     *
+     * The following function is to implement {@link com.example.habbit.fragments.HabitEntryFragment.OnHabitEntryFragmentInteractionListener}
+     */
     @Override
     public void onAddHabitPressed(Habit habit) {
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
@@ -105,6 +113,10 @@ public class MainActivity extends AppCompatActivity
                         Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     *
+     * The following functions are to implement {@link HabitDetailsFragment.OnHabitDetailInteraction}
+     */
     @Override
     public void onDeleteHabitPressed(Habit habit){
         // TODO: Gonna need to figure out how to delete subcollections too, but not yet
@@ -117,6 +129,11 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     *
+     * The following function is to implement {@link com.example.habbit.fragments.HabitEntryFragment.OnHabitEntryFragmentInteractionListener}
+     */
+    @Override
     public void onEditHabitPressed(Habit newHabit){
         /* get the updated values */
         String titleText = newHabit.getTitle();
@@ -134,11 +151,20 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, newHabit.getId());
     }
 
-    // TODO: is this the right way to interact with a fragment
+    /**
+     *
+     * The following function is to implement {@link CustomHabitList.OnCheckboxClickListener}
+     */
+    @Override
     public void onCheckboxClick(Habit habit) {
         HabitEventEntryFragment.newInstance(null, habit).show(getSupportFragmentManager(),"HABIT_EVENT_ENTRY");
     }
 
+
+    /**
+     *
+     * the following function is to implement {@link HabitEventEntryFragment.OnHabitEventFragmentInteractionListener}
+     */
     @Override
     public void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit) {
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
@@ -157,6 +183,10 @@ public class MainActivity extends AppCompatActivity
                 .addOnFailureListener(documentReference -> Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT));
     }
 
+    /**
+     *
+     * the following function is to implement {@link HabitEventEntryFragment.OnHabitEventFragmentInteractionListener}
+     */
     @Override
     public void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent) {
 
