@@ -1,7 +1,7 @@
-package com.example.habbit;
+package com.example.habbit.activities;
 
 import static android.content.ContentValues.TAG;
-import static com.example.habbit.MainActivity.userCollectionReference;
+import static com.example.habbit.activities.MainActivity.userCollectionReference;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,11 +10,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.habbit.R;
+import com.example.habbit.adapters.CustomHabitEventList;
+import com.example.habbit.fragments.HabitEventDetailsFragment;
+import com.example.habbit.fragments.HabitEventEntryFragment;
+import com.example.habbit.models.Habit;
+import com.example.habbit.models.HabitEvent;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -148,4 +153,5 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
                 .update("comment", commentText);
         Log.d(TAG, newHabitEvent.getId());
     }
+
 }

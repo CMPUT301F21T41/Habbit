@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,10 +13,13 @@ import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.habbit.models.Habit;
+import com.example.habbit.models.HabitEvent;
+import com.example.habbit.R;
 
 import java.io.Serializable;
 
@@ -123,7 +126,6 @@ public class HabitEventEntryFragment extends DialogFragment {
                 Toast.makeText(getActivity(), "Please fix errors", Toast.LENGTH_SHORT).show();
             } else {
                 /* part where either create a new habit event OR adjusting an existing one */
-
                 if (existingHabitEvent != null) {
                     existingHabitEvent.setComment(comment);
                     listener.onEditHabitEventPressed(existingHabitEvent);

@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,6 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.example.habbit.models.Habit;
+import com.example.habbit.activities.HabitEventsActivity;
+import com.example.habbit.R;
 
 import java.io.Serializable;
 

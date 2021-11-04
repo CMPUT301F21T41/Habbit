@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.habbit.models.Habit;
+import com.example.habbit.R;
 
 import java.util.ArrayList;
 
@@ -75,7 +78,7 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
             }
         });
 
-        // Set texts
+        // set texts
         habitTitle.setText(habit.getTitle());
         habitDate.setText(habit.getDate());
 

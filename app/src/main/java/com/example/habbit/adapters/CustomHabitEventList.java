@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.habbit.models.HabitEvent;
+import com.example.habbit.R;
 
 import java.util.ArrayList;
 

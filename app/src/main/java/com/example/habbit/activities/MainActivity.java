@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.activities;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +9,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habbit.R;
+import com.example.habbit.adapters.CustomHabitList;
+import com.example.habbit.fragments.HabitDetailsFragment;
+import com.example.habbit.fragments.HabitEntryFragment;
+import com.example.habbit.fragments.HabitEventEntryFragment;
+import com.example.habbit.models.Habit;
+import com.example.habbit.models.HabitEvent;
+import com.example.habbit.models.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -72,6 +80,7 @@ public class MainActivity extends AppCompatActivity
                     // every time we pull from Firestore, get the document ID data and associate it with the Habit object
                     Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(), Objects.requireNonNull(habitData.get("reason")).toString(),
                             Objects.requireNonNull(habitData.get("date")).toString());
+                    habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
                     user.addHabit(habit);
                 }
@@ -113,13 +122,15 @@ public class MainActivity extends AppCompatActivity
         String titleText = newHabit.getTitle();
         String reasonText = newHabit.getReason();
         String dateText = newHabit.getDate();
+        boolean isChecked = newHabit.isChecked();
 
         /* update the firestore */
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         userDoc.collection("Habits").document(newHabit.getId())
                 .update("title", titleText,
                         "reason", reasonText,
-                        "date", dateText);
+                        "date", dateText,
+                        "checked", isChecked);
         Log.d(TAG, newHabit.getId());
     }
 
@@ -132,6 +143,11 @@ public class MainActivity extends AppCompatActivity
     public void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit) {
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         assert habitEvent != null;
+
+        // set the habit checked value to true since we have logged a habit event for the day
+        habit.setChecked(true);
+        onEditHabitPressed(habit);
+
         userDoc.collection("Habits").document(habit.getId())
                 .collection("Habit Events").add(habitEvent)
                 .addOnSuccessListener(documentReference -> {
@@ -145,4 +161,6 @@ public class MainActivity extends AppCompatActivity
     public void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent) {
 
     }
+
+
 }
