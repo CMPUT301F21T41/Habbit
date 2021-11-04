@@ -10,13 +10,8 @@
     <ListView
         android:id="@+id/habit_events_list"
         android:layout_width="match_parent"
-        android:layout_height="550dp">
+        android:layout_height="match_parent">
 
     </ListView>
 
-    <Button
-        android:id="@+id/btn_back_to_habits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back to Habits" />
 </LinearLayout>

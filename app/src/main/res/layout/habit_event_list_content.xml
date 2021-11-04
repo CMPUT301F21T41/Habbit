@@ -3,13 +3,21 @@
     android:id="@+id/habit_event_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="20dp">
+
+
+    <TextView
+        android:id="@+id/habit_event_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2021-01-01" />
 
     <TextView
         android:id="@+id/habit_event_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="Habit Event Title" />
 
     <TextView
         android:id="@+id/habit_event_completed_on_time"

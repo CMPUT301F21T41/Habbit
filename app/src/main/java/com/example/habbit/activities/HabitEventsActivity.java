@@ -44,7 +44,6 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
 
         // initialize views
         ListView habitEventList = findViewById(R.id.habit_events_list);
-        Button btnBackToHabits = findViewById(R.id.btn_back_to_habits);
 
         // get the habit containing desired habit events
         habit = (Habit) getIntent().getSerializableExtra("habit");
@@ -95,14 +94,6 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
 
                 // notify the adapter
                 habitEventAdapter.notifyDataSetChanged();
-            }
-        });
-
-        // button onclick for going back to habits
-        btnBackToHabits.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
             }
         });
 
