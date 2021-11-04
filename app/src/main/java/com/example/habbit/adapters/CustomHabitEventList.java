@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.habbit.models.HabitEvent;
+import com.example.habbit.R;
 
 import java.util.ArrayList;
 
@@ -57,8 +60,19 @@ public class CustomHabitEventList extends ArrayAdapter {
         TextView habitEventCompletedOnTime = view.findViewById(R.id.habit_event_completed_on_time);
 
         // Set texts
-        String commentTxt = "Comments: " + habitEvent.getComment();
-        String completedOntTimeTxt = "Completed on time: " + String.valueOf(habitEvent.isCompletedOnTime());
+        String commentTxt = habitEvent.getComment();
+        if (commentTxt.equals("")){
+            commentTxt = "No Comment.";
+        }
+
+        String completedOntTimeTxt;
+
+        // TODO: take random string from a list of strings for completion/noncompletion messages
+        if(habitEvent.isCompletedOnTime()){
+            completedOntTimeTxt = "Completed on time :)";
+        } else {
+            completedOntTimeTxt = "Not completed on time :(";
+        }
         habitEventComment.setText(commentTxt);
         habitEventCompletedOnTime.setText(completedOntTimeTxt);
 

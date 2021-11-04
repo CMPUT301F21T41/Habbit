@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.activities;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +9,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habbit.R;
+import com.example.habbit.adapters.CustomHabitList;
+import com.example.habbit.fragments.HabitDetailsFragment;
+import com.example.habbit.fragments.HabitEntryFragment;
+import com.example.habbit.fragments.HabitEventEntryFragment;
+import com.example.habbit.models.Habit;
+import com.example.habbit.models.HabitEvent;
+import com.example.habbit.models.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,17 +29,22 @@ import java.util.Map;
 import java.util.Objects;
 
 
+/**
+ * This class maintains a listview of Habits belonging to the class {@link Habit}
+ */
 public class MainActivity extends AppCompatActivity
         implements HabitEntryFragment.OnHabitEntryFragmentInteractionListener,
-        HabitDetailsFragment.OnHabitDetailInteraction,
+        HabitDetailsFragment.OnHabitDetailInteractionListener,
         HabitEventEntryFragment.OnHabitEventFragmentInteractionListener,
         CustomHabitList.OnCheckboxClickListener {
 
+    // TAG used for debugging
     private static final String TAG = "MyActivity";
+
+    // references to entities used throughout the class
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     User user = new User();
     String userLoggedIn;
-
     ListView habitList;
     ArrayAdapter<Habit> habitAdapter;
     ArrayList<Habit> habitDataList;
@@ -41,49 +54,61 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // get references to UI elements and attach custom adapter
         habitList = findViewById(R.id.habitListView);
         habitDataList = user.getUserHabits();
         habitAdapter = new CustomHabitList(this, habitDataList);
         habitList.setAdapter(habitAdapter);
 
-        //**GET USER LOGIN -- ADD LATER**
+        //GET USER LOGIN -- ADD LATER
         userLoggedIn = "seanwruther9";
 
-        /* add habit button */
+        // add habit button
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
-        /* instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected */
+        // instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
         habitList.setOnItemClickListener((adapterView, view, i, l) -> {
             Habit viewHabit = habitAdapter.getItem(i);
             HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
         });
 
-        /* refresh the listview every time we update Firestore */
+        // refresh the listview every time we update Firestore
         userCollectionReference.document(userLoggedIn).collection("Habits").addSnapshotListener((value, error) -> {
+            // we first clear all the habits we have currently stored for the user
             user.clearHabits();
+
+            // pull updated list of habits from firestore
             Map<String,Object> habitData;
             assert value != null;
             for(QueryDocumentSnapshot document:value) {
                 habitData = document.getData();
                 Log.d(TAG, document.getId() + " => " + habitData);
                 if (!habitData.isEmpty()) {
+
                     // every time we pull from Firestore, get the document ID data and associate it with the Habit object
                     Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(), Objects.requireNonNull(habitData.get("reason")).toString(),
                             Objects.requireNonNull(habitData.get("date")).toString());
+                    habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
                     user.addHabit(habit);
                 }
             }
+
+            // redraw the listview with the newly updated habits
             habitDataList=user.getUserHabits();
             habitAdapter.notifyDataSetChanged();
             Log.d(TAG,user.printHabits());
         });
     }
 
+
+    /**
+     * The following function is to implement {@link com.example.habbit.fragments.HabitEntryFragment.OnHabitEntryFragmentInteractionListener}
+     */
     @Override
-    public void onAddHabitPressed(Habit habit) {
+    public void addHabit(Habit habit) {
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         // adding a habit using an autogenerated ID rather than using titletext
         userDoc.collection("Habits")
@@ -96,8 +121,11 @@ public class MainActivity extends AppCompatActivity
                         Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * The following functions are to implement {@link HabitDetailsFragment.OnHabitDetailInteractionListener}
+     */
     @Override
-    public void onDeleteHabitPressed(Habit habit){
+    public void deleteHabit(Habit habit){
         // TODO: Gonna need to figure out how to delete subcollections too, but not yet
         // doesn't really affect the app, just clutters up our firestore
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
@@ -108,30 +136,57 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show());
     }
 
-    public void onEditHabitPressed(Habit newHabit){
-        /* get the updated values */
+    /**
+     * The following function is to implement {@link com.example.habbit.fragments.HabitEntryFragment.OnHabitEntryFragmentInteractionListener}
+     */
+    @Override
+    public void updateHabit(Habit newHabit){
+        // get the updated values
         String titleText = newHabit.getTitle();
         String reasonText = newHabit.getReason();
         String dateText = newHabit.getDate();
+        boolean isChecked = newHabit.isChecked();
 
-        /* update the firestore */
+        // update the firestore
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         userDoc.collection("Habits").document(newHabit.getId())
                 .update("title", titleText,
                         "reason", reasonText,
-                        "date", dateText);
-        Log.d(TAG, newHabit.getId());
+                        "date", dateText,
+                        "checked", isChecked);
     }
 
-    // TODO: is this the right way to interact with a fragment
-    public void onCheckboxClick(Habit habit) {
-        HabitEventEntryFragment.newInstance(null, habit).show(getSupportFragmentManager(),"HABIT_EVENT_ENTRY");
-    }
-
+    /**
+     * The following function is to implement {@link CustomHabitList.OnCheckboxClickListener}
+     */
     @Override
-    public void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit) {
+    public void onCheckboxClick(Habit habit, boolean isChecked) {
+        Log.d(TAG, "i was clicked!");
+        if (isChecked && !habit.isChecked()) {
+            // only launch a new habit event entry fragment if the checkbox was clicked to true and
+            // the currently stored habit checked value is false
+            HabitEventEntryFragment.newInstance(null, habit).show(getSupportFragmentManager(),"HABIT_EVENT_ENTRY");
+        } else if (!isChecked) {
+            // if the habit was unchecked, set its value to false
+            habit.setChecked(false);
+            updateHabit(habit);
+        }
+    }
+
+
+    /**
+     * the following function is to implement {@link HabitEventEntryFragment.OnHabitEventFragmentInteractionListener}
+     */
+    @Override
+    public void addHabitEvent(@Nullable HabitEvent habitEvent, Habit habit) {
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         assert habitEvent != null;
+
+        // set the habit checked value to true since we have logged a habit event for the day
+        habit.setChecked(true);
+        updateHabit(habit);
+
+        // update firestore with the new habit event
         userDoc.collection("Habits").document(habit.getId())
                 .collection("Habit Events").add(habitEvent)
                 .addOnSuccessListener(documentReference -> {
@@ -141,8 +196,13 @@ public class MainActivity extends AppCompatActivity
                 .addOnFailureListener(documentReference -> Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT));
     }
 
+    /**
+     *
+     * the following function is to implement {@link HabitEventEntryFragment.OnHabitEventFragmentInteractionListener}
+     */
     @Override
-    public void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent) {
-
+    public void updateHabitEvent(@Nullable HabitEvent newHabitEvent) {
+        // empty update habit event method to implement habit event fragment interaction listener
     }
+
 }
