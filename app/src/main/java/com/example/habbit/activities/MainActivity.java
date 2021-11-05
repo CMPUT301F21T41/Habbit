@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habbit.R;
@@ -17,14 +15,11 @@ import com.example.habbit.fragments.HabitEntryFragment;
 import com.example.habbit.fragments.HabitEventEntryFragment;
 import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
-import com.example.habbit.models.HabitEvent;
 import com.example.habbit.models.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 
 import java.util.ArrayList;
 import java.util.Map;

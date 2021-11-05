@@ -21,8 +21,6 @@ public class LogInFragment extends Fragment {
     private EditText passTextField;
     private EditText userTextField;
     private OnLogInFragmentInteractionListener listener;
-    private Button changeFrag;
-    private Button logButton;
     View view;
 
     public interface OnLogInFragmentInteractionListener {
@@ -45,36 +43,29 @@ public class LogInFragment extends Fragment {
     }
 
     public static LogInFragment newInstance(){
-        LogInFragment fragment = new LogInFragment();
-        return fragment;
+        return new LogInFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         view = inflater.inflate(R.layout.fragment_log_in,container,false);
-        changeFrag = view.findViewById(R.id.log_change_button);
-        logButton = view.findViewById(R.id.log_button);
+        Button changeFrag = view.findViewById(R.id.log_change_button);
+        Button logButton = view.findViewById(R.id.log_button);
         passTextField = view.findViewById(R.id.log_pass);
         userTextField = view.findViewById(R.id.log_username);
 
-        logButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String userText = userTextField.getText().toString();
-                String passText = passTextField.getText().toString();
-                listener.OnLogInPressed(userText,passText);
-            }
+        logButton.setOnClickListener(view -> {
+            String userText = userTextField.getText().toString();
+            String passText = passTextField.getText().toString();
+            listener.OnLogInPressed(userText,passText);
         });
 
         /* switch to the RegisterFragment if the changeFrag button is pressed */
-        changeFrag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RegisterFragment fragment = new RegisterFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container,fragment)
-                        .commit();
-            }
+        changeFrag.setOnClickListener(view -> {
+            RegisterFragment fragment = new RegisterFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container,fragment)
+                    .commit();
         });
 
         return view;

@@ -11,7 +11,7 @@ public class User extends Profile implements Serializable {
     private static String username = "DefaultUser";
 
     /**
-     * type {@String} and contains the password of the current user
+     * type {@link String} and contains the password of the current user
      */
     private static String password;
 
@@ -23,26 +23,24 @@ public class User extends Profile implements Serializable {
     /**
      * This is of type {@link ArrayList<Habit>} and contains the list of {@link Habit} for the user
      */
-    private static ArrayList<Habit> userHabits = new ArrayList<>();
+    private static final ArrayList<Habit> userHabits = new ArrayList<>();
 
     /**
+     * Constructor for User object
      *
-     * @param email
-     * provide an email of type {@link String}
-     * @param username
-     * provide a username of type {@link String}
-     * @param password
-     * provide a password of type {@link String}
+     * @param email provide an email of type {@link String}
+     * @param username provide a username of type {@link String}
+     * @param password provide a password of type {@link String}
      */
     public User(String email, String username, String password){
-    
+
     }
 
     public User(){}
 
     /**
      * This function takes in a habit of type {@link Habit} and adds it to {@link User#userHabits}
-     * @param habit
+     * @param habit habit to add to user habits
      */
     public static void addHabit(Habit habit){
         userHabits.add(habit);
@@ -57,8 +55,7 @@ public class User extends Profile implements Serializable {
 
     /**
      *
-     * @return
-     * returns a {@link String} with a formatted view of the User's habits
+     * @return returns a {@link String} with a formatted view of the User's habits
      */
     public static String printHabits(){
         String ret = "Habits: ";
@@ -70,8 +67,7 @@ public class User extends Profile implements Serializable {
 
     /**
      * This function returns {@link User#userHabits}
-     * @return
-     * The return type is {@link ArrayList}
+     * @return The return type is {@link ArrayList}
      */
     public static ArrayList<Habit> getUserHabits(){
         return userHabits;
@@ -79,15 +75,14 @@ public class User extends Profile implements Serializable {
 
     /**
      * This function returns {@link User#username}
-     * @return
-     * The return type is {@link String}
+     * @return The return type is {@link String}
      */
     public static String getUsername() { return username;}
 
 
     /**
      * This function sets {@link User#username} which is of type {@link String}
-     * @param username
+     * @param username the username to give the user
      */
     public static void setUsername(String username){
         User.username = username;

@@ -4,28 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.habbit.R;
 import com.example.habbit.fragments.LogErrorFragment;
 import com.example.habbit.fragments.LogInFragment;
-import com.example.habbit.R;
 import com.example.habbit.fragments.RegisterFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class handles the actions available in the Log in screen
  */
 public class LogInActivity extends AppCompatActivity implements LogInFragment.OnLogInFragmentInteractionListener, RegisterFragment.OnRegisterFragmentInteractionListener {
 
-    private static final String TAG = "MyActivity";
     final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
 
     @Override
@@ -62,9 +58,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         userData.put("Email",email);
         userCollectionReference.document(userName)
                 .set(userData)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show();
-                })
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
                         Toast.LENGTH_SHORT).show());
     }
@@ -78,19 +72,16 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
      */
     @Override
     public void OnLogInPressed(String userName, String password){
-        userCollectionReference.document(userName).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful() && task.getResult().exists()){
-                    String validPass = task.getResult().get("Password").toString();
-                    if (password.equals(validPass)){
-                        startMainActivity(userName);
-                    } else {
-                        LogErrorFragment.newInstance("Invalid Password").show(getSupportFragmentManager(),"WRONG_PASS");
-                    }
+        userCollectionReference.document(userName).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()){
+                String validPass = Objects.requireNonNull(task.getResult().get("Password")).toString();
+                if (password.equals(validPass)){
+                    startMainActivity(userName);
                 } else {
-                    LogErrorFragment.newInstance("User Not Found").show(getSupportFragmentManager(),"NO_USER");
+                    LogErrorFragment.newInstance("Invalid Password").show(getSupportFragmentManager(),"WRONG_PASS");
                 }
+            } else {
+                LogErrorFragment.newInstance("User Not Found").show(getSupportFragmentManager(),"NO_USER");
             }
         });
     }
@@ -108,23 +99,20 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
      */
     @Override
     public void OnRegisterPressed(String email, String userName, String password, String passConfirm){
-        userCollectionReference.document(userName).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    if (task.getResult().exists()){
-                        LogErrorFragment.newInstance("Username Already Exists").show(getSupportFragmentManager(),"USER_TAKEN");
-                    } else {
-                        if (password.equals(passConfirm)){
-                            addUser(email,userName,password);
-                            startMainActivity(userName);
-                        } else {
-                            LogErrorFragment.newInstance("Password Does Not Match").show(getSupportFragmentManager(),"PASS_CONFIRM_FAIL");
-                        }
-                    }
+        userCollectionReference.document(userName).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                if (task.getResult().exists()){
+                    LogErrorFragment.newInstance("Username Already Exists").show(getSupportFragmentManager(),"USER_TAKEN");
                 } else {
-                    LogErrorFragment.newInstance(null).show(getSupportFragmentManager(),"GET_FAILED");
+                    if (password.equals(passConfirm)){
+                        addUser(email,userName,password);
+                        startMainActivity(userName);
+                    } else {
+                        LogErrorFragment.newInstance("Password Does Not Match").show(getSupportFragmentManager(),"PASS_CONFIRM_FAIL");
+                    }
                 }
+            } else {
+                LogErrorFragment.newInstance(null).show(getSupportFragmentManager(),"GET_FAILED");
             }
         });
     }
