@@ -20,6 +20,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class handles the actions available in the Log in screen
+ */
 public class LogInActivity extends AppCompatActivity implements LogInFragment.OnLogInFragmentInteractionListener, RegisterFragment.OnRegisterFragmentInteractionListener {
 
     private static final String TAG = "MyActivity";
@@ -31,6 +34,11 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         setContentView(R.layout.activity_log_in);
     }
 
+    /**
+     * This function starts the main activity with the logged in {@link com.example.habbit.models.User} being set to the person who logged in
+     * @param userName
+     * takes an input userName of type {@link String}
+     */
     private void startMainActivity(String userName){
         /* start the MainActivity class and pass it the username of the logged in user */
         Intent intent = new Intent(this, MainActivity.class);
@@ -38,6 +46,15 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         startActivity(intent);
     }
 
+    /**
+     * using the entered email, userName, and password, create a new User account in firestore
+     * @param email
+     * takes an email of type {@link String}
+     * @param userName
+     * takes a username of type {@link String}
+     * @param password
+     * takes a password of type {@link String}
+     */
     private void addUser(String email, String userName, String password){
         Map<String,Object> userData = new HashMap<>();
         userData.put("Username",userName);
@@ -52,6 +69,13 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                         Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * checks whether or not the entered information is valid and if so continue to {@link MainActivity}
+     * @param userName
+     * takes a username of type {@link String}
+     * @param password
+     * takes a password of type {@link String}
+     */
     @Override
     public void OnLogInPressed(String userName, String password){
         userCollectionReference.document(userName).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -71,6 +95,17 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         });
     }
 
+    /**
+     * Registers a new user with a provided email, userName, password, and confirmed password
+     * @param email
+     * Takes an email of type {@link String}
+     * @param userName
+     * Takes a userName of type {@link String}
+     * @param password
+     * Takes a password of type {@link String}
+     * @param passConfirm
+     * Takes a password Confirmation of type {@link String} that needs to match the password
+     */
     @Override
     public void OnRegisterPressed(String email, String userName, String password, String passConfirm){
         userCollectionReference.document(userName).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

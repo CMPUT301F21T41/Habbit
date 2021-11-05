@@ -34,6 +34,9 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
      */
     private Context context;
 
+    /**
+     * This is a {@link OnCheckboxClickListener}
+     */
     private OnCheckboxClickListener listener;
 
     public interface OnCheckboxClickListener {
