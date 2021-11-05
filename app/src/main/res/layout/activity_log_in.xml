@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#D8D5DA"
     android:orientation="vertical"
-    tools:context=".LogInActivity"
+    tools:context=".activities.LogInActivity"
     android:id="@+id/activity_log_in">
 
     <TextView
@@ -37,7 +37,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
-        class="com.example.habbit.LogInFragment"
+        class="com.example.habbit.fragments.LogInFragment"
         android:tag="log_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import com.example.habbit.R;
 
 
 /**
