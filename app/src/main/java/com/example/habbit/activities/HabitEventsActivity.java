@@ -1,20 +1,22 @@
-package com.example.habbit;
+package com.example.habbit.activities;
 
 import static android.content.ContentValues.TAG;
-import static com.example.habbit.MainActivity.userCollectionReference;
+import static com.example.habbit.activities.MainActivity.userCollectionReference;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.habbit.R;
+import com.example.habbit.adapters.CustomHabitEventList;
+import com.example.habbit.fragments.HabitEventDetailsFragment;
+import com.example.habbit.fragments.HabitEventEntryFragment;
+import com.example.habbit.models.Habit;
+import com.example.habbit.models.HabitEvent;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -24,9 +26,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class HabitEventsActivity extends AppCompatActivity implements HabitEventDetailsFragment.OnHabitEventDetailInteraction,
+public class HabitEventsActivity extends AppCompatActivity
+        implements HabitEventDetailsFragment.OnHabitEventDetailInteraction,
         HabitEventEntryFragment.OnHabitEventFragmentInteractionListener {
 
+    // get entities to be used throughout the class
     CustomHabitEventList habitEventAdapter;
     ArrayList<HabitEvent> habitEventDataList;
     String userLoggedIn;
@@ -39,7 +43,6 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
 
         // initialize views
         ListView habitEventList = findViewById(R.id.habit_events_list);
-        Button btnBackToHabits = findViewById(R.id.btn_back_to_habits);
 
         // get the habit containing desired habit events
         habit = (Habit) getIntent().getSerializableExtra("habit");
@@ -50,16 +53,13 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
         habitEventList.setAdapter(habitEventAdapter);
 
 
-        //**GET USER LOGIN -- ADD LATER**
+        // GET USER LOGIN -- ADD LATER
         userLoggedIn = "seanwruther9";
 
-        /* instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected */
-        habitEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                HabitEvent viewHabitEvent = (HabitEvent) habitEventAdapter.getItem(i);
-                HabitEventDetailsFragment.newInstance(viewHabitEvent).show(getSupportFragmentManager(),"VIEW_HABIT_EVENT");
-            }
+        // instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
+        habitEventList.setOnItemClickListener((adapterView, view, i, l) -> {
+            HabitEvent viewHabitEvent = (HabitEvent) habitEventAdapter.getItem(i);
+            HabitEventDetailsFragment.newInstance(viewHabitEvent).show(getSupportFragmentManager(),"VIEW_HABIT_EVENT");
         });
 
         // initialize/update the list every time there is a change made to the habit events
@@ -93,18 +93,10 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
             }
         });
 
-        // button onclick for going back to habits
-        btnBackToHabits.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
     }
 
     @Override
-    public void onHabitEventConfirmed(@Nullable HabitEvent habitEvent, Habit habit) {
+    public void addHabitEvent(@Nullable HabitEvent habitEvent, Habit habit) {
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         assert habitEvent != null;
         userDoc.collection("Habits").document(habit.getId())
@@ -119,11 +111,9 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
     }
 
     @Override
-    public void onDeleteHabitEventPressed(HabitEvent habitEvent){
-        //Log.d("HabitEventsActivity", "habit id = " + habit.getId());
+    public void deleteHabitEvent(HabitEvent habitEvent){
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn)
                 .collection("Habits").document(habit.getId());
-        //Log.d("HabitEventsActivity", "habitEvent id = " + habitEvent.getId());
         userDoc.collection("Habit Events").document(habitEvent.getId())
                 .delete()
                 .addOnSuccessListener(documentReference -> {
@@ -135,17 +125,17 @@ public class HabitEventsActivity extends AppCompatActivity implements HabitEvent
     }
 
     @Override
-    public void onEditHabitEventPressed(@Nullable HabitEvent newHabitEvent) {
-        /* get updated values */
+    public void updateHabitEvent(@Nullable HabitEvent newHabitEvent) {
+        // get updated values
         assert newHabitEvent != null;
         String commentText = newHabitEvent.getComment();
 
-        /* update FireStore */
+        // update FireStore
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn)
                 .collection("Habits").document(habit.getId());
-        //Log.d("HabitEventsActivity", "habitEvent id = " + habitEvent.getId());
         userDoc.collection("Habit Events").document(newHabitEvent.getId())
                 .update("comment", commentText);
         Log.d(TAG, newHabitEvent.getId());
     }
+
 }
