@@ -54,6 +54,9 @@ public class HabitEntryFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * This function formats the date for a Habit
+     */
     /* determines how date should be shown in the EditText field */
     private void updateLabel() {
         String myFormat = "yyyy-MM-dd"; // format of date desired
@@ -61,6 +64,7 @@ public class HabitEntryFragment extends DialogFragment {
 
         habitDateField.setText(sdf.format(myCalendar.getTime()));
     }
+
 
     @NonNull
     @Override
