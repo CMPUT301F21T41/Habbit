@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User extends Profile implements Serializable {
-    private static String username;
+    private static String username = "DefaultUser";
     private static String password;
     private static String email;
 

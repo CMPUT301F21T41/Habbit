@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -53,7 +54,7 @@ public class HabitDetailsFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
         /* Inflate layout for fragment */
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_view_habit,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.habit_details,null);
 
         /* connect Views to xml text fields */
         TextView viewTitle = view.findViewById(R.id.habit_title);
@@ -65,11 +66,9 @@ public class HabitDetailsFragment extends DialogFragment {
         final Habit selected = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
-        // get the username of the user we are looking for
-        String username = User.getUsername();
-
         /* set the text for the TextViews (null if habit is null) */
         viewTitle.setText(selected != null ? selected.getTitle():null);
+        Log.d("Habit Details Fragment", selected != null ? selected.getDate() : null);
         viewDate.setText(selected != null ? selected.getDate():null);
         viewReason.setText(selected != null ? selected.getReason():null);
 

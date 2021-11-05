@@ -96,7 +96,6 @@ public class HabitEventEntryFragment extends DialogFragment {
             boolean errorFlag = false;
 
             /* validate each field (photo and geolocation too once we get that working */
-
             if (comment.length() > 20) {
                 commentField.setError("Comment cannot be greater than 20 characters");
                 errorFlag = true;
