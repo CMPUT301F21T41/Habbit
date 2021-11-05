@@ -78,24 +78,11 @@ public class ProfileActivity extends AppCompatActivity
     /**
      * method called when profile edit is confirmed
      * @param userData, new data used to replace firestore data, of type {@link Map}
-     *
      */
     @Override
     public void onEditProfilePressed(Map<String,Object> userData){
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         userDoc.update(userData);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
