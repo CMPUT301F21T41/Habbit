@@ -56,7 +56,6 @@ public class ProfileActivity extends AppCompatActivity
         //listen for changes to firestore and get new data to display
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         userDoc.addSnapshotListener((value, error) -> {
-                    Toast.makeText(ProfileActivity.this, "Success on firestore read", Toast.LENGTH_SHORT).show();
             assert value != null;
             if (value.get("Email") != null) {
                         userData.put("Email", Objects.requireNonNull(value.get("Email")).toString());
@@ -84,10 +83,7 @@ public class ProfileActivity extends AppCompatActivity
     @Override
     public void onEditProfilePressed(Map<String,Object> userData){
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
-        //Map<String,Object> map =  userData;
-        userDoc.update(userData)
-                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(documentReference -> Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT));
+        userDoc.update(userData);
     }
 
 
