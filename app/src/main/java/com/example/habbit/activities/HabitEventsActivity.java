@@ -17,6 +17,7 @@ import com.example.habbit.fragments.HabitEventDetailsFragment;
 import com.example.habbit.fragments.HabitEventEntryFragment;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
+import com.example.habbit.models.User;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -33,7 +34,7 @@ public class HabitEventsActivity extends AppCompatActivity
     // get entities to be used throughout the class
     CustomHabitEventList habitEventAdapter;
     ArrayList<HabitEvent> habitEventDataList;
-    String userLoggedIn;
+    String username;
     Habit habit;
 
     @Override
@@ -52,9 +53,8 @@ public class HabitEventsActivity extends AppCompatActivity
         habitEventAdapter = new CustomHabitEventList(this, habitEventDataList);
         habitEventList.setAdapter(habitEventAdapter);
 
-
         // GET USER LOGIN -- ADD LATER
-        userLoggedIn = "seanwruther9";
+        username = User.getUsername();
 
         // instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
         habitEventList.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -63,7 +63,7 @@ public class HabitEventsActivity extends AppCompatActivity
         });
 
         // initialize/update the list every time there is a change made to the habit events
-        userCollectionReference.document(userLoggedIn).collection("Habits").document(habit.getId())
+        userCollectionReference.document(username).collection("Habits").document(habit.getId())
                 .collection("Habit Events").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -97,7 +97,7 @@ public class HabitEventsActivity extends AppCompatActivity
 
     @Override
     public void addHabitEvent(@Nullable HabitEvent habitEvent, Habit habit) {
-        DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
+        DocumentReference userDoc = userCollectionReference.document(username);
         assert habitEvent != null;
         userDoc.collection("Habits").document(habit.getId())
                 .collection("Habit Events").add(habitEvent)
@@ -112,7 +112,7 @@ public class HabitEventsActivity extends AppCompatActivity
 
     @Override
     public void deleteHabitEvent(HabitEvent habitEvent){
-        DocumentReference userDoc = userCollectionReference.document(userLoggedIn)
+        DocumentReference userDoc = userCollectionReference.document(username)
                 .collection("Habits").document(habit.getId());
         userDoc.collection("Habit Events").document(habitEvent.getId())
                 .delete()
@@ -131,7 +131,7 @@ public class HabitEventsActivity extends AppCompatActivity
         String commentText = newHabitEvent.getComment();
 
         // update FireStore
-        DocumentReference userDoc = userCollectionReference.document(userLoggedIn)
+        DocumentReference userDoc = userCollectionReference.document(username)
                 .collection("Habits").document(habit.getId());
         userDoc.collection("Habit Events").document(newHabitEvent.getId())
                 .update("comment", commentText);

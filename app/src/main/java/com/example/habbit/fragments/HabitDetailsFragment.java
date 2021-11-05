@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.habbit.models.Habit;
 import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.R;
+import com.example.habbit.models.User;
 
 import java.io.Serializable;
 
@@ -60,7 +61,7 @@ public class HabitDetailsFragment extends DialogFragment {
      */
     public static HabitDetailsFragment newInstance(Habit habit){
         Bundle args = new Bundle();
-        args.putSerializable("view", (Serializable) habit);
+        args.putSerializable("habit", (Serializable) habit);
 
         HabitDetailsFragment fragment = new HabitDetailsFragment();
         fragment.setArguments(args);
@@ -81,7 +82,10 @@ public class HabitDetailsFragment extends DialogFragment {
 
         /* get the habit of the details, if there are any to get */
         final Habit selected = (Habit) (getArguments() != null ?
-                getArguments().getSerializable("view") : null);
+                getArguments().getSerializable("habit") : null);
+
+        // get the username of the user we are looking for
+        String username = User.getUsername();
 
         /* set the text for the TextViews (null if habit is null) */
         viewTitle.setText(selected != null ? selected.getTitle():null);

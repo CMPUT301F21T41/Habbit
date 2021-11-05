@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User extends Profile implements Serializable {
-    private String username;
-    private String password;
-    private String email;
+    private static String username;
+    private static String password;
+    private static String email;
 
-    private ArrayList<Habit> userHabits = new ArrayList<>();
+    private static ArrayList<Habit> userHabits = new ArrayList<>();
 
     public User(String email, String username, String password){
     
@@ -16,17 +16,17 @@ public class User extends Profile implements Serializable {
 
     public User(){}
 
-    public void addHabit(Habit habit){
-        this.userHabits.add(habit);
+    public static void addHabit(Habit habit){
+        userHabits.add(habit);
     }
 
     public void clearHabit() {
-        this.userHabits.clear();
+        userHabits.clear();
     }
 
 
     public boolean checkForHabits(String habitTitle){
-        for(Habit habit : this.userHabits){
+        for(Habit habit : userHabits){
             if(habit.getTitle().equals(habitTitle)){
                 return true;
             }
@@ -34,31 +34,31 @@ public class User extends Profile implements Serializable {
         return false;
     }
 
-    public void clearHabits(){
+    public static void clearHabits(){
         userHabits.clear();
     }
 
-    public String printHabits(){
+    public static String printHabits(){
         String ret = "Habits: ";
-        for(Habit habit: this.userHabits){
+        for(Habit habit: userHabits){
             ret = ret.concat(habit.getTitle() + " " + habit.getReason() + " " + habit.getDate() + "\r\n");
         }
         return ret;
     }
-    public ArrayList<Habit> getUserHabits(){
-        return this.userHabits;
+    public static ArrayList<Habit> getUserHabits(){
+        return userHabits;
     }
-    public String getUsername() { return this.username;}
+    public static String getUsername() { return username;}
 
 
 
-    public void setUsername(String username){
-        this.username = username;
+    public static void setUsername(String username){
+        User.username = username;
     }
     public void setPassword(String password){
-        this.password = password;
+        User.password = password;
     }
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) { User.email = email; }
 
 
 
