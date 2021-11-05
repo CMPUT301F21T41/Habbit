@@ -56,7 +56,7 @@ public class HabitEventDetailsFragment extends DialogFragment {
         final Habit selectedHabit = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
-        HabitEventInteractionHandler listener = new HabitEventInteractionHandler(selectedHabit);
+        HabitEventInteractionHandler handler = new HabitEventInteractionHandler(selectedHabit);
 
         /* set the text for the TextViews (null if habit is null) */
         commentField.setText(selectedHabitEvent != null ? selectedHabitEvent.getComment():null);
@@ -69,7 +69,7 @@ public class HabitEventDetailsFragment extends DialogFragment {
                 .setTitle("View Habit Event")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                        listener.deleteHabitEvent(selectedHabitEvent))
+                        handler.deleteHabitEvent(selectedHabitEvent))
                 .setPositiveButton("Edit",(dialogInterface, i) -> {
                     HabitEventEntryFragment.newInstance(selectedHabitEvent, selectedHabit).
                             show(requireActivity().getSupportFragmentManager(), "ADD_HABIT_EVENT");

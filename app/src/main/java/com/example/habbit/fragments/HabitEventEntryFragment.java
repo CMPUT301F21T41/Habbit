@@ -60,15 +60,13 @@ public class HabitEventEntryFragment extends DialogFragment {
         /* get the habit event and habit details from args if exists */
         HabitEvent existingHabitEvent = (HabitEvent) (getArguments() !=null ?
                 getArguments().getSerializable("habitEvent") : null);
+        assert getArguments() != null;
         Habit habit = (Habit) getArguments().getSerializable("habit");
-
-        HabitEventInteractionHandler listener = new HabitEventInteractionHandler(habit);
 
         EditText commentField = view.findViewById(R.id.edit_habit_event_comment);
 
         /* initialize add habit event dialog */
         AlertDialog addDialog;
-
         if (existingHabitEvent != null) {
             System.out.println("HEY WE MADE IT HERE");
             addDialog = new AlertDialog.Builder(getContext())
@@ -86,6 +84,8 @@ public class HabitEventEntryFragment extends DialogFragment {
                     .setPositiveButton("Confirm", null)
                     .show();
         }
+
+        HabitEventInteractionHandler handler = new HabitEventInteractionHandler(habit);
 
         // when a user confirms adding a habit event, we should add it to the list of habit events
         // associated with that Habit
@@ -109,10 +109,10 @@ public class HabitEventEntryFragment extends DialogFragment {
                 /* part where either create a new habit event OR adjusting an existing one */
                 if (existingHabitEvent != null) {
                     existingHabitEvent.setComment(comment);
-                    listener.updateHabitEvent(existingHabitEvent);
+                    handler.updateHabitEvent(existingHabitEvent);
                 } else {
                     HabitEvent habitEvent = new HabitEvent(comment);
-                    listener.addHabitEvent(habitEvent);
+                    handler.addHabitEvent(habitEvent);
                 }
 
                 addDialog.dismiss();

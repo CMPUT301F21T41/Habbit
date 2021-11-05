@@ -52,8 +52,6 @@ public class HabitDetailsFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
-        HabitInteractionHandler listener = new HabitInteractionHandler();
-
         /* Inflate layout for fragment */
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_view_habit,null);
 
@@ -76,30 +74,28 @@ public class HabitDetailsFragment extends DialogFragment {
         viewReason.setText(selected != null ? selected.getReason():null);
 
         // see habit events on click -> go to habit events screen
-        btnHabitEvents.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(getContext(), HabitEventsActivity.class);
-                // make the selected habit available in the next activity
-                i.putExtra("habit", selected);
-                startActivity(i);
-            }
+        btnHabitEvents.setOnClickListener(view1 -> {
+            Intent i = new Intent(getContext(), HabitEventsActivity.class);
+            // pass the selected habit on to the next activity
+            i.putExtra("habit", selected);
+            startActivity(i);
         });
 
+        // get handler for habit interactions
+        HabitInteractionHandler handler = new HabitInteractionHandler();
+
         /* initialize the "View Habit" dialog */
-        AlertDialog viewDialog = new AlertDialog.Builder(getContext())
+        return new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setTitle("View Habit")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                        listener.deleteHabit(selected))
+                        handler.deleteHabit(selected))
                 .setPositiveButton("Edit",(dialogInterface, i) -> {
                     HabitEntryFragment.newInstance(selected).
                             show(requireActivity().getSupportFragmentManager(),"ADD_HABIT");
                 })
                 .create();
-        return viewDialog;
     }
 
 }

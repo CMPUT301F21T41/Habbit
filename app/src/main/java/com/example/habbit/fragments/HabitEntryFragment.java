@@ -137,7 +137,7 @@ public class HabitEntryFragment extends DialogFragment {
             }
 
             // get handler to respond to habit interactions
-            HabitInteractionHandler listener = new HabitInteractionHandler();
+            HabitInteractionHandler handler = new HabitInteractionHandler();
 
             /*
              if there are any errors, do not add the habit to the list yet
@@ -152,10 +152,10 @@ public class HabitEntryFragment extends DialogFragment {
                     existingHabit.setDate(habitDateText);
                     existingHabit.setReason(habitReasonText);
                     /* since this is an edit, we do not add a brand new medicine to the list */
-                    listener.updateHabit(existingHabit);
+                    handler.updateHabit(existingHabit);
                 } else {
                     Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText);
-                    listener.addHabit(newHabit);
+                    handler.addHabit(newHabit);
                 }
 
                 /* if everything is looking good, we can dismiss the dialog */
