@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="10dp"
-        android:backgroundTint="#81D4FA"
+        android:backgroundTint="@color/gray"
         android:clickable="true"
         android:focusable="true"
         app:srcCompat="@android:drawable/ic_input_add" />
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="10dp"
-        android:backgroundTint="@color/purple_200"
+        android:backgroundTint="@color/gray"
         android:clickable="true"
         android:focusable="true"
         app:srcCompat="@drawable/ic_profile" />

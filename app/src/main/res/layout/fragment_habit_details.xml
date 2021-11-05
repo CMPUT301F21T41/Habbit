@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.HabitDetailsFragment"
     android:orientation="vertical"
-    android:paddingHorizontal="30dp"
+    android:paddingHorizontal="25dp"
     android:paddingVertical="30dp">
 
     <Button
