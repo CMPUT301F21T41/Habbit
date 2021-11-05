@@ -14,12 +14,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.Serializable;
 import java.util.Map;
 
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link ProfileEntryFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class ProfileEntryFragment extends DialogFragment {
 
     private OnProfileEntryFragmentInteractionListener listener;
@@ -28,6 +35,11 @@ public class ProfileEntryFragment extends DialogFragment {
         void onEditProfilePressed(Map<String,Object> map);
     }
 
+    /**
+     *
+     *
+     * @param context get context of activity to attach, type {@link Context}
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -69,24 +81,19 @@ public class ProfileEntryFragment extends DialogFragment {
         EditText viewEmail = view.findViewById(R.id.edit_profile_email);
         EditText viewName = view.findViewById(R.id.edit_profile_name);
 
-        /* get the details of the habit, if there are any to get */
+        /* get the user data to display */
         final Map<String,Object> userData = (Map<String, Object>) (getArguments() != null ?
                getArguments().getSerializable("USER") : null);
 
 
         /* set the text for the TextViews (null if habit is null) */
-        //assert docSnap != null;
         viewEmail.setText(userData.get("Email").toString());
         viewName.setText(userData.get("Name").toString());
 
         viewEmail.setHint("Email: " + userData.get("Email"));
         viewName.setHint("Name: " + userData.get("Name"));
 
-        //String email = viewName.getText().toString();
-        //viewCOT.setText(selectedHabitEvent != null ? String.valueOf(selectedHabitEvent.isCompletedOnTime()):null);
-
-
-        /* initialize the "View HabitEvent" dialog */
+        /* initialize the "Edit Profile" dialog */
         AlertDialog viewDialog = new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setTitle("Edit Profile")

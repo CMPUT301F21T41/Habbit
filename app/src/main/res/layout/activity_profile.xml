@@ -22,11 +22,11 @@
 
         <ImageView
             android:id="@+id/image_profile"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="222dp"
+            android:layout_height="222dp"
             android:layout_centerInParent="true"
-            android:translationY="-10dp"
-            app:srcCompat="@drawable/ic_profile" />
+            android:translationY="-15dp"
+            app:srcCompat="@drawable/ic__192595" />
 
         <TextView
             android:id="@+id/username_text"
@@ -53,6 +53,7 @@
             android:layout_width="246dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:background="@color/light_blue_A200"
             android:gravity="center"
             android:text="Edit Profile"
             android:translationY="150dp" />

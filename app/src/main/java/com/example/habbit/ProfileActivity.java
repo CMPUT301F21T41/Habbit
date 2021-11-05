@@ -20,36 +20,43 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * Class for profile view {@link AppCompatActivity}
+ * Opened from {@link MainActivity}
+ */
 public class ProfileActivity extends AppCompatActivity
         implements ProfileEntryFragment.OnProfileEntryFragmentInteractionListener {
 
+
+    /**
+     * reference to firestore users collection
+     */
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
-    DocumentSnapshot docSnap;
 
+    /**
+     * forward declaration of username for user logged in.
+     */
     String userLoggedIn;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        // get username of user logged in
         Intent intent = getIntent();
-        //User user = new User();
         userLoggedIn = (String) intent.getSerializableExtra("USER");
         Map<String,Object> userData = new HashMap<>();
-        //String[] email = new String[1];
 
-
+        //show username in profile screen
         TextView userText = (TextView) findViewById(R.id.username_text);
         userText.setText(userLoggedIn);
-
+        //show name in profile screen
         TextView nameText = findViewById(R.id.name_text);
 
+        //listen for changes to firestore and get new data to display
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
-
-
         userDoc.addSnapshotListener((value, error) -> {
                     Toast.makeText(ProfileActivity.this, "Success on firestore read", Toast.LENGTH_SHORT).show();
                     if (value.get("Email") != null) {
@@ -60,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity
                     }
                 });
 
-
+            //open edit profile fragment on button press, pass user data to display
             final Button editProfileButton = findViewById(R.id.edit_profile_button);
             editProfileButton.setOnClickListener(view -> ProfileEntryFragment.newInstance(userData)
                     .show(getSupportFragmentManager(), "EDIT_PROFILE"));
@@ -68,6 +75,11 @@ public class ProfileActivity extends AppCompatActivity
 
         }
 
+    /**
+     * method called when profile edit is confirmed
+     * @param userData, new data used to replace firestore data, of type {@link Map}
+     *
+     */
     @Override
     public void onEditProfilePressed(Map<String,Object> userData){
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
