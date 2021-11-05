@@ -2,7 +2,6 @@ package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,17 +10,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.R;
 import com.example.habbit.models.User;
-
-import java.io.Serializable;
 
 /**
  * A {@link Fragment} subclass for the Habit Details Overlay.
@@ -30,23 +29,6 @@ import java.io.Serializable;
  */
 
 public class HabitDetailsFragment extends DialogFragment {
-
-    private OnHabitDetailInteractionListener listener;
-
-    public interface OnHabitDetailInteractionListener {
-        void deleteHabit(Habit habit);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnHabitDetailInteractionListener) {
-            listener = (OnHabitDetailInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnHabitClickListener");
-        }
-    }
 
     public HabitDetailsFragment(){
         // required empty class constructor
@@ -61,7 +43,7 @@ public class HabitDetailsFragment extends DialogFragment {
      */
     public static HabitDetailsFragment newInstance(Habit habit){
         Bundle args = new Bundle();
-        args.putSerializable("habit", (Serializable) habit);
+        args.putSerializable("habit", habit);
 
         HabitDetailsFragment fragment = new HabitDetailsFragment();
         fragment.setArguments(args);
@@ -72,7 +54,7 @@ public class HabitDetailsFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
         /* Inflate layout for fragment */
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_view_habit,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.habit_details,null);
 
         /* connect Views to xml text fields */
         TextView viewTitle = view.findViewById(R.id.habit_title);
@@ -84,39 +66,35 @@ public class HabitDetailsFragment extends DialogFragment {
         final Habit selected = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
-        // get the username of the user we are looking for
-        String username = User.getUsername();
-
         /* set the text for the TextViews (null if habit is null) */
         viewTitle.setText(selected != null ? selected.getTitle():null);
+        Log.d("Habit Details Fragment", selected != null ? selected.getDate() : null);
         viewDate.setText(selected != null ? selected.getDate():null);
         viewReason.setText(selected != null ? selected.getReason():null);
 
         // see habit events on click -> go to habit events screen
-        btnHabitEvents.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(getContext(), HabitEventsActivity.class);
-                // make the selected habit available in the next activity
-                i.putExtra("habit", selected);
-                startActivity(i);
-            }
+        btnHabitEvents.setOnClickListener(view1 -> {
+            Intent i = new Intent(getContext(), HabitEventsActivity.class);
+            // pass the selected habit on to the next activity
+            i.putExtra("habit", selected);
+            startActivity(i);
         });
 
+        // get handler for habit interactions
+        HabitInteractionHandler handler = new HabitInteractionHandler();
+
         /* initialize the "View Habit" dialog */
-        AlertDialog viewDialog = new AlertDialog.Builder(getContext())
+        return new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setTitle("View Habit")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                        listener.deleteHabit(selected))
+                        handler.deleteHabit(selected))
                 .setPositiveButton("Edit",(dialogInterface, i) -> {
                     HabitEntryFragment.newInstance(selected).
                             show(requireActivity().getSupportFragmentManager(),"ADD_HABIT");
                 })
                 .create();
-        return viewDialog;
     }
 
 }
