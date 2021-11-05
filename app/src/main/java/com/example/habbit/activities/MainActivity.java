@@ -55,15 +55,21 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // get references to UI elements and attach custom adapter
+        /* load in the username from the Activity Bundle parameter */
+        // TODO: Implement (or remove?) a method for checking if b is null (no username given)
+        Bundle b = getIntent().getExtras();
+        if (b==null){
+            userLoggedIn = "seanwruther9";
+        } else {
+            userLoggedIn = b.get("Username").toString();
+        }
+
         habitList = findViewById(R.id.habitListView);
         habitDataList = user.getUserHabits();
         habitAdapter = new CustomHabitList(this, habitDataList);
         habitList.setAdapter(habitAdapter);
 
-        //GET USER LOGIN -- ADD LATER
-        userLoggedIn = "seanwruther9";
-
-        // add habit button
+        /* add habit button */
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
