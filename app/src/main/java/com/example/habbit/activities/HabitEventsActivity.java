@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * This class is responsible for displaying the habit events screen
+ */
 public class HabitEventsActivity extends AppCompatActivity {
 
     // get entities to be used throughout the class
@@ -45,7 +48,7 @@ public class HabitEventsActivity extends AppCompatActivity {
         habitEventAdapter = new CustomHabitEventList(this, habitEventDataList);
         habitEventList.setAdapter(habitEventAdapter);
 
-        // GET USER LOGIN -- ADD LATER
+        // get user login
         username = User.getUsername();
 
         // instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
