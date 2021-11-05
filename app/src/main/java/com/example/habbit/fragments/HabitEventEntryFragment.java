@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.R;
@@ -29,28 +30,6 @@ import java.io.Serializable;
  * create an instance of this fragment.
  */
 public class HabitEventEntryFragment extends DialogFragment {
-
-    /* declare variables here so we have access throughout class */
-    private EditText commentField;
-    private OnHabitEventFragmentInteractionListener listener;
-
-    // TODO: can we consolidate all of the interaction listeners?
-    public interface OnHabitEventFragmentInteractionListener {
-        void addHabitEvent(@Nullable HabitEvent habitEvent, Habit habit);
-        void updateHabitEvent(@Nullable HabitEvent newHabitEvent);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Log.d("HabitEventEntryFragment", "current context = " + context.toString());
-        if (context instanceof OnHabitEventFragmentInteractionListener) {
-            listener = (OnHabitEventFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnHabitEventFragmentInteractionListener");
-        }
-    }
 
     public HabitEventEntryFragment() {
         // Required empty public constructor
@@ -66,8 +45,8 @@ public class HabitEventEntryFragment extends DialogFragment {
     public static HabitEventEntryFragment newInstance(HabitEvent habitEvent, Habit habit) {
         HabitEventEntryFragment fragment = new HabitEventEntryFragment();
         Bundle args = new Bundle();
-        args.putSerializable("habitEvent", (Serializable) habitEvent);
-        args.putSerializable("habit", (Serializable) habit);
+        args.putSerializable("habitEvent", habitEvent);
+        args.putSerializable("habit", habit);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,9 +60,11 @@ public class HabitEventEntryFragment extends DialogFragment {
         /* get the habit event and habit details from args if exists */
         HabitEvent existingHabitEvent = (HabitEvent) (getArguments() !=null ?
                 getArguments().getSerializable("habitEvent") : null);
+        Habit habit = (Habit) getArguments().getSerializable("habit");
 
-        commentField = view.findViewById(R.id.edit_habit_event_comment);
+        HabitEventInteractionHandler listener = new HabitEventInteractionHandler(habit);
 
+        EditText commentField = view.findViewById(R.id.edit_habit_event_comment);
 
         /* initialize add habit event dialog */
         AlertDialog addDialog;
@@ -131,10 +112,7 @@ public class HabitEventEntryFragment extends DialogFragment {
                     listener.updateHabitEvent(existingHabitEvent);
                 } else {
                     HabitEvent habitEvent = new HabitEvent(comment);
-                    /* get habit associated if there are any to get */
-                    // TODO: should we change this to be similar to what we have in HabitEntryFragment
-                    Habit habit = (Habit) getArguments().getSerializable("habit");
-                    listener.addHabitEvent(habitEvent, habit);
+                    listener.addHabitEvent(habitEvent);
                 }
 
                 addDialog.dismiss();

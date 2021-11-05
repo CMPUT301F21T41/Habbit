@@ -11,7 +11,7 @@
         android:text="Comments:" />
 
     <TextView
-        android:id="@+id/habit_event_comment_frag"
+        android:id="@+id/habit_event_comment_field"
         android:layout_width="match_parent"
         android:layout_height="61dp"
         android:text="TextView" />
@@ -23,7 +23,7 @@
         android:text="Completed on Time:" />
 
     <TextView
-        android:id="@+id/completed_on_time_frag"
+        android:id="@+id/completed_on_time_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />

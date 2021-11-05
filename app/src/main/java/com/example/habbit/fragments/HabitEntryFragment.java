@@ -3,7 +3,6 @@ package com.example.habbit.fragments;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,10 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.R;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -33,27 +32,8 @@ import java.util.Locale;
 public class HabitEntryFragment extends DialogFragment {
 
     /* declare variables here so we have access throughout class */
-    private EditText habitTitleField;
     private EditText habitDateField;
-    private EditText habitReasonField;
-    private OnHabitEntryFragmentInteractionListener listener;
     private Calendar myCalendar;
-
-    public interface OnHabitEntryFragmentInteractionListener {
-        void addHabit(Habit habit);
-        void updateHabit(Habit existingHabit);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnHabitEntryFragmentInteractionListener) {
-            listener = (OnHabitEntryFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnHabitEntryFragmentInteractionListener");
-        }
-    }
 
     public HabitEntryFragment() {
         // Required empty public constructor
@@ -69,7 +49,7 @@ public class HabitEntryFragment extends DialogFragment {
     public static HabitEntryFragment newInstance(Habit habit) {
         HabitEntryFragment fragment = new HabitEntryFragment();
         Bundle args = new Bundle();
-        args.putSerializable("habit", (Serializable) habit);
+        args.putSerializable("habit", habit);
         fragment.setArguments(args);
         return fragment;
     }
@@ -107,8 +87,8 @@ public class HabitEntryFragment extends DialogFragment {
                 myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
         /* get EditTextFields for simple text entries */
-        habitTitleField = view.findViewById(R.id.edit_habit_title);
-        habitReasonField = view.findViewById(R.id.edit_habit_reason);
+        EditText habitTitleField = view.findViewById(R.id.edit_habit_title);
+        EditText habitReasonField = view.findViewById(R.id.edit_habit_reason);
 
         /* initialize add habit dialog */
         AlertDialog addDialog;
@@ -141,7 +121,6 @@ public class HabitEntryFragment extends DialogFragment {
             boolean errorFlag = false;
 
             /* validate each field */
-
             if (habitTitleText.length() == 0 || habitTitleText.length() > 20) {
                 habitTitleField.setError("Habit title cannot be empty or more than 20 characters");
                 errorFlag = true;
@@ -156,6 +135,9 @@ public class HabitEntryFragment extends DialogFragment {
                 habitDateField.setError("Habit start date must be set");
                 errorFlag = true;
             }
+
+            // get handler to respond to habit interactions
+            HabitInteractionHandler listener = new HabitInteractionHandler();
 
             /*
              if there are any errors, do not add the habit to the list yet
