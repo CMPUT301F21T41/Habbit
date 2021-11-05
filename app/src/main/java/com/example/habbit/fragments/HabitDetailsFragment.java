@@ -52,7 +52,7 @@ public class HabitDetailsFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
         /* Inflate layout for fragment */
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.habit_details,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_habit_details,null);
 
         /* connect Views to xml text fields */
         TextView viewTitle = view.findViewById(R.id.habit_title);

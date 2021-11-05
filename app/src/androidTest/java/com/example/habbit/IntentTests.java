@@ -7,23 +7,16 @@ import static org.junit.Assert.assertTrue;
 import android.app.Activity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ListView;
-
-import com.example.habbit.activities.HabitEventsActivity;
-import com.example.habbit.activities.MainActivity;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import com.example.habbit.activities.HabitEventsActivity;
+import com.example.habbit.activities.MainActivity;
 import com.example.habbit.activities.ProfileActivity;
-import com.example.habbit.models.User;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -109,16 +102,6 @@ public class IntentTests {
         assertTrue(solo.searchText("2021-04-16"));
         assertTrue(solo.searchText("Edited Habit Reason"));
         solo.clickOnText("Close");
-
-        // view habit events button
-        solo.clickInList(1);
-        solo.clickOnButton("See Habit Events");
-
-        // check that we have entered a new activity
-        solo.assertCurrentActivity("Wrong Activity", HabitEventsActivity.class);
-
-        // go back
-        solo.goBack();
 
         // delete item from list
         solo.clickInList(1);

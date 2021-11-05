@@ -25,9 +25,8 @@ public class HabitInteractionHandler {
     }
 
     /**
-     *
-     * @param habit
-     * given a habit of type {@link Habit}, add it to the database
+     * Adds a habit to the firestore database
+     * @param habit given a habit of type {@link Habit}, add it to the database
      */
     public void addHabit(Habit habit) {
         DocumentReference userDoc = userCollectionReference.document(username);
@@ -37,9 +36,8 @@ public class HabitInteractionHandler {
     }
 
     /**
-     *
-     * @param newHabit
-     * given an updated habit of type {@link Habit}, update it in the database
+     * Updates a habit in the firestore database
+     * @param newHabit given an updated habit of type {@link Habit}, update it in the database
      */
     public void updateHabit(Habit newHabit){
         // get the updated values
@@ -58,9 +56,8 @@ public class HabitInteractionHandler {
     }
 
     /**
-     *
-     * @param habit
-     * given a {@link Habit} to delete, delete it from the database
+     * Deletes a habit in the firestore database
+     * @param habit given a {@link Habit} to delete, delete it from the database
      */
     public void deleteHabit(Habit habit){
         // TODO: Gonna need to figure out how to delete subcollections too, but not yet

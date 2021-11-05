@@ -35,9 +35,8 @@ public class HabitEventInteractionHandler {
     Habit habit;
 
     /**
-     *
-     * @param habit
-     * provided a {@link Habit}, initialize everything based on it's attributes
+     * Constructor for the interaction handler
+     * @param habit provided a {@link Habit}, initialize everything based on it's attributes
      */
     public HabitEventInteractionHandler(Habit habit) {
         username = User.getUsername();
@@ -46,8 +45,8 @@ public class HabitEventInteractionHandler {
     }
 
     /**
-     * given a {@link HabitEvent} add it to the firebase
-     * @param habitEvent
+     * Adds a habitevent to the database
+     * @param habitEvent the {@link HabitEvent} to be added to the firestore database
      */
     public void addHabitEvent(@Nullable HabitEvent habitEvent) {
         DocumentReference userDoc = userCollectionReference.document(username);
@@ -63,8 +62,8 @@ public class HabitEventInteractionHandler {
     }
 
     /**
-     * given a {@link HabitEvent}, delete it from the database
-     * @param habitEvent
+     * Deletes a habit event from the database
+     * @param habitEvent the {@link HabitEvent} to be added to the database
      */
     public void deleteHabitEvent(HabitEvent habitEvent){
         Log.d("HabitEventHandler", "entered delete habit event");
@@ -76,8 +75,8 @@ public class HabitEventInteractionHandler {
     }
 
     /**
-     * given a {@link HabitEvent} make update it in the database
-     * @param newHabitEvent
+     * Updates the habitevent in the database
+     * @param newHabitEvent the {@link HabitEvent} to be updated
      */
     public void updateHabitEvent(@Nullable HabitEvent newHabitEvent) {
         // get updated values

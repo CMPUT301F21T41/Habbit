@@ -8,7 +8,7 @@ import com.example.habbit.models.HabitEvent;
 
 import org.junit.Test;
 
-public class HabitUnitTests {
+public class HabitUnitTest {
 
     String sampleTitle = "Habit title";
     String sampleReason = "Habit reason";
