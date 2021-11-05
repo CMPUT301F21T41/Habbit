@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -16,6 +16,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.habbit.models.Habit;
+import com.example.habbit.R;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -37,8 +40,8 @@ public class HabitEntryFragment extends DialogFragment {
     private Calendar myCalendar;
 
     public interface OnHabitEntryFragmentInteractionListener {
-        void onAddHabitPressed(Habit habit);
-        void onEditHabitPressed(Habit existingHabit);
+        void addHabit(Habit habit);
+        void updateHabit(Habit existingHabit);
     }
 
     @Override
@@ -167,10 +170,10 @@ public class HabitEntryFragment extends DialogFragment {
                     existingHabit.setDate(habitDateText);
                     existingHabit.setReason(habitReasonText);
                     /* since this is an edit, we do not add a brand new medicine to the list */
-                    listener.onEditHabitPressed(existingHabit);
+                    listener.updateHabit(existingHabit);
                 } else {
                     Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText);
-                    listener.onAddHabitPressed(newHabit);
+                    listener.addHabit(newHabit);
                 }
 
                 /* if everything is looking good, we can dismiss the dialog */

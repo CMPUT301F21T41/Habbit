@@ -1,18 +1,20 @@
-package com.example.habbit;
+package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.habbit.models.Habit;
+import com.example.habbit.models.HabitEvent;
+import com.example.habbit.R;
 
 import java.io.Serializable;
 
@@ -21,7 +23,7 @@ public class HabitEventDetailsFragment extends DialogFragment {
     private OnHabitEventDetailInteraction listener;
 
     public interface OnHabitEventDetailInteraction {
-        void onDeleteHabitEventPressed(HabitEvent habitEvent);
+        void deleteHabitEvent(HabitEvent habitEvent);
     }
 
     @Override
@@ -85,7 +87,7 @@ public class HabitEventDetailsFragment extends DialogFragment {
                 .setTitle("View Habit Event")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                        listener.onDeleteHabitEventPressed(selectedHabitEvent))
+                        listener.deleteHabitEvent(selectedHabitEvent))
                 .setPositiveButton("Edit",(dialogInterface, i) -> {
                     HabitEventEntryFragment.newInstance(selectedHabitEvent, selectedHabit).
                             show(requireActivity().getSupportFragmentManager(), "ADD_HABIT_EVENT");

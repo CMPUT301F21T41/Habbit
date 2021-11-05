@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D8D5DA"
+    android:orientation="vertical"
+    tools:context=".activities.LogInActivity"
+    android:id="@+id/activity_log_in">
+
+    <TextView
+        android:id="@+id/app_flavour_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingLeft="120dp"
+        android:paddingTop="50dp"
+        android:text="A habit tracker"
+        android:textColor="@color/black"
+        android:textSize="20sp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/app_title_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingLeft="120dp"
+        android:paddingBottom="5dp"
+        android:text="Habbit"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        android:textStyle="bold">
+
+    </TextView>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        class="com.example.habbit.fragments.LogInFragment"
+        android:tag="log_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+<!--    <FrameLayout-->
+<!--        android:id="@+id/fragment_container"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"/>-->
+</LinearLayout>

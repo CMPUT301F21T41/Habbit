@@ -1,6 +1,5 @@
-package com.example.habbit;
+package com.example.habbit.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,12 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.habbit.fragments.ProfileEntryFragment;
+import com.example.habbit.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -53,7 +50,7 @@ public class ProfileActivity extends AppCompatActivity
         TextView userText = (TextView) findViewById(R.id.username_text);
         userText.setText(userLoggedIn);
         //show name in profile screen
-        TextView nameText = findViewById(R.id.name_text);
+        TextView emailText = findViewById(R.id.name_text);
 
         //listen for changes to firestore and get new data to display
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
@@ -61,9 +58,11 @@ public class ProfileActivity extends AppCompatActivity
                     Toast.makeText(ProfileActivity.this, "Success on firestore read", Toast.LENGTH_SHORT).show();
                     if (value.get("Email") != null) {
                         userData.put("Email", value.get("Email").toString());
-                        userData.put("Name", value.get("Name").toString());
-                        nameText.setText(value.get("Name").toString());
+                        emailText.setText(value.get("Email").toString());
 
+                    }
+                    if(value.get("Name") != null) {
+                        userData.put("Name", value.get("Name").toString());
                     }
                 });
 

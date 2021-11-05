@@ -1,22 +1,19 @@
-package com.example.habbit;
+package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.example.habbit.R;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -88,10 +85,13 @@ public class ProfileEntryFragment extends DialogFragment {
 
         /* set the text for the TextViews (null if habit is null) */
         viewEmail.setText(userData.get("Email").toString());
-        viewName.setText(userData.get("Name").toString());
+        if(userData.get("Name") != null){
+            viewName.setText(userData.get("Name").toString());
+        }
 
-        viewEmail.setHint("Email: " + userData.get("Email"));
-        viewName.setHint("Name: " + userData.get("Name"));
+
+        //viewEmail.setHint("Email: " + userData.get("Email"));
+        //viewName.setHint("Name: " + userData.get("Name"));
 
         /* initialize the "Edit Profile" dialog */
         AlertDialog viewDialog = new AlertDialog.Builder(getContext())

@@ -1,4 +1,4 @@
-package com.example.habbit;
+package com.example.habbit.models;
 
 import java.util.ArrayList;
 import java.util.Date;

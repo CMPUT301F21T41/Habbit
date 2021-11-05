@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HabitEventEntryFragment"
+    tools:context=".fragments.HabitEventEntryFragment"
     android:orientation="vertical"
     android:paddingHorizontal="30dp"
     android:paddingVertical="30dp">

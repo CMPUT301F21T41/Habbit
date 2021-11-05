@@ -1,6 +1,7 @@
-package com.example.habbit;
+package com.example.habbit.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.habbit.activities.MainActivity;
+import com.example.habbit.models.Habit;
+import com.example.habbit.R;
 
 import java.util.ArrayList;
 
@@ -32,7 +37,7 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
     private OnCheckboxClickListener listener;
 
     public interface OnCheckboxClickListener {
-        void onCheckboxClick(Habit habit);
+        void onCheckboxClick(Habit habit, boolean isChecked);
     }
 
     /**
@@ -63,19 +68,17 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         TextView habitTitle = view.findViewById(R.id.habit_title);
         TextView habitDate = view.findViewById(R.id.habit_date);
 
-        // setting checkbox behaviour
+        // setting checkbox value to value stored in the relevant habit object
         final CheckBox checkBox = view.findViewById(R.id.habit_checkbox);
         checkBox.setChecked(habit.isChecked());
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    listener.onCheckboxClick(habit);
-                }
-            }
+
+        // setting checkbox behaviour
+        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            checkBox.setChecked(habit.isChecked());
+            listener.onCheckboxClick(habit, isChecked);
         });
 
-        // Set texts
+        // set texts
         habitTitle.setText(habit.getTitle());
         habitDate.setText(habit.getDate());
 
