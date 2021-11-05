@@ -1,21 +1,18 @@
 package com.example.habbit.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.habbit.activities.MainActivity;
-import com.example.habbit.models.Habit;
 import com.example.habbit.R;
+import com.example.habbit.models.Habit;
 
 import java.util.ArrayList;
 
@@ -27,17 +24,17 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
      * This variable is an {@link ArrayList} containing
      * {@link Habit} objects
      */
-    private ArrayList<Habit> habits;
+    private final ArrayList<Habit> habits;
 
     /**
      * This is a {@link Context}
      */
-    private Context context;
+    private final Context context;
 
     /**
      * This is a {@link OnCheckboxClickListener}
      */
-    private OnCheckboxClickListener listener;
+    private final OnCheckboxClickListener listener;
 
     public interface OnCheckboxClickListener {
         void onCheckboxClick(Habit habit, boolean isChecked);
@@ -45,8 +42,8 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
 
     /**
      *
-     * @param context
-     * @param habits
+     * @param context the context the custom habit list is called in
+     * @param habits the list of habits to display
      */
     public CustomHabitList(Context context, ArrayList<Habit> habits) {
         super(context, 0, habits);
@@ -78,6 +75,7 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         // setting checkbox behaviour
         checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             checkBox.setChecked(habit.isChecked());
+
             listener.onCheckboxClick(habit, isChecked);
         });
 

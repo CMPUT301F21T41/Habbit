@@ -1,9 +1,10 @@
 package com.example.habbit.models;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+/**
+ * Profile class contains all information need for social profiles on Habbit
+ */
 public class Profile {
 
     /**
@@ -26,14 +27,9 @@ public class Profile {
      */
     private Date dob;
 
-    // list of friends goes here later
-
-    // list of habits goes here later
-    //private List<Habit> myHabits = new ArrayList<>();
-
     /**
      * This function sets {@link Profile#name} which is of type {@link String}
-     * @param name
+     * @param name the name we wish to give the profile
      */
     public void setName(String name){
         this.name = name;

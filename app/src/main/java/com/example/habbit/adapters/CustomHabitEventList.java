@@ -19,23 +19,23 @@ import java.util.ArrayList;
  * This class represents a list of habit events
  */
 
-public class CustomHabitEventList extends ArrayAdapter {
+public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
 
     /**
      * This variable is an {@link ArrayList} containing
      * {@link HabitEvent} objects
      */
-    private ArrayList<HabitEvent> habitEvents;
+    private final ArrayList<HabitEvent> habitEvents;
 
     /**
      * This is a {@link Context}
      */
-    private Context context;
+    private final Context context;
 
     /**
      *
-     * @param context
-     * @param habitEvents
+     * @param context the context the custom list is launched in
+     * @param habitEvents the list of habit events to display
      */
     public CustomHabitEventList(Context context, ArrayList<HabitEvent> habitEvents) {
         super(context, 0, habitEvents);

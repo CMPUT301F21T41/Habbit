@@ -41,12 +41,10 @@ public class LogErrorFragment extends DialogFragment {
 
         String errMessage = (String) (getArguments() != null ? getArguments().getSerializable("Log error") : "Unknown error");
 
-       AlertDialog errDialog = new AlertDialog.Builder(getContext())
+       return new AlertDialog.Builder(getContext())
                .setView(view)
                .setMessage(errMessage)
                .setPositiveButton("Ok",null)
                .show();
-
-       return errDialog;
    }
 }

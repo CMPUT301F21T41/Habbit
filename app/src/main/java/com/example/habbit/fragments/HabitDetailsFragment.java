@@ -4,23 +4,21 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
+import com.example.habbit.R;
+import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
-import com.example.habbit.activities.HabitEventsActivity;
-import com.example.habbit.R;
-import com.example.habbit.models.User;
 
 /**
  * A {@link Fragment} subclass for the Habit Details Overlay.
@@ -89,11 +87,12 @@ public class HabitDetailsFragment extends DialogFragment {
                 .setTitle("View Habit")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                        handler.deleteHabit(selected))
-                .setPositiveButton("Edit",(dialogInterface, i) -> {
-                    HabitEntryFragment.newInstance(selected).
-                            show(requireActivity().getSupportFragmentManager(),"ADD_HABIT");
+                {
+                    assert selected != null;
+                    handler.deleteHabit(selected);
                 })
+                .setPositiveButton("Edit",(dialogInterface, i) -> HabitEntryFragment.newInstance(selected).
+                        show(requireActivity().getSupportFragmentManager(),"ADD_HABIT"))
                 .create();
     }
 

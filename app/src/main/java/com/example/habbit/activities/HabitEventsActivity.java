@@ -3,29 +3,23 @@ package com.example.habbit.activities;
 import static android.content.ContentValues.TAG;
 import static com.example.habbit.activities.MainActivity.userCollectionReference;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomHabitEventList;
 import com.example.habbit.fragments.HabitEventDetailsFragment;
-import com.example.habbit.fragments.HabitEventEntryFragment;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.models.User;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class HabitEventsActivity extends AppCompatActivity {
 
@@ -62,34 +56,32 @@ public class HabitEventsActivity extends AppCompatActivity {
 
         // initialize/update the list every time there is a change made to the habit events
         userCollectionReference.document(username).collection("Habits").document(habit.getId())
-                .collection("Habit Events").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                habit.clearHabitEvents();
-                Map<String,Object> habitEventData;
-                for(QueryDocumentSnapshot document:value) {
-                    habitEventData = document.getData();
-                    Log.d(TAG, document.getId() + " => " + habitEventData);
-                    if (!habitEventData.isEmpty()) {
-                        // every time we pull from Firestore, get the document ID data and associate it with the HabitEvent object
+                .collection("Habit Events").addSnapshotListener((value, error) -> {
+                    habit.clearHabitEvents();
+                    Map<String,Object> habitEventData;
+            assert value != null;
+            for(QueryDocumentSnapshot document:value) {
+                        habitEventData = document.getData();
+                        Log.d(TAG, document.getId() + " => " + habitEventData);
+                        if (!habitEventData.isEmpty()) {
+                            // every time we pull from Firestore, get the document ID data and associate it with the HabitEvent object
 
-                        HabitEvent habitEvent = new HabitEvent(String.valueOf(habitEventData.get("completedOnTime")).equals("true"),
-                                habitEventData.get("comment").toString());
+                            HabitEvent habitEvent = new HabitEvent(String.valueOf(habitEventData.get("completedOnTime")).equals("true"),
+                                    Objects.requireNonNull(habitEventData.get("comment")).toString());
 
-                        Log.d(TAG,habitEventData.get("completedOnTime").toString());
-                        Log.d(TAG,habitEventData.get("comment").toString());
+                            Log.d(TAG, Objects.requireNonNull(habitEventData.get("completedOnTime")).toString());
+                            Log.d(TAG, Objects.requireNonNull(habitEventData.get("comment")).toString());
 
-                        habitEvent.setId(document.getId());
-                        habit.addHabitEvent(habitEvent);
+                            habitEvent.setId(document.getId());
+                            habit.addHabitEvent(habitEvent);
+                        }
                     }
-                }
-                // update the data list
-                habitEventDataList = habit.getHabitEvents();
+                    // update the data list
+                    habitEventDataList = habit.getHabitEvents();
 
-                // notify the adapter
-                habitEventAdapter.notifyDataSetChanged();
-            }
-        });
+                    // notify the adapter
+                    habitEventAdapter.notifyDataSetChanged();
+                });
 
     }
 

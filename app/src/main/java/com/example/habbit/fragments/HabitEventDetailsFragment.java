@@ -64,18 +64,18 @@ public class HabitEventDetailsFragment extends DialogFragment {
 
 
         /* initialize the "View HabitEvent" dialog */
-        AlertDialog viewDialog = new AlertDialog.Builder(getContext())
+        return new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setTitle("View Habit Event")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                        handler.deleteHabitEvent(selectedHabitEvent))
-                .setPositiveButton("Edit",(dialogInterface, i) -> {
-                    HabitEventEntryFragment.newInstance(selectedHabitEvent, selectedHabit).
-                            show(requireActivity().getSupportFragmentManager(), "ADD_HABIT_EVENT");
+                {
+                    assert selectedHabitEvent != null;
+                    handler.deleteHabitEvent(selectedHabitEvent);
                 })
+                .setPositiveButton("Edit",(dialogInterface, i) -> HabitEventEntryFragment.newInstance(selectedHabitEvent, selectedHabit).
+                        show(requireActivity().getSupportFragmentManager(), "ADD_HABIT_EVENT"))
                 .create();
-        return viewDialog;
     }
 
 }

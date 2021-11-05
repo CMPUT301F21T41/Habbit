@@ -40,13 +40,11 @@ public class Habit implements Serializable {
     public Habit() {}
 
     /**
+     * Constructor for Habit class
      *
-     * @param title
-     * give the title for a habit which should be of type {@see String}
-     * @param reason
-     * give the reason for a habit which should be of type {@see String}
-     * @param date
-     * Give a date to be formatted and turned into {@see String}
+     * @param title give the title for a habit which should be of type {@see String}
+     * @param reason give the reason for a habit which should be of type {@see String}
+     * @param date Give a date to be formatted and turned into {@see String}
      */
     public Habit(String title, String reason, String date) {
         this.title = title;
@@ -57,8 +55,7 @@ public class Habit implements Serializable {
 
     /**
      * This function returns {@link Habit#title}
-     * @return
-     * The return type is {@link String}
+     * @return The return type is {@link String}
      */
     public String getTitle() {
         return title;
@@ -66,7 +63,7 @@ public class Habit implements Serializable {
 
     /**
      * This function sets {@link Habit#title} which is of type {@link String}
-     * @param title
+     * @param title The title we wish to give to the habit
      */
     public void setTitle(String title) {
         this.title = title;
@@ -74,8 +71,7 @@ public class Habit implements Serializable {
 
     /**
      * This function returns {@link Habit#reason}
-     * @return
-     * The return type is {@link String}
+     * @return The return type is {@link String}
      */
     public String getReason() {
         return reason;
@@ -83,7 +79,7 @@ public class Habit implements Serializable {
 
     /**
      * This function sets {@link Habit#reason} which is of type {@link String}
-     * @param reason
+     * @param reason the reason we want to give to the habit
      */
     public void setReason(String reason) {
         this.reason = reason;
@@ -91,8 +87,7 @@ public class Habit implements Serializable {
 
     /**
      * This function returns {@link Habit#date}
-     * @return
-     * The return type is {@link String}
+     * @return The return type is {@link String}
      */
     public String getDate() {
         return date;
@@ -100,7 +95,7 @@ public class Habit implements Serializable {
 
     /**
      * This function sets {@link Habit#date} which is of type {@link String}
-     * @param date
+     * @param date The date we want to give to the habit
      */
     public void setDate(String date) {
         this.date = date;
@@ -108,8 +103,7 @@ public class Habit implements Serializable {
 
     /**
      * This function returns {@link Habit#id}
-     * @return
-     * The return type is {@link String}
+     * @return The return type is {@link String}
      */
     public String getId() {
         return id;
@@ -117,7 +111,7 @@ public class Habit implements Serializable {
 
     /**
      * This function sets {@link Habit#id} which is of type {@link String}
-     * @param id
+     * @param id The id we wish to give to the habit
      */
     public void setId(String id) {
         this.id = id;
@@ -125,8 +119,7 @@ public class Habit implements Serializable {
 
     /**
      * This function returns {@link Habit#habitEvents}
-     * @return
-     * The return type is {@link ArrayList}
+     * @return The return type is {@link ArrayList}
      */
     public ArrayList<HabitEvent> getHabitEvents() {
         return habitEvents;
@@ -135,7 +128,7 @@ public class Habit implements Serializable {
 
     /**
      * takes a {@link HabitEvent} to add to {@link Habit#habitEvents}
-     * @param habitEvent
+     * @param habitEvent the habitEvent we wish to associate with the habit
      */
     public void addHabitEvent(HabitEvent habitEvent) {
         habitEvents.add(habitEvent);
@@ -150,8 +143,7 @@ public class Habit implements Serializable {
 
     /**
      * This function returns {@link Habit#checked}
-     * @return
-     * The return type is {@link Boolean}
+     * @return The return type is {@link Boolean}
      */
     public boolean isChecked() {
         return checked;
@@ -159,7 +151,7 @@ public class Habit implements Serializable {
 
     /**
      * This function sets {@link Habit#checked} which is of type {@link Boolean}
-     * @param checked
+     * @param checked the checked status of the habit
      */
     public void setChecked(boolean checked) {
         this.checked = checked;

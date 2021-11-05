@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -47,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity
         Map<String,Object> userData = new HashMap<>();
 
         //show username in profile screen
-        TextView userText = (TextView) findViewById(R.id.username_text);
+        TextView userText = findViewById(R.id.username_text);
         userText.setText(userLoggedIn);
         //show name in profile screen
         TextView emailText = findViewById(R.id.name_text);
@@ -56,13 +57,14 @@ public class ProfileActivity extends AppCompatActivity
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         userDoc.addSnapshotListener((value, error) -> {
                     Toast.makeText(ProfileActivity.this, "Success on firestore read", Toast.LENGTH_SHORT).show();
-                    if (value.get("Email") != null) {
-                        userData.put("Email", value.get("Email").toString());
-                        emailText.setText(value.get("Email").toString());
+            assert value != null;
+            if (value.get("Email") != null) {
+                        userData.put("Email", Objects.requireNonNull(value.get("Email")).toString());
+                        emailText.setText(Objects.requireNonNull(value.get("Email")).toString());
 
                     }
                     if(value.get("Name") != null) {
-                        userData.put("Name", value.get("Name").toString());
+                        userData.put("Name", Objects.requireNonNull(value.get("Name")).toString());
                     }
                 });
 
@@ -84,13 +86,8 @@ public class ProfileActivity extends AppCompatActivity
         DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
         //Map<String,Object> map =  userData;
         userDoc.update(userData)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-
-                })
-                .addOnFailureListener(documentReference -> {
-                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT);
-                });
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(documentReference -> Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT));
     }
 
 
