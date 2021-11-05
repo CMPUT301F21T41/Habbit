@@ -15,6 +15,7 @@ import com.example.habbit.activities.MainActivity;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import com.example.habbit.activities.ProfileActivity;
 import com.example.habbit.models.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -223,6 +224,22 @@ public class IntentTests {
         solo.goBack();
         solo.clickInList(0);
         solo.clickOnText("Delete");
+    }
+
+    /**
+     * Check profile nav button
+     */
+    @Test
+    public void profileNavTest() {
+        // asserts that the current activity is MainActivity, otherwise notify that it is the wrong activity
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+
+        // click on profile nav button
+        View profileNavButton = solo.getView(R.id.profile_nav_button);
+        solo.clickOnView(profileNavButton);
+
+        // check that we have entered a new activity
+        solo.assertCurrentActivity("Wrong Activity", ProfileActivity.class);
     }
 
     /**
