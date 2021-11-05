@@ -1,8 +1,9 @@
 package com.example.habbit.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User extends Profile {
+public class User extends Profile implements Serializable {
     private String username;
     private String password;
     private String email;
@@ -47,6 +48,10 @@ public class User extends Profile {
     public ArrayList<Habit> getUserHabits(){
         return this.userHabits;
     }
+    public String getUsername() { return this.username;}
+
+
+
     public void setUsername(String username){
         this.username = username;
     }
@@ -54,6 +59,7 @@ public class User extends Profile {
         this.password = password;
     }
     public void setEmail(String email) { this.email = email; }
+
 
 
 

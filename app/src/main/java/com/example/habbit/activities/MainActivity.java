@@ -1,5 +1,6 @@
 package com.example.habbit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
@@ -36,7 +38,8 @@ public class MainActivity extends AppCompatActivity
         implements HabitEntryFragment.OnHabitEntryFragmentInteractionListener,
         HabitDetailsFragment.OnHabitDetailInteractionListener,
         HabitEventEntryFragment.OnHabitEventFragmentInteractionListener,
-        CustomHabitList.OnCheckboxClickListener {
+        CustomHabitList.OnCheckboxClickListener,
+        Serializable {
 
     // TAG used for debugging
     private static final String TAG = "MyActivity";
@@ -74,7 +77,19 @@ public class MainActivity extends AppCompatActivity
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
-        // instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
+        user.setUsername(userLoggedIn);
+        final FloatingActionButton profileNavButton = findViewById(R.id.profile_nav_button);
+        profileNavButton.setOnClickListener(view -> {
+            Intent intent = new Intent(this,ProfileActivity.class);
+            //Bundle bundle = new Bundle();
+            intent.putExtra("USER", userLoggedIn);
+            startActivity(intent);
+        });
+            //.show(getSupportFragmentManager(), "PROFILE"));
+
+
+
+        /* instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected */
         habitList.setOnItemClickListener((adapterView, view, i, l) -> {
             Habit viewHabit = habitAdapter.getItem(i);
             HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
@@ -210,5 +225,4 @@ public class MainActivity extends AppCompatActivity
     public void updateHabitEvent(@Nullable HabitEvent newHabitEvent) {
         // empty update habit event method to implement habit event fragment interaction listener
     }
-
 }
