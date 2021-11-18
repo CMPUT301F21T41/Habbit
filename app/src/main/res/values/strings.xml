@@ -8,6 +8,4 @@
     <string name="habit_event_comment">Comments</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="about">About</string>
-    <string name="about_message">This software uses map data provided by OpenStreetMap.org</string>
 </resources>
