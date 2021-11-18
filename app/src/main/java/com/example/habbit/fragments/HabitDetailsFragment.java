@@ -58,7 +58,7 @@ public class HabitDetailsFragment extends DialogFragment {
         TextView viewTitle = view.findViewById(R.id.habit_title);
         TextView viewDate = view.findViewById(R.id.habit_date);
         TextView viewReason = view.findViewById(R.id.habit_reason);
-        Button btnHabitEvents = view.findViewById(R.id.btn_see_habit_events);
+        TextView btnHabitEvents = view.findViewById(R.id.view_habit_event_link);
 
         /* get the habit of the details, if there are any to get */
         final Habit selected = (Habit) (getArguments() != null ?
@@ -84,7 +84,6 @@ public class HabitDetailsFragment extends DialogFragment {
         /* initialize the "View Habit" dialog */
         return new AlertDialog.Builder(getContext())
                 .setView(view)
-                .setTitle("View Habit")
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
                 {
