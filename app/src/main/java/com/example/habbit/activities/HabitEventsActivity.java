@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomHabitEventList;
@@ -36,6 +37,10 @@ public class HabitEventsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_events);
+
+        //custom toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // initialize views
         ListView habitEventList = findViewById(R.id.habit_events_list);
