@@ -7,10 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar"/>
-
     <ListView
         android:id="@+id/habitListView"
         android:layout_width="match_parent"
