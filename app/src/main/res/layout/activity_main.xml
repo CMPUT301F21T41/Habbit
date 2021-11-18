@@ -17,10 +17,6 @@
         android:text="@string/all_habits"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar"/>
-
     <ListView
         android:id="@+id/habitListView"
         android:layout_width="match_parent"
