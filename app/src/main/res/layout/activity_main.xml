@@ -6,22 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
-    android:paddingTop="20dp">
+    android:paddingTop="0dp">
 
-    <TextView
-        style="@style/TextStyle_Heading1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:paddingStart="5dp"
-        android:text="@string/all_habits"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <ListView
         android:id="@+id/habitListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="60dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_habit_button"
