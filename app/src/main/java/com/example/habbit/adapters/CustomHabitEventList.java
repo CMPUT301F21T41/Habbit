@@ -57,7 +57,7 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
 
         // Linking xml text fields to text views in CustomHabitList.java
         TextView habitEventComment = view.findViewById(R.id.habit_event_comment);
-        TextView habitEventCompletedOnTime = view.findViewById(R.id.habit_event_completed_on_time);
+//        TextView habitEventCompletedOnTime = view.findViewById(R.id.habit_event_completed_on_time);
 
         // Set texts
         String commentTxt = habitEvent.getComment();
@@ -65,16 +65,16 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
             commentTxt = "No Comment.";
         }
 
-        String completedOntTimeTxt;
-
-        // TODO: take random string from a list of strings for completion/noncompletion messages
-        if(habitEvent.isCompletedOnTime()){
-            completedOntTimeTxt = "Completed on time :)";
-        } else {
-            completedOntTimeTxt = "Not completed on time :(";
-        }
+//        String completedOntTimeTxt;
+//
+//        // TODO: take random string from a list of strings for completion/noncompletion messages
+//        if(habitEvent.isCompletedOnTime()){
+//            completedOntTimeTxt = "Completed on time :)";
+//        } else {
+//            completedOntTimeTxt = "Not completed on time :(";
+//        }
         habitEventComment.setText(commentTxt);
-        habitEventCompletedOnTime.setText(completedOntTimeTxt);
+//        habitEventCompletedOnTime.setText(completedOntTimeTxt);
 
         return view;
     }

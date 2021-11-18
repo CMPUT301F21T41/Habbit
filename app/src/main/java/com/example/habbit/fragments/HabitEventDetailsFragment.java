@@ -47,7 +47,7 @@ public class HabitEventDetailsFragment extends DialogFragment {
 
         /* connect Views to xml text fields */
         TextView commentField = view.findViewById(R.id.habit_event_comment_field);
-        TextView completedOnTimeField = view.findViewById(R.id.completed_on_time_field);
+//        TextView completedOnTimeField = view.findViewById(R.id.completed_on_time_field);
 
         /* get the details of the habit, if there are any to get */
         final HabitEvent selectedHabitEvent = (HabitEvent) (getArguments() != null ?
@@ -59,8 +59,8 @@ public class HabitEventDetailsFragment extends DialogFragment {
         HabitEventInteractionHandler handler = new HabitEventInteractionHandler(selectedHabit);
 
         /* set the text for the TextViews (null if habit is null) */
-        commentField.setText(selectedHabitEvent != null ? selectedHabitEvent.getComment():null);
-        completedOnTimeField.setText(selectedHabitEvent != null ? String.valueOf(selectedHabitEvent.isCompletedOnTime()):null);
+        commentField.setText(selectedHabitEvent != null ? selectedHabitEvent.getComment(): null);
+//        completedOnTimeField.setText(selectedHabitEvent != null ? String.valueOf(selectedHabitEvent.isCompletedOnTime()):null);
 
 
         /* initialize the "View HabitEvent" dialog */

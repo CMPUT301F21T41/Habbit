@@ -8,8 +8,7 @@
     app:title="@string/app_name"
     app:titleTextAppearance="@style/Toolbar.TitleText"
     app:titleMarginStart="50dp"
-    app:titleMarginTop="20dp"
-    >
+    app:titleMarginTop="20dp">
 
     <ImageView
         android:layout_width="60dp"
