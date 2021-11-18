@@ -14,6 +14,11 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">30sp</item>
+        <item name="android:fontFamily">@font/work_sans_semibold</item>
+    </style>
+
     <!-- TextStyles -->
     <style name="TextStyle_Heading1">
         <item name="android:layout_gravity">center</item>
