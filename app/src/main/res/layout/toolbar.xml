@@ -7,7 +7,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:title="@string/app_name"
     app:titleTextAppearance="@style/Toolbar.TitleText"
-    app:titleMarginStart="70dp"
+    app:titleMarginStart="50dp"
     app:titleMarginTop="20dp"
     >
 
