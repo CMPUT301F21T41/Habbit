@@ -7,10 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
     <ListView
         android:id="@+id/habitListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="600dp"
+        android:translationY="55dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_habit_button"
