@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         });
 
+
+
         // set a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
         habitList.setOnItemClickListener((adapterView, view, i, l) -> {
             Habit viewHabit = habitAdapter.getItem(i);

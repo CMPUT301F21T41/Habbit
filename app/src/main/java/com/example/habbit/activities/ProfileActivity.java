@@ -1,10 +1,15 @@
 package com.example.habbit.activities;
 
+import static java.security.AccessController.getContext;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +24,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
+import java.util.ArrayList;
 
 /**
  * Class for profile view {@link AppCompatActivity}
@@ -38,11 +62,14 @@ public class ProfileActivity extends AppCompatActivity
      */
     String userLoggedIn;
 
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
 
         //custom toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);

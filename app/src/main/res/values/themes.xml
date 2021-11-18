@@ -16,6 +16,7 @@
 
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">30sp</item>
+        <item name="android:fontFamily">@font/work_sans_semibold</item>
     </style>
 
 
