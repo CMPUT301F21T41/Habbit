@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.HabitEventsActivity">
+    tools:context=".activities.HabitEventsActivity"
+    android:paddingHorizontal="20dp">
 
     <include
         android:id="@+id/toolbar"
