@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,28 +16,42 @@
         android:layout_height="wrap_content"
         android:text="See Habit Events" />
 
-    <TextView
-        android:id="@+id/habit_title"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:paddingVertical="10dp"/>
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/habit_date"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="15sp"
-        android:paddingVertical="10dp"/>
+        <TextView
+            android:id="@+id/habit_title"
+            style="@style/TextStyle_Heading1"
+            android:layout_width="195dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="4dp"
+            android:paddingVertical="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Habit Title" />
 
-    <TextView
-        android:id="@+id/habit_reason"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="top"
-        android:scrollbars="vertical"
-        android:textSize="15sp"
-        android:paddingVertical="10dp"/>
+        <TextView
+            android:id="@+id/habit_date"
+            style="@style/TextStyle_Heading2"
+            android:layout_width="166dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="12dp"
+            android:paddingVertical="10dp"
+            app:layout_constraintStart_toEndOf="@+id/habit_title"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="habit date_started?" />
+
+        <TextView
+            style="@style/TextStyle_paragraph"
+            android:id="@+id/habit_reason"
+            android:layout_marginTop="36dp"
+            android:paddingVertical="10dp"
+            android:scrollbars="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/habit_date"
+            tools:text="habit reason" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

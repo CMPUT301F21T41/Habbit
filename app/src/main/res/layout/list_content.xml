@@ -6,22 +6,21 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="323dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/habit_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/habit_title" />
+            style="@style/TextStyle_Heading1"
+            android:text="@string/habit_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
             android:id="@+id/habit_date"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            style="@style/TextStyle_Heading2"
             android:layout_weight="1"
-            android:text="@string/habit_date"/>
+            android:text="@string/habit_date" />
     </LinearLayout>
 
     <LinearLayout
