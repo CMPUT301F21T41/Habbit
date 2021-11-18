@@ -3,10 +3,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="30dp">
+    android:padding="22dp">
 
     <TextView
-        style="@style/TextStyle_Heading2"
+        style="@style/TextStyle_Subtitle"
         android:id="@+id/comment_lbl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:text="TextView" />
 
     <TextView
-        style="@style/TextStyle_Heading2"
+        style="@style/TextStyle_Subtitle"
         android:id="@+id/COT_lbl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
