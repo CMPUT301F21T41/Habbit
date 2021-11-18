@@ -59,7 +59,7 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         View view = convertView;
 
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.habit_list_content, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.list_content, parent,false);
         }
 
         Habit habit = habits.get(position);
