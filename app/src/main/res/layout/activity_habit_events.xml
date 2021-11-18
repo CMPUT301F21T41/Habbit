@@ -7,6 +7,10 @@
     android:orientation="vertical"
     tools:context=".activities.HabitEventsActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
     <ListView
         android:id="@+id/habit_events_list"
         android:layout_width="match_parent"
