@@ -47,4 +47,5 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.3.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
