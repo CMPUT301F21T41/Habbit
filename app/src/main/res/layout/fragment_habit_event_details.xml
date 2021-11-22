@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +20,15 @@
         android:layout_height="61dp"
         android:text="TextView" />
 
-<!--    <TextView-->
+    <ImageView
+        android:id="@+id/eventPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/placeholder"
+        android:adjustViewBounds="true"
+        android:contentDescription="Event Photo" />
+
+    <!--    <TextView-->
 <!--        style="@style/TextStyle_Subtitle"-->
 <!--        android:id="@+id/COT_lbl"-->
 <!--        android:layout_width="match_parent"-->
