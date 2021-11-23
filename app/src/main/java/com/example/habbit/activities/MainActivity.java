@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity
             assert value != null;
             for(QueryDocumentSnapshot document:value) {
                 habitData = document.getData();
-                Log.d(TAG, document.getId() + " => " + habitData);
                 if (!habitData.isEmpty()) {
 
                     // every time we pull from Firestore, get the document ID data and associate it with the Habit object
@@ -126,12 +125,9 @@ public class MainActivity extends AppCompatActivity
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
 
-                    Log.d(TAG, String.valueOf(currentDate));
-                    Log.d(TAG, String.valueOf(habit.getDateObject()));
-                    Log.d(TAG, String.valueOf(currentDate.compareTo(habit.getDateObject())));
-
                     // only add the habit to displayed habits if it is scheduled
                     if (habit.getSchedule().get(dayOfTheWeek.substring(0, 3)) && currentDate.compareTo(habit.getDateObject()) >= 0) {
+                        Log.d(TAG, document.getId() + " => " + habitData);
                         habitDataList.add(habit);
                     }
                 }
@@ -140,7 +136,6 @@ public class MainActivity extends AppCompatActivity
             // redraw the listview with the newly updated habits
             habitDataList = User.getUserHabits();
             habitAdapter.notifyDataSetChanged();
-            Log.d(TAG,User.printHabits());
         });
     }
 
@@ -160,5 +155,4 @@ public class MainActivity extends AppCompatActivity
             habitHandler.updateHabit(habit);
         }
     }
-
 }

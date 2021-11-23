@@ -8,17 +8,15 @@ import org.junit.Test;
 
 public class HabitEventUnitTest {
     String sampleComment = "Sample Comment";
-    boolean sampleCOT = false;
 
     private HabitEvent mockHabitEvent() {
-        return new HabitEvent(sampleCOT, sampleComment);
+        return new HabitEvent(sampleComment);
     }
 
     @Test
     public void testGetters() {
         HabitEvent habitEvent = mockHabitEvent();
 
-        assertEquals(sampleCOT, habitEvent.isCompletedOnTime());
         assertEquals(sampleComment, habitEvent.getComment());
     }
 
@@ -32,8 +30,6 @@ public class HabitEventUnitTest {
 
         habitEvent.setComment(editedComment);
         assertEquals(editedComment, habitEvent.getComment());
-        habitEvent.setCompletedOnTime(editedCOT);
-        assertEquals(editedCOT, habitEvent.isCompletedOnTime());
         habitEvent.setId(editedId);
         assertEquals(editedId, habitEvent.getId());
     }

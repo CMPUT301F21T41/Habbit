@@ -3,12 +3,6 @@ package com.example.habbit.models;
 import java.io.Serializable;
 
 public class HabitEvent implements Serializable {
-    // TODO: completedOnTime can't be done until we implement selecting days we want to do habits which is in our next milestone
-
-    /**
-     * This var is of type {@link Boolean} and denotes whether or not the {@link Habit} was completed on time
-     */
-    private boolean completedOnTime;
     // TODO: something that holds an image attachment
 
     // TODO: something that holds geolocation
@@ -36,32 +30,6 @@ public class HabitEvent implements Serializable {
      */
     public HabitEvent(String comment) {
         this.comment = comment;
-    }
-
-    /**
-     *
-     * @param completedOnTime pass in if the {@link Habit} was completed on time
-     * @param comment provide a comment
-     */
-    public HabitEvent(boolean completedOnTime, String comment) {
-        this.completedOnTime = completedOnTime;
-        this.comment = comment;
-    }
-
-    /**
-     * This function returns {@link HabitEvent#completedOnTime}
-     * @return The return type is {@link Boolean}
-     */
-    public boolean isCompletedOnTime() {
-        return completedOnTime;
-    }
-
-    /**
-     * This function sets {@link HabitEvent#completedOnTime} which is of type {@link Boolean}
-     * @param completedOnTime the boolean value we wish to pass to the habit event
-     */
-    public void setCompletedOnTime(boolean completedOnTime) {
-        this.completedOnTime = completedOnTime;
     }
 
     /**

@@ -81,8 +81,7 @@ public class HabitEventsActivity extends AppCompatActivity {
                         if (!habitEventData.isEmpty()) {
                             // every time we pull from Firestore, get the document ID data and associate it with the HabitEvent object
 
-                            HabitEvent habitEvent = new HabitEvent(String.valueOf(habitEventData.get("completedOnTime")).equals("true"),
-                                    Objects.requireNonNull(habitEventData.get("comment")).toString());
+                            HabitEvent habitEvent = new HabitEvent(Objects.requireNonNull(habitEventData.get("comment")).toString());
 
                             Log.d(TAG, Objects.requireNonNull(habitEventData.get("completedOnTime")).toString());
                             Log.d(TAG, Objects.requireNonNull(habitEventData.get("comment")).toString());
