@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         implements CustomHabitList.OnCheckboxClickListener {
 
     // TAG used for debugging
-    private static final String TAG = "MyActivity";
+    private static final String TAG = "MainActivity";
 
     // references to entities used throughout the class
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
@@ -51,15 +51,16 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_logout));
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
+        // custom toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_logout));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         // load in the username from the Activity Bundle parameter
         Bundle b = getIntent().getExtras();
