@@ -2,22 +2,35 @@ package com.example.habbit.handlers;
 
 import static android.content.ContentValues.TAG;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.util.Log;
+import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.models.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 
 public class HabitEventInteractionHandler {
     /**
      * This var is of type {@link CollectionReference} and contains the users collection in firestore
      */
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
+    static final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     /**
      * This var is of type {@link String} and contains the username
@@ -89,5 +102,35 @@ public class HabitEventInteractionHandler {
         userDoc.collection("Habit Events").document(newHabitEvent.getId())
                 .update("comment", commentText);
         Log.d(TAG, newHabitEvent.getId());
+    }
+
+    public void addHabitEventPhoto(HabitEvent habitEvent, ImageView picture) {
+        // Create a storage reference from our app
+        StorageReference storageRef;
+        storageRef = storage.getReference();
+
+        // Create a reference to "mountains.jpg"
+        StorageReference imageRef = storageRef.child(habitEvent.getId()+".jpg");
+
+        picture.setDrawingCacheEnabled(true);
+        picture.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) picture.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = imageRef.putBytes(data);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("Upload failed in addHabitEventPhoto.");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("Upload success in addHabitEventPhoto.");
+            }
+        });
     }
 }
