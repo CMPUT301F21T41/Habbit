@@ -28,6 +28,9 @@
             />
 
         <TextView
+            android:id="@+id/occurs_on_label"
+            android:focusable="true"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/occurs_on"

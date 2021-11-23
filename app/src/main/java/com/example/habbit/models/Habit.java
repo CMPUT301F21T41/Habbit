@@ -1,7 +1,20 @@
 package com.example.habbit.models;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Habit implements Serializable {
     /* attributes that define a Habit object */
@@ -36,21 +49,28 @@ public class Habit implements Serializable {
      */
     private boolean checked = false;
 
+    /**
+     * This var is of type {@link java.util.HashMap} and represents the days of the week the habit is scheduled to hapeen
+     */
+    private HashMap<String, Boolean> schedule;
+
     // empty constructor needed to use Firestore add()
     public Habit() {}
 
     /**
      * Constructor for Habit class
      *
-     * @param title give the title for a habit which should be of type {@see String}
-     * @param reason give the reason for a habit which should be of type {@see String}
-     * @param date Give a date to be formatted and turned into {@see String}
+     * @param title give the title for a habit which should be of type {@link String}
+     * @param reason give the reason for a habit which should be of type {@link String}
+     * @param date give a date to be formatted and turned into {@link String}
+     * @param schedule give a schedule for days of the week that the habit should be completed {@link HashMap}
      */
-    public Habit(String title, String reason, String date) {
+    public Habit(String title, String reason, String date, HashMap<String, Boolean> schedule) {
         this.title = title;
         this.reason = reason;
         this.date = date;
-        habitEvents = new ArrayList<HabitEvent>();
+        habitEvents = new ArrayList<HabitEvent>(); // initialize habitEvents list
+        this.schedule = schedule;
     }
 
     /**
@@ -83,6 +103,21 @@ public class Habit implements Serializable {
      */
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    /**
+     * This function returns {@link Habit#date} in Date Object form
+     * @return The return type is {@link Date}
+     */
+    @SuppressLint("SimpleDateFormat")
+    public Date getDateObject() {
+        Date dateObj = null;
+        try {
+            dateObj = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateObj;
     }
 
     /**
@@ -157,4 +192,18 @@ public class Habit implements Serializable {
         this.checked = checked;
     }
 
+    /**
+     * This function sets {@link Habit#schedule} which is of type {@link HashMap}
+     * @param schedule the schedule to follow for the habit
+     */
+    public void setSchedule(HashMap<String, Boolean> schedule) {
+        this.schedule = schedule;
+    }
+
+    /**
+     * This function gets {@link Habit#schedule} which is of type {@link HashMap}
+     */
+    public HashMap<String, Boolean> getSchedule() {
+        return schedule;
+    }
 }

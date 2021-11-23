@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -111,8 +112,10 @@ public class AllHabitsActivity extends AppCompatActivity
                 if (!habitData.isEmpty()) {
 
                     // every time we pull from Firestore, get the document ID data and associate it with the Habit object
-                    Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(), Objects.requireNonNull(habitData.get("reason")).toString(),
-                            Objects.requireNonNull(habitData.get("date")).toString());
+                    Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
+                            Objects.requireNonNull(habitData.get("reason")).toString(),
+                            Objects.requireNonNull(habitData.get("date")).toString(),
+                            (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")));
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
                     User.addHabit(habit);

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,7 +23,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -71,6 +73,12 @@ public class MainActivity extends AppCompatActivity
             User.setUsername(username);
         }
 
+        // get the current date
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        Date currentDate = new Date();
+        String dayOfTheWeek = sdf.format(currentDate);
+        Log.d(TAG, dayOfTheWeek);
+
         // get references to UI elements and attach custom adapter
         habitList = findViewById(R.id.habitListView);
         habitDataList = User.getUserHabits();
@@ -111,16 +119,26 @@ public class MainActivity extends AppCompatActivity
                 if (!habitData.isEmpty()) {
 
                     // every time we pull from Firestore, get the document ID data and associate it with the Habit object
-                    Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(), Objects.requireNonNull(habitData.get("reason")).toString(),
-                            Objects.requireNonNull(habitData.get("date")).toString());
+                    Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
+                            Objects.requireNonNull(habitData.get("reason")).toString(),
+                            Objects.requireNonNull(habitData.get("date")).toString(),
+                            (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")));
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
-                    User.addHabit(habit);
+
+                    Log.d(TAG, String.valueOf(currentDate));
+                    Log.d(TAG, String.valueOf(habit.getDateObject()));
+                    Log.d(TAG, String.valueOf(currentDate.compareTo(habit.getDateObject())));
+
+                    // only add the habit to displayed habits if it is scheduled
+                    if (habit.getSchedule().get(dayOfTheWeek.substring(0, 3)) && currentDate.compareTo(habit.getDateObject()) >= 0) {
+                        habitDataList.add(habit);
+                    }
                 }
             }
 
             // redraw the listview with the newly updated habits
-            habitDataList=User.getUserHabits();
+            habitDataList = User.getUserHabits();
             habitAdapter.notifyDataSetChanged();
             Log.d(TAG,User.printHabits());
         });

@@ -10,7 +10,8 @@
         app:cardUseCompatPadding="true"
         app:contentPadding="20dp"
         app:strokeColor="@color/FIGMA_GRAY"
-        app:strokeWidth="2dp">
+        app:strokeWidth="2dp"
+        android:layout_marginVertical="10dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
