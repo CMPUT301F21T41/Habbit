@@ -2,6 +2,7 @@ package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.habbit.activities.HabitEventsActivity;
+import com.example.habbit.activities.MapActivity;
+import com.example.habbit.activities.ProfileActivity;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class HabitEventDetailsFragment extends DialogFragment {
 
@@ -49,6 +54,9 @@ public class HabitEventDetailsFragment extends DialogFragment {
         TextView commentField = view.findViewById(R.id.habit_event_comment_field);
         TextView completedOnTimeField = view.findViewById(R.id.completed_on_time_field);
 
+        //OMS
+        FloatingActionButton button = view.findViewById(R.id.mapview_button);
+
         /* get the details of the habit, if there are any to get */
         final HabitEvent selectedHabitEvent = (HabitEvent) (getArguments() != null ?
                 getArguments().getSerializable("habitEvent") : null);
@@ -62,6 +70,13 @@ public class HabitEventDetailsFragment extends DialogFragment {
         commentField.setText(selectedHabitEvent != null ? selectedHabitEvent.getComment():null);
         completedOnTimeField.setText(selectedHabitEvent != null ? String.valueOf(selectedHabitEvent.isCompletedOnTime()):null);
 
+
+        button.setOnClickListener(view1 -> {
+            Intent i = new Intent(getContext(), MapActivity.class);
+            // pass the selected habit on to the next activity
+            //i.putExtra("habit", selected);
+            startActivity(i);
+        });
 
         /* initialize the "View HabitEvent" dialog */
         return new AlertDialog.Builder(getContext())

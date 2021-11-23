@@ -18,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Habbit"
+        android:requestLegacyExternalStorage="true"
         android:fullBackupContent="true">
         <activity android:name=".activities.HabitEventsActivity"
             android:parentActivityName=".activities.MainActivity">

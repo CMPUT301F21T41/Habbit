@@ -1,20 +1,28 @@
 // Created by plusminus on 00:23:14 - 03.10.2008
 package com.example.habbit.activities;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.habbit.R;
 import com.example.habbit.fragments.MapFragment;
+
+import org.osmdroid.config.Configuration;
+
+import java.util.ArrayList;
 
 /**
  * Default map view activity.
@@ -23,6 +31,11 @@ import com.example.habbit.fragments.MapFragment;
  */
 public class MapActivity extends AppCompatActivity {
     private static final String MAP_FRAGMENT_TAG = "org.osmdroid.MAP_FRAGMENT_TAG";
+    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+
+    //Configuration.getInstance().setUserAgentValue(...)
+
+
 
     /**
      * The idea behind that is to force a MapView refresh when switching from offline to online.
@@ -66,6 +79,13 @@ public class MapActivity extends AppCompatActivity {
 
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
+        requestPermissionsIfNecessary(new String[] {
+                // if you need to show the current location, uncomment the line below
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                // WRITE_EXTERNAL_STORAGE is required in order to show the map
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        });
+
         FragmentManager fm = this.getSupportFragmentManager();
         if (fm.findFragmentByTag(MAP_FRAGMENT_TAG) == null) {
             MapFragment starterMapFragment = MapFragment.newInstance();
@@ -100,6 +120,42 @@ public class MapActivity extends AppCompatActivity {
         }
         return super.onKeyUp(keyCode, event);
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (int i = 0; i < grantResults.length; i++) {
+            permissionsToRequest.add(permissions[i]);
+        }
+        if (permissionsToRequest.size() > 0) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionsToRequest.toArray(new String[0]),
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    private void requestPermissionsIfNecessary(String[] permissions) {
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted
+                permissionsToRequest.add(permission);
+            }
+        }
+        if (permissionsToRequest.size() > 0) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionsToRequest.toArray(new String[0]),
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+
+
 
     /**
      * @since 6.0

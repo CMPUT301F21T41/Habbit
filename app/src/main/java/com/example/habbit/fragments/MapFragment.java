@@ -1,12 +1,23 @@
 // Created by plusminus on 00:23:14 - 03.10.2008
 package com.example.habbit.fragments;
 
+import java.lang.Math;
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,23 +27,34 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.MainThread;
 import androidx.fragment.app.Fragment;
 
 import com.example.habbit.R;
 
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.events.MapListener;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.MinimapOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Default map view activity.
@@ -60,12 +82,26 @@ public class MapFragment extends Fragment {
     // ===========================================================
     private SharedPreferences mPrefs;
     private MapView mMapView;
+    private View mTransView;
     private MyLocationNewOverlay mLocationOverlay;
     private CompassOverlay mCompassOverlay = null;
     private MinimapOverlay mMinimapOverlay;
     private ScaleBarOverlay mScaleBarOverlay;
     private RotationGestureOverlay mRotationGestureOverlay;
     private CopyrightOverlay mCopyrightOverlay;
+    private MapListener mMapListener;
+
+    private float[] lastTouchDownXY = new float[2];
+
+    float disX;
+    float disY;
+    long prevTime = 0;
+    long eTime;
+
+    GeoPoint defCurrPoint;
+    GeoPoint selectedPoint;
+
+    Marker startMarker;
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -76,14 +112,48 @@ public class MapFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         //Note! we are programmatically construction the map view
         //be sure to handle application lifecycle correct (see note in on pause)
         mMapView = new MapView(inflater.getContext());
+        mTransView = new View(inflater.getContext());
+        //mMapView.setLongClickable(true);
+        mMapView.setClickable(false);
         mMapView.setDestroyMode(false);
         mMapView.setTag("mapView"); // needed for OpenStreetMapViewTest
+        lastTouchDownXY[0] = 0;
+        lastTouchDownXY[1] = 0;
+
+        startMarker = new Marker(mMapView);
+
+        Drawable myDrawable;
+        Resources res = getResources();
+        try {
+            myDrawable = Drawable.createFromXml(res, res.getXml(R.xml.ic__192595));
+            //startMarker.setPosition(mark);
+            startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            startMarker.setIcon(myDrawable);
+            startMarker.setImage(myDrawable);
+            startMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker, MapView mapView) {
+
+                    return false;
+
+                }
+            });
+            //startMarker.setTitle("dddd");
+            //startMarker.showInfoWindow();
+            //mMapView.getOverlays().add(startMarker);
+            //mMapView.invalidate();
+            //mMapView.getOverlays().add(startMarker);
+
+        } catch (Exception ex) {
+            Log.e("Error", "Exception loading drawable");
+        }
 
         mMapView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
             /**
@@ -95,9 +165,9 @@ public class MapFragment extends Fragment {
              */
             @Override
             public boolean onGenericMotion(View v, MotionEvent event) {
-                if (0 != (event.getSource() & InputDevice.SOURCE_CLASS_POINTER)) {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_SCROLL:
+                            Log.d("look","actionscrool");
                             if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0.0f)
                                 mMapView.getController().zoomOut();
                             else {
@@ -106,14 +176,112 @@ public class MapFragment extends Fragment {
                                 mMapView.getController().animateTo(iGeoPoint);
                                 mMapView.getController().zoomIn();
                             }
-                            return true;
+
+
                     }
+
+                return true;
+            }
+        });
+
+
+        mMapView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Do something here for touch point down event
+
+                        //mLocationOverlay.disableFollowLocation();
+                        //mLocationOverlay.disableMyLocation();
+                        Log.d("look", "touched!");
+                        if (Arrays.equals(lastTouchDownXY, new float[]{0.0F, 0.0F}) && prevTime == 0) {
+                            lastTouchDownXY[0] = event.getX();
+                            lastTouchDownXY[1] = event.getY();
+                            prevTime = event.getEventTime();
+                        } else {
+                            eTime = (event.getEventTime() - prevTime);
+                            disX = Math.abs(event.getX() - lastTouchDownXY[0]);
+                            disY = Math.abs(event.getY() - lastTouchDownXY[1]);
+                            lastTouchDownXY[0] = event.getX();
+                            lastTouchDownXY[1] = event.getY();
+                            prevTime = event.getEventTime();
+                            if (eTime > 80 && eTime < 400 && disX < 200 && disY < 200) {
+                                Log.d("look", "click seen");
+                                GeoPoint mark = (GeoPoint) mMapView.getProjection().fromPixels(
+                                        (int) lastTouchDownXY[0],
+                                        (int) lastTouchDownXY[1]);
+                                selectedPoint = mark.clone();
+                                /*Marker startMarker = new Marker(mMapView);
+
+                                Drawable myDrawable;
+                                Resources res = getResources();
+                                try {
+                                    myDrawable = Drawable.createFromXml(res, res.getXml(R.xml.ic__192595));
+                                    startMarker.setPosition(mark);
+                                    startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                                    startMarker.setIcon(myDrawable);
+                                    startMarker.setImage(myDrawable);
+                                    startMarker.setTitle("dddd");
+                                    startMarker.showInfoWindow();
+                                    //mMapView.getOverlays().add(startMarker);
+                                    mMapView.invalidate();
+                                    mMapView.getOverlays().add(startMarker);
+
+                                } catch (Exception ex) {
+                                    Log.e("Error", "Exception loading drawable");
+                                }*/
+                                startMarker.setPosition(mark);
+                                mMapView.invalidate();
+                                mMapView.getOverlays().add(startMarker);
+                                return true;
+                            }
+                            Log.d("look", String.valueOf(eTime));
+                            Log.d("look", String.valueOf(disX));
+                            Log.d("look", String.valueOf(disY));
+
+
+                        }
                 }
                 return false;
             }
         });
+
+
+        /*mMapView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("look","click seen");
+                GeoPoint mark = (GeoPoint) mMapView.getProjection().fromPixels(
+                        (int) lastTouchDownXY[0],
+                        (int) lastTouchDownXY[1]);
+                Marker startMarker = new Marker(mMapView);
+
+                Drawable myDrawable;
+                Resources res = getResources();
+                try {
+                    myDrawable = Drawable.createFromXml(res, res.getXml(R.xml.ic__192595));
+                    startMarker.setPosition(mark);
+                    startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                    startMarker.setIcon(myDrawable);
+                    startMarker.setImage(myDrawable);
+                    startMarker.setTitle("dddd");
+                    startMarker.showInfoWindow();
+                    //mMapView.getOverlays().add(startMarker);
+                    mMapView.invalidate();
+                    mMapView.getOverlays().add(startMarker);
+
+                } catch (Exception ex) {
+                    Log.e("Error", "Exception loading drawable");
+                }
+
+            }
+        });*/
+
         return mMapView;
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -127,9 +295,87 @@ public class MapFragment extends Fragment {
 
         //My Location
         //note you have handle the permissions yourself, the overlay did not do it for you
-        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mMapView);
-        mLocationOverlay.enableMyLocation();
-        mMapView.getOverlays().add(this.mLocationOverlay);
+        GpsMyLocationProvider provider = new GpsMyLocationProvider(requireContext());
+        provider.addLocationSource(LocationManager.GPS_PROVIDER);
+        mLocationOverlay = new MyLocationNewOverlay(provider, mMapView);
+        //mLocationOverlay.enableFollowLocation();
+        //mMapView.getOverlayManager().add(mLocationOverlay);
+
+        mLocationOverlay.runOnFirstFix(new Runnable() {
+            public void run() {
+                Log.d("SeeWhoFirst", String.format("First location fix: %s", mLocationOverlay.getLastFix()));
+                GeoPoint mark = new GeoPoint(mLocationOverlay.getLastFix());
+                defCurrPoint = mark.clone();
+                //Marker startMarker = new Marker(mMapView);
+                //Drawable myDrawable = null;
+                //Resources res = getResources();
+
+                /*try {
+                    myDrawable = Drawable.createFromXml(res, res.getXml(R.xml.ic__192595));
+                }
+                catch (Exception ex) {
+                    Log.e("Error", "Exception loading drawable");
+                }*/
+                //mMapView.getOverlays().remove(startMarker);
+
+                startMarker.setPosition(mark);
+                //startMarker.("Click to confirm event location");
+                //startMarker.showInfoWindow();
+                //startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                //startMarker.setIcon(myDrawable);
+                //startMarker.setImage(myDrawable);
+
+                //startMarker.showInfoWindow();
+                //mMapView.getOverlays().add(startMarker);
+                mMapView.invalidate();
+                mMapView.getOverlays().add(startMarker);
+
+                //mMapView.setExpectedCenter(mark);
+                //mLocationOverlay.disableFollowLocation();
+
+
+            }
+        });
+
+
+
+        /*mMapView.getOverlayManager().add(mLocationOverlay);
+        GeoPoint mark = new GeoPoint(mLocationOverlay.getLastFix());
+        Marker startMarker = new Marker(mMapView);
+
+        Drawable myDrawable = null;
+        Resources res = getResources();
+        try {
+            myDrawable = Drawable.createFromXml(res, res.getXml(R.xml.ic__192595));
+        }
+     catch (Exception ex) {
+        Log.e("Error", "Exception loading drawable");
+    }
+            startMarker.setPosition(mark);
+            startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            startMarker.setIcon(myDrawable);
+            startMarker.setImage(myDrawable);
+            startMarker.setTitle("oooo");
+            startMarker.showInfoWindow();
+            //mMapView.getOverlays().add(startMarker);
+            mMapView.invalidate();
+            mMapView.getOverlays().add(startMarker);*/
+
+
+        /*mLocationOverlay = new MyLocationNewOverlay(provider, mMapView);
+        Bitmap bitmapNotMoving = BitmapFactory.decodeResource(getResources(), R.xml.ic__192595);
+        Bitmap bitmapMoving = BitmapFactory.decodeResource(getResources(), R.xml.ic__192595);
+
+        mLocationOverlay.setDirectionArrow(bitmapNotMoving,bitmapMoving);
+        mLocationOverlay.enableFollowLocation();
+        mLocationOverlay.runOnFirstFix(new Runnable() {
+            public void run() {
+                Log.d("MyTag", String.format("First location fix: %s", mLocationOverlay.getLastFix()));
+            }
+        });
+        mMapView.getOverlayManager().add(mLocationOverlay);*/
+
+
 
 
         //Mini map
@@ -173,7 +419,7 @@ public class MapFragment extends Fragment {
         mMapView.setTilesScaledToDpi(true);
 
         //the rest of this is restoring the last map location the user looked at
-        final float zoomLevel = mPrefs.getFloat(PREFS_ZOOM_LEVEL_DOUBLE, 1);
+        final float zoomLevel = mPrefs.getFloat(PREFS_ZOOM_LEVEL_DOUBLE, 5);
         mMapView.getController().setZoom(zoomLevel);
         final float orientation = mPrefs.getFloat(PREFS_ORIENTATION, 0);
         mMapView.setMapOrientation(orientation, false);
@@ -182,6 +428,18 @@ public class MapFragment extends Fragment {
         final double latitude = Double.valueOf(latitudeString);
         final double longitude = Double.valueOf(longitudeString);
         mMapView.setExpectedCenter(new GeoPoint(latitude, longitude));
+       // zoomIn();
+        //mLocationOverlay.disableFollowLocation();
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                IMapController controller = mMapView.getController();
+                controller.setCenter(defCurrPoint);
+                Log.d("SeeWhoFirst","animate point");
+                //controller.stopAnimation(true);
+            }
+        }, 10000);
 
         setHasOptionsMenu(true);
     }
@@ -195,10 +453,11 @@ public class MapFragment extends Fragment {
         edit.putString(PREFS_LATITUDE_STRING, String.valueOf(mMapView.getMapCenter().getLatitude()));
         edit.putString(PREFS_LONGITUDE_STRING, String.valueOf(mMapView.getMapCenter().getLongitude()));
         edit.putFloat(PREFS_ZOOM_LEVEL_DOUBLE, (float) mMapView.getZoomLevelDouble());
-        edit.commit();
+        edit.apply();
 
         mMapView.onPause();
         super.onPause();
+        mLocationOverlay.disableMyLocation();
     }
 
     @Override
@@ -213,6 +472,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mLocationOverlay.enableMyLocation();
         final String tileSourceName = mPrefs.getString(PREFS_TILE_SOURCE,
                 TileSourceFactory.DEFAULT_TILE_SOURCE.name());
         try {
@@ -224,6 +484,8 @@ public class MapFragment extends Fragment {
 
         mMapView.onResume();
     }
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
