@@ -18,9 +18,10 @@
         android:paddingHorizontal="20dp">
 
         <TextView
+            android:id="@+id/habit_list_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/all_habits"
+            android:text="Today's Habits"
             style="@style/TextStyle_Heading1"
             android:layout_gravity="top"
             android:layout_marginTop="75dp"
