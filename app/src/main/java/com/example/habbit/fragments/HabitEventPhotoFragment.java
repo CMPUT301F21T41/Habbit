@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +25,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.habbit.BuildConfig;
 import com.example.habbit.R;
+import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.squareup.picasso.Picasso;
@@ -87,6 +89,7 @@ public class HabitEventPhotoFragment extends DialogFragment {
         final Habit selectedHabit = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
+        HabitEventInteractionHandler handler = new HabitEventInteractionHandler(selectedHabit);
 
         cameraBtn.setOnClickListener(v -> dispatchTakePictureIntent());
         galleryBtn.setOnClickListener(v -> dispatchSelectPictureIntent());
@@ -95,7 +98,7 @@ public class HabitEventPhotoFragment extends DialogFragment {
                 .setView(view)
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Submit", (dialogInterface, i) -> {
-
+                    handler.addHabitEventPhoto(selectedHabitEvent, photoPreview);
                 })
                 .create();
     }
@@ -137,7 +140,7 @@ public class HabitEventPhotoFragment extends DialogFragment {
         File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                ".jpg",   /* suffix */
                 storageDir      /* directory */
         );
 
