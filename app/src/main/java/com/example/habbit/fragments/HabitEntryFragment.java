@@ -10,12 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -108,6 +108,9 @@ public class HabitEntryFragment extends DialogFragment {
         ToggleButton tFri = (ToggleButton) view.findViewById(R.id.tFri);
         ToggleButton tSat = (ToggleButton) view.findViewById(R.id.tSat);
 
+        /* get publicity switch for toggling */
+        Switch publicitySwitch = (Switch) view.findViewById(R.id.edit_publicity_switch);
+
         /* initialize add habit dialog */
         AlertDialog addDialog;
         if (existingHabit != null) {
@@ -130,6 +133,31 @@ public class HabitEntryFragment extends DialogFragment {
             tThu.setChecked(schedule.get("Thu"));
             tFri.setChecked(schedule.get("Fri"));
             tSat.setChecked(schedule.get("Sat"));
+
+
+            if (existingHabit.getPublicity() != null){
+                publicitySwitch.setChecked(existingHabit.getPublicity());
+                if (existingHabit.getPublicity()){
+                    publicitySwitch.setText("Public");
+                } else {
+                    publicitySwitch.setText("Private");
+                }
+            } else {
+                publicitySwitch.setChecked(true);
+                publicitySwitch.setText("Public");
+            }
+
+            publicitySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (b){
+                        publicitySwitch.setText("Public");
+                    } else {
+                        publicitySwitch.setText("Private");
+                    }
+                }
+            });
+
         } else {
             addDialog = new AlertDialog.Builder(getContext())
                     .setView(view)
@@ -146,6 +174,7 @@ public class HabitEntryFragment extends DialogFragment {
             String habitDateText = habitDateField.getText().toString();
             String habitReasonText = habitReasonField.getText().toString();
             HashMap<String, Boolean> schedule = new HashMap<String, Boolean>();
+            boolean habitIsPublic = publicitySwitch.isChecked();
 
             // check daypicker
             schedule.put("Sun", tSun.isChecked());
@@ -190,16 +219,17 @@ public class HabitEntryFragment extends DialogFragment {
             if (errorFlag) {
                 Toast.makeText(getActivity(), "Please fix errors", Toast.LENGTH_SHORT).show();
             } else {
-                /* check if we are creating a new medicine object or adjusting an existing one */
+                /* check if we are creating a new habit object or adjusting an existing one */
                 if (existingHabit != null) {
                     existingHabit.setTitle(habitTitleText);
                     existingHabit.setDate(habitDateText);
                     existingHabit.setReason(habitReasonText);
                     existingHabit.setSchedule(schedule);
+                    existingHabit.setPublicity(publicitySwitch.isChecked());
                     /* since this is an edit, we do not add a brand new medicine to the list */
                     handler.updateHabit(existingHabit);
                 } else {
-                    Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText, schedule);
+                    Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText, schedule, habitIsPublic);
                     handler.addHabit(newHabit);
                 }
 

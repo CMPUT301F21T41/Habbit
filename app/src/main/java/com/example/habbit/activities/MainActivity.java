@@ -111,19 +111,26 @@ public class MainActivity extends AppCompatActivity
             User.clearHabits();
 
             // pull updated list of habits from firestore
+            boolean publicity;
             Map<String,Object> habitData;
             assert value != null;
             for(QueryDocumentSnapshot document:value) {
                 habitData = document.getData();
                 if (!habitData.isEmpty()) {
-
+                    if (habitData.get("publicity") == null){
+                        publicity = true;
+                    } else {
+                        publicity = (boolean) habitData.get("publicity");
+                    }
                     // every time we pull from Firestore, get the document ID data and associate it with the Habit object
                     Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
                             Objects.requireNonNull(habitData.get("reason")).toString(),
                             Objects.requireNonNull(habitData.get("date")).toString(),
-                            (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")));
+                            (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")),
+                            publicity);
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
+
 
                     // only add the habit to displayed habits if it is scheduled
                     if (habit.getSchedule().get(dayOfTheWeek.substring(0, 3)) && currentDate.compareTo(habit.getDateObject()) >= 0) {

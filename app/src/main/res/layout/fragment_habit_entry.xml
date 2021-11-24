@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.HabitEntryFragment"
@@ -26,6 +25,14 @@
             android:hint="@string/habit_title"
             android:autofillHints="@string/habit_title"
             />
+
+        <Switch
+            android:id="@+id/edit_publicity_switch"
+            style="@style/TextStyle_Heading2"
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/work_sans_bold"
+            android:text="Private" />
 
         <TextView
             android:id="@+id/occurs_on_label"

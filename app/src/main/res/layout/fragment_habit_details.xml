@@ -71,6 +71,17 @@
             app:layout_constraintTop_toTopOf="parent"
             android:focusable="true" />
 
+        <Switch
+            android:id="@+id/publicity_switch"
+            style="@style/TextStyle_Heading2"
+            android:layout_width="110dp"
+            android:layout_height="38dp"
+            android:clickable="false"
+            android:text="Public"
+            app:layout_constraintBottom_toBottomOf="@+id/habit_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/view_habit_event_link" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

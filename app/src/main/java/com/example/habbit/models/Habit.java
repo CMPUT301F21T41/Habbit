@@ -54,6 +54,8 @@ public class Habit implements Serializable {
      */
     private HashMap<String, Boolean> schedule;
 
+    private boolean isPublic;
+
     // empty constructor needed to use Firestore add()
     public Habit() {}
 
@@ -65,12 +67,13 @@ public class Habit implements Serializable {
      * @param date give a date to be formatted and turned into {@link String}
      * @param schedule give a schedule for days of the week that the habit should be completed {@link HashMap}
      */
-    public Habit(String title, String reason, String date, HashMap<String, Boolean> schedule) {
+    public Habit(String title, String reason, String date, HashMap<String, Boolean> schedule, Boolean isPublic) {
         this.title = title;
         this.reason = reason;
         this.date = date;
         habitEvents = new ArrayList<HabitEvent>(); // initialize habitEvents list
         this.schedule = schedule;
+        this.isPublic = isPublic;
     }
 
     /**
@@ -205,5 +208,21 @@ public class Habit implements Serializable {
      */
     public HashMap<String, Boolean> getSchedule() {
         return schedule;
+    }
+
+    /**
+     * This function returns {@link Habit#isPublic}
+     * @return The return type is {@link Boolean}
+     */
+    public Boolean getPublicity(){
+        return this.isPublic;
+    }
+
+    /**
+     * This function sets {@link Habit#isPublic} which is of type {@link Boolean}
+     * @param isPublic the privacy status of the Habit
+     */
+    public void setPublicity(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 }
