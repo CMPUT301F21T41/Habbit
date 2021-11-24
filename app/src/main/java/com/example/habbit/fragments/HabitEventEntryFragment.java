@@ -2,11 +2,13 @@ package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.habbit.R;
+import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
@@ -25,6 +28,8 @@ import com.example.habbit.models.HabitEvent;
  * create an instance of this fragment.
  */
 public class HabitEventEntryFragment extends DialogFragment {
+
+    HabitEvent existingHabitEvent;
 
     public HabitEventEntryFragment() {
         // Required empty public constructor
@@ -52,8 +57,10 @@ public class HabitEventEntryFragment extends DialogFragment {
         /* inflate layout for fragment */
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_habit_event_entry, null);
 
+        ImageView addPhotoBtn = view.findViewById(R.id.add_photo_link);
+
         /* get the habit event and habit details from args if exists */
-        HabitEvent existingHabitEvent = (HabitEvent) (getArguments() !=null ?
+        existingHabitEvent = (HabitEvent) (getArguments() !=null ?
                 getArguments().getSerializable("habitEvent") : null);
         assert getArguments() != null;
         Habit habit = (Habit) getArguments().getSerializable("habit");
@@ -82,6 +89,21 @@ public class HabitEventEntryFragment extends DialogFragment {
 
         HabitEventInteractionHandler handler = new HabitEventInteractionHandler(habit);
 
+        if (existingHabitEvent == null) {
+            HabitEvent habitEvent = new HabitEvent("placeholder");
+            handler.addHabitEvent(habitEvent);
+            existingHabitEvent = habitEvent;
+            Button negativeButton = addDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            negativeButton.setOnClickListener(view2 -> {
+                handler.deleteHabitEvent(existingHabitEvent);
+            });
+        }
+
+        addPhotoBtn.setOnClickListener(view2 -> {
+            HabitEventPhotoFragment.newInstance(existingHabitEvent, habit)
+                    .show(requireActivity().getSupportFragmentManager(), "ADD_PHOTO_EVENT");
+        });
+
         // when a user confirms adding a habit event, we should add it to the list of habit events
         // associated with that Habit
         Button positiveButton = addDialog.getButton(AlertDialog.BUTTON_POSITIVE);
@@ -101,13 +123,8 @@ public class HabitEventEntryFragment extends DialogFragment {
                 Toast.makeText(getActivity(), "Please fix errors", Toast.LENGTH_SHORT).show();
             } else {
                 /* part where either create a new habit event OR adjusting an existing one */
-                if (existingHabitEvent != null) {
-                    existingHabitEvent.setComment(comment);
-                    handler.updateHabitEvent(existingHabitEvent);
-                } else {
-                    HabitEvent habitEvent = new HabitEvent(comment);
-                    handler.addHabitEvent(habitEvent);
-                }
+                existingHabitEvent.setComment(comment);
+                handler.updateHabitEvent(existingHabitEvent);
 
                 addDialog.dismiss();
             }

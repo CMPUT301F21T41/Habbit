@@ -5,11 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.habbit.handlers.HabitEventInteractionHandler;
+import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.R;
 
@@ -32,15 +35,18 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
      */
     private final Context context;
 
+    private Habit habit;
+
     /**
      *
      * @param context the context the custom list is launched in
      * @param habitEvents the list of habit events to display
      */
-    public CustomHabitEventList(Context context, ArrayList<HabitEvent> habitEvents) {
+    public CustomHabitEventList(Context context, ArrayList<HabitEvent> habitEvents, Habit habit) {
         super(context, 0, habitEvents);
         this.habitEvents = habitEvents;
         this.context = context;
+        this.habit = habit;
     }
 
     @NonNull
@@ -58,6 +64,13 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
         // Linking xml text fields to text views in CustomHabitList.java
         TextView habitEventComment = view.findViewById(R.id.habit_event_comment);
 //        TextView habitEventCompletedOnTime = view.findViewById(R.id.habit_event_completed_on_time);
+
+        ImageView eventPhoto = view.findViewById(R.id.habit_event_photo);
+        HabitEventInteractionHandler handler = new HabitEventInteractionHandler(habit);
+
+        //set image
+        assert habitEvent != null;
+        handler.getHabitEventPhoto(habitEvent, eventPhoto);
 
         // Set texts
         String commentTxt = habitEvent.getComment();

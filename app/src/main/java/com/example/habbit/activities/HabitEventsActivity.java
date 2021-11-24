@@ -41,7 +41,7 @@ public class HabitEventsActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_baseline_arrow_back_24));
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_baseline_arrow_back_24)); // change to getDrawable(int, Theme)
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,7 +57,7 @@ public class HabitEventsActivity extends AppCompatActivity {
         habitEventDataList = habit.getHabitEvents();
 
         // set the adapter
-        habitEventAdapter = new CustomHabitEventList(this, habitEventDataList);
+        habitEventAdapter = new CustomHabitEventList(this, habitEventDataList, habit);
         habitEventList.setAdapter(habitEventAdapter);
 
         // get user login
@@ -80,9 +80,7 @@ public class HabitEventsActivity extends AppCompatActivity {
                         Log.d(TAG, document.getId() + " => " + habitEventData);
                         if (!habitEventData.isEmpty()) {
                             // every time we pull from Firestore, get the document ID data and associate it with the HabitEvent object
-
                             HabitEvent habitEvent = new HabitEvent(Objects.requireNonNull(habitEventData.get("comment")).toString());
-
                             Log.d(TAG, Objects.requireNonNull(habitEventData.get("comment")).toString());
 
                             habitEvent.setId(document.getId());

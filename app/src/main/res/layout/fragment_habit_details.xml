@@ -68,7 +68,8 @@
             android:text="@string/view_habit_events"
             android:textColor="@color/FIGMA_BLACK"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
