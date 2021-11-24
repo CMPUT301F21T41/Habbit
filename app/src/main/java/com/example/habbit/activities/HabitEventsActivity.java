@@ -83,7 +83,7 @@ public class HabitEventsActivity extends AppCompatActivity {
 
                             HabitEvent habitEvent = new HabitEvent(Objects.requireNonNull(habitEventData.get("comment")).toString());
 
-                            Log.d(TAG, Objects.requireNonNull(habitEventData.get("completedOnTime")).toString());
+                            // Log.d(TAG, Objects.requireNonNull(habitEventData.get("completedOnTime")).toString());
                             Log.d(TAG, Objects.requireNonNull(habitEventData.get("comment")).toString());
 
                             habitEvent.setId(document.getId());

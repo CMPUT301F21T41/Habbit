@@ -146,8 +146,10 @@ public class HabitEventPhotoFragment extends DialogFragment {
     private void dispatchSelectPictureIntent() {
         Intent selectPictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
         selectPictureIntent.setType("image/*");
-        selectPictureIntent.setAction(Intent.ACTION_GET_CONTENT);
-        Intent.createChooser(selectPictureIntent, "Select Picture");
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+        Intent chooserIntent = Intent.createChooser(selectPictureIntent, "Select Picture");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
         cameraActivity.launch(selectPictureIntent);
     }
 

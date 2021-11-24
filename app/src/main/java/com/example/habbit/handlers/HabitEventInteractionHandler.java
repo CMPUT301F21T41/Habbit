@@ -7,11 +7,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -68,7 +70,19 @@ public class HabitEventInteractionHandler {
 
         // update firestore with the new habit event
         userDoc.collection("Habits").document(habit.getId())
-                .collection("Habit Events").add(habitEvent);
+                .collection("Habit Events").add(habitEvent)
+                .addOnSuccessListener(
+                new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(@NonNull DocumentReference documentReference) {
+                        habitEvent.setId(documentReference.getId());
+                        userDoc.collection("Habits")
+                                .document(habit.getId()).collection("Habit Events")
+                                .document(habitEvent.getId())
+                                .update("id", habitEvent.getId());
+                    }
+                }
+        );
     }
 
     /**
