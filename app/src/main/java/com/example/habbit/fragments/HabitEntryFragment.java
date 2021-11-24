@@ -134,10 +134,10 @@ public class HabitEntryFragment extends DialogFragment {
             tFri.setChecked(schedule.get("Fri"));
             tSat.setChecked(schedule.get("Sat"));
 
-
-            if (existingHabit.getPublicity() != null){
-                publicitySwitch.setChecked(existingHabit.getPublicity());
-                if (existingHabit.getPublicity()){
+            // set the correct value for the switch
+            if (existingHabit.isPublic() != null){
+                publicitySwitch.setChecked(existingHabit.isPublic());
+                if (existingHabit.isPublic()){
                     publicitySwitch.setText("Public");
                 } else {
                     publicitySwitch.setText("Private");
@@ -147,6 +147,7 @@ public class HabitEntryFragment extends DialogFragment {
                 publicitySwitch.setText("Public");
             }
 
+            // listen for check to change and if so change the text accordingly
             publicitySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -165,6 +166,19 @@ public class HabitEntryFragment extends DialogFragment {
                     .setNegativeButton("Cancel", null)
                     .setPositiveButton("Confirm", null)
                     .show();
+
+
+            // listen for check to change and if so change the text accordingly
+            publicitySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (b){
+                        publicitySwitch.setText("Public");
+                    } else {
+                        publicitySwitch.setText("Private");
+                    }
+                }
+            });
         }
 
         /* set button behaviour separately in order to implement data validation */

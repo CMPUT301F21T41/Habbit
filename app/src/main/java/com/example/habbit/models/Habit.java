@@ -1,20 +1,13 @@
 package com.example.habbit.models;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class Habit implements Serializable {
     /* attributes that define a Habit object */
@@ -54,7 +47,7 @@ public class Habit implements Serializable {
      */
     private HashMap<String, Boolean> schedule;
 
-    private boolean isPublic;
+    private boolean habitIsPublic;
 
     // empty constructor needed to use Firestore add()
     public Habit() {}
@@ -73,7 +66,7 @@ public class Habit implements Serializable {
         this.date = date;
         habitEvents = new ArrayList<HabitEvent>(); // initialize habitEvents list
         this.schedule = schedule;
-        this.isPublic = isPublic;
+        this.habitIsPublic = isPublic;
     }
 
     /**
@@ -211,18 +204,18 @@ public class Habit implements Serializable {
     }
 
     /**
-     * This function returns {@link Habit#isPublic}
+     * This function returns {@link Habit#habitIsPublic}
      * @return The return type is {@link Boolean}
      */
-    public Boolean getPublicity(){
-        return this.isPublic;
+    public Boolean isPublic(){
+        return this.habitIsPublic;
     }
 
     /**
-     * This function sets {@link Habit#isPublic} which is of type {@link Boolean}
+     * This function sets {@link Habit#habitIsPublic} which is of type {@link Boolean}
      * @param isPublic the privacy status of the Habit
      */
     public void setPublicity(boolean isPublic) {
-        this.isPublic = isPublic;
+        this.habitIsPublic = isPublic;
     }
 }

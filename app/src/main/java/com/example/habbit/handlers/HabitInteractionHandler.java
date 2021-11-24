@@ -48,7 +48,7 @@ public class HabitInteractionHandler {
         String dateText = newHabit.getDate();
         boolean isChecked = newHabit.isChecked();
         HashMap<String, Boolean> schedule = newHabit.getSchedule();
-        boolean isPublic = newHabit.getPublicity();
+        boolean isPublic = newHabit.isPublic();
 
         // update the firestore
         DocumentReference userDoc = userCollectionReference.document(username);
@@ -58,7 +58,7 @@ public class HabitInteractionHandler {
                         "date", dateText,
                         "checked", isChecked,
                         "schedule", schedule,
-                        "publicity", isPublic);
+                        "public", isPublic);
     }
 
     /**

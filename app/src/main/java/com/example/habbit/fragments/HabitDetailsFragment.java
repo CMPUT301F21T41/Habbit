@@ -72,7 +72,7 @@ public class HabitDetailsFragment extends DialogFragment {
         viewReason.setText(selected != null ? selected.getReason():null);
 
         /* set the switch values */
-        swtPublicity.setChecked(selected != null ? selected.getPublicity():null);
+        swtPublicity.setChecked(selected != null ? selected.isPublic():null);
         if (selected != null){
             if (swtPublicity.isChecked()){
                 swtPublicity.setText("Public");

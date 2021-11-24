@@ -117,10 +117,10 @@ public class MainActivity extends AppCompatActivity
             for(QueryDocumentSnapshot document:value) {
                 habitData = document.getData();
                 if (!habitData.isEmpty()) {
-                    if (habitData.get("publicity") == null){
+                    if (habitData.get("public") == null){
                         publicity = true;
                     } else {
-                        publicity = (boolean) habitData.get("publicity");
+                        publicity = (boolean) habitData.get("public");
                     }
                     // every time we pull from Firestore, get the document ID data and associate it with the Habit object
                     Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
