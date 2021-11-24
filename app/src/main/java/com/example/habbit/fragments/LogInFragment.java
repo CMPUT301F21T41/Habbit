@@ -46,6 +46,12 @@ public class LogInFragment extends Fragment {
         return new LogInFragment();
     }
 
+    public void clearText(){
+        passTextField.setText("");
+        userTextField.setText("");
+        view.clearFocus();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         view = inflater.inflate(R.layout.fragment_log_in,container,false);

@@ -61,6 +61,14 @@ public class RegisterFragment extends Fragment {
         return fragment;
     }
 
+    public void clearText(){
+        regEmail.setText("");
+        regUser.setText("");
+        regPass.setText("");
+        regPassConfirm.setText("");
+        view.clearFocus();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         view = inflater.inflate(R.layout.fragment_register,container, false);
