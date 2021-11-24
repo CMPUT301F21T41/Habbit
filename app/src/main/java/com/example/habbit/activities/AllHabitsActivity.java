@@ -112,15 +112,10 @@ public class AllHabitsActivity extends AppCompatActivity
                 if (!habitData.isEmpty()) {
 
                     // every time we pull from Firestore, get the document ID data and associate it with the Habit object
-<<<<<<< HEAD
                     Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
                             Objects.requireNonNull(habitData.get("reason")).toString(),
                             Objects.requireNonNull(habitData.get("date")).toString(),
                             (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")));
-=======
-                    Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(), Objects.requireNonNull(habitData.get("reason")).toString(),
-                            Objects.requireNonNull(habitData.get("date")).toString());
->>>>>>> changed gitignore
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
                     User.addHabit(habit);
