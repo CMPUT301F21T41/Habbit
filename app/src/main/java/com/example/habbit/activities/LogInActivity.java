@@ -1,7 +1,10 @@
 package com.example.habbit.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -115,6 +118,18 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                 LogErrorFragment.newInstance(null).show(getSupportFragmentManager(),"GET_FAILED");
             }
         });
+    }
+
+    // code taken from https://stackoverflow.com/questions/4165414/how-to-hide-soft-keyboard-on-android-after-clicking-outside-edittext
+    // closes the keyboard when you click outside of the edittext
+    // TODO: see if we can adapt this to avoid plagiarism lol
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
 }

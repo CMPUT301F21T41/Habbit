@@ -3,9 +3,11 @@ package com.example.habbit.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +46,17 @@ public class LogErrorFragment extends DialogFragment {
        return new AlertDialog.Builder(getContext())
                .setView(view)
                .setMessage(errMessage)
-               .setPositiveButton("Ok",null)
+               .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       Fragment parentFrag = getParentFragmentManager().findFragmentById(R.id.fragment_container);
+                       if (parentFrag instanceof LogInFragment){
+                           ((LogInFragment) parentFrag).clearText();
+                       } else if (parentFrag instanceof RegisterFragment){
+                           ((RegisterFragment) parentFrag).clearText();
+                       }
+                   }
+               })
                .show();
    }
 }
