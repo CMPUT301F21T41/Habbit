@@ -13,6 +13,5 @@
 .cxx
 local.properties
 .idea
-.gradle
 **/.gradle/
-/gradle/
+
