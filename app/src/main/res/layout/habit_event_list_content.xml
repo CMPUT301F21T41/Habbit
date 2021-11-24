@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
         app:contentPadding="20dp"
         app:strokeColor="@color/FIGMA_GRAY"
@@ -17,8 +18,8 @@
             android:layout_height="match_parent">
 
             <TextView
-                style="@style/TextStyle_Subtitle"
                 android:id="@+id/habit_event_date"
+                style="@style/TextStyle_Subtitle"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/work_sans"
                 android:text="2021-01-01"
@@ -28,14 +29,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/habit_event_comment" />
 
             <TextView
-                style="@style/TextStyle_Heading1"
                 android:id="@+id/habit_event_comment"
-                android:text="Habit Event Title" />
+                style="@style/TextStyle_Heading1"
+                android:text="Habit Event Title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
-                style="@style/TextStyle_paragraph"
                 android:id="@+id/habit_event_completed_on_time"
+                style="@style/TextStyle_paragraph"
                 android:layout_marginTop="40dp"
                 android:text="TextView"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +46,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/habit_event_date" />
 
+            <ImageView
+                android:id="@+id/habit_event_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/habit_event_completed_on_time"
+                app:srcCompat="@drawable/placeholder" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
 

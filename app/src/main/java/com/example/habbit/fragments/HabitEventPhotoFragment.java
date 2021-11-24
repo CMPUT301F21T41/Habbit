@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +41,9 @@ public class HabitEventPhotoFragment extends DialogFragment {
     String currentPhotoPath;
     ImageView photoPreview;
 
+    /**
+     * The result launcher for selecting photo
+     */
     ActivityResultLauncher<Intent> cameraActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -64,6 +66,13 @@ public class HabitEventPhotoFragment extends DialogFragment {
         // Required empty public constructor
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param habitEvent The HabitEvent whose details we want to view, of type {@link Habit}.
+     * @return A new instance of fragment {@link HabitEventDetailsFragment}.
+     */
     public static HabitEventPhotoFragment newInstance(HabitEvent habitEvent, Habit habit) {
         HabitEventPhotoFragment fragment = new HabitEventPhotoFragment();
         Bundle args = new Bundle();
@@ -98,11 +107,16 @@ public class HabitEventPhotoFragment extends DialogFragment {
                 .setView(view)
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Submit", (dialogInterface, i) -> {
+                    assert selectedHabitEvent != null;
                     handler.addHabitEventPhoto(selectedHabitEvent, photoPreview);
+                    // handler.updateHabitEvent(selectedHabitEvent);
                 })
                 .create();
     }
 
+    /**
+     * This method is to invoke android camera to take a picture
+     **/
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
@@ -126,6 +140,9 @@ public class HabitEventPhotoFragment extends DialogFragment {
         }
     }
 
+    /**
+     * This method is for invoke android media selection to select a picture
+     */
     private void dispatchSelectPictureIntent() {
         Intent selectPictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
         selectPictureIntent.setType("image/*");
@@ -134,6 +151,11 @@ public class HabitEventPhotoFragment extends DialogFragment {
         cameraActivity.launch(selectPictureIntent);
     }
 
+    /**
+     * This method is for selecting a filename for the taken picture
+     * @return image, an empty {@link File} which has the appropriate file name
+     * @throws IOException for error encountered
+     */
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";

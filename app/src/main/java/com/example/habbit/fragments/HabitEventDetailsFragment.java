@@ -2,7 +2,6 @@ package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.habbit.R;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
-import com.example.habbit.R;
 
 public class HabitEventDetailsFragment extends DialogFragment {
 
@@ -66,20 +65,19 @@ public class HabitEventDetailsFragment extends DialogFragment {
         commentField.setText(selectedHabitEvent != null ? selectedHabitEvent.getComment(): null);
 //        completedOnTimeField.setText(selectedHabitEvent != null ? String.valueOf(selectedHabitEvent.isCompletedOnTime()):null);
 
-        //eventPhoto.setImageResource();
-
+        // get the photo into ImageView
+        assert selectedHabitEvent != null;
+        handler.getHabitEventPhoto(selectedHabitEvent, eventPhoto);
 
         /* initialize the "View HabitEvent" dialog */
         return new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setNeutralButton("Close",null)
                 .setNegativeButton("Delete", (dialogInterface, i) ->
-                {
-                    assert selectedHabitEvent != null;
-                    handler.deleteHabitEvent(selectedHabitEvent);
-                })
-                .setPositiveButton("Edit",(dialogInterface, i) -> HabitEventEntryFragment.newInstance(selectedHabitEvent, selectedHabit).
-                        show(requireActivity().getSupportFragmentManager(), "ADD_HABIT_EVENT"))
+                        handler.deleteHabitEvent(selectedHabitEvent))
+                .setPositiveButton("Edit",(dialogInterface, i) ->
+                        HabitEventEntryFragment.newInstance(selectedHabitEvent, selectedHabit)
+                        .show(requireActivity().getSupportFragmentManager(), "ADD_HABIT_EVENT"))
                 .create();
     }
 

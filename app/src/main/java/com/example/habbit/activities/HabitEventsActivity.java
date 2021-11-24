@@ -57,7 +57,7 @@ public class HabitEventsActivity extends AppCompatActivity {
         habitEventDataList = habit.getHabitEvents();
 
         // set the adapter
-        habitEventAdapter = new CustomHabitEventList(this, habitEventDataList);
+        habitEventAdapter = new CustomHabitEventList(this, habitEventDataList, habit);
         habitEventList.setAdapter(habitEventAdapter);
 
         // get user login
