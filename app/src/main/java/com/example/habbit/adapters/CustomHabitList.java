@@ -75,7 +75,6 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         // setting checkbox behaviour
         checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             checkBox.setChecked(habit.isChecked());
-
             listener.onCheckboxClick(habit, isChecked);
         });
 

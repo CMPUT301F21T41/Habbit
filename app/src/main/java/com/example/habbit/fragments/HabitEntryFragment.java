@@ -10,11 +10,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
@@ -22,6 +26,7 @@ import com.example.habbit.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -94,6 +99,15 @@ public class HabitEntryFragment extends DialogFragment {
         EditText habitTitleField = view.findViewById(R.id.edit_habit_title);
         EditText habitReasonField = view.findViewById(R.id.edit_habit_reason);
 
+        /* get pickers for days of the week */
+        ToggleButton tSun = (ToggleButton) view.findViewById(R.id.tSun);
+        ToggleButton tMon = (ToggleButton) view.findViewById(R.id.tMon);
+        ToggleButton tTue = (ToggleButton) view.findViewById(R.id.tTue);
+        ToggleButton tWed = (ToggleButton) view.findViewById(R.id.tWed);
+        ToggleButton tThu = (ToggleButton) view.findViewById(R.id.tThu);
+        ToggleButton tFri = (ToggleButton) view.findViewById(R.id.tFri);
+        ToggleButton tSat = (ToggleButton) view.findViewById(R.id.tSat);
+
         /* initialize add habit dialog */
         AlertDialog addDialog;
         if (existingHabit != null) {
@@ -105,7 +119,17 @@ public class HabitEntryFragment extends DialogFragment {
                     .show();
             habitTitleField.setText(existingHabit.getTitle());
             habitDateField.setText((existingHabit.getDate()));
+            habitDateField.setClickable(false);
+            habitDateField.setOnClickListener(null);
             habitReasonField.setText((existingHabit.getReason()));
+            HashMap<String, Boolean> schedule = existingHabit.getSchedule();
+            tSun.setChecked(schedule.get("Sun"));
+            tMon.setChecked(schedule.get("Mon"));
+            tTue.setChecked(schedule.get("Tue"));
+            tWed.setChecked(schedule.get("Wed"));
+            tThu.setChecked(schedule.get("Thu"));
+            tFri.setChecked(schedule.get("Fri"));
+            tSat.setChecked(schedule.get("Sat"));
         } else {
             addDialog = new AlertDialog.Builder(getContext())
                     .setView(view)
@@ -121,6 +145,16 @@ public class HabitEntryFragment extends DialogFragment {
             String habitTitleText = habitTitleField.getText().toString();
             String habitDateText = habitDateField.getText().toString();
             String habitReasonText = habitReasonField.getText().toString();
+            HashMap<String, Boolean> schedule = new HashMap<String, Boolean>();
+
+            // check daypicker
+            schedule.put("Sun", tSun.isChecked());
+            schedule.put("Mon", tMon.isChecked());
+            schedule.put("Tue", tTue.isChecked());
+            schedule.put("Wed", tWed.isChecked());
+            schedule.put("Thu", tThu.isChecked());
+            schedule.put("Fri", tFri.isChecked());
+            schedule.put("Sat", tSat.isChecked());
 
             boolean errorFlag = false;
 
@@ -140,6 +174,12 @@ public class HabitEntryFragment extends DialogFragment {
                 errorFlag = true;
             }
 
+            if (!schedule.containsValue(Boolean.TRUE)) {
+                TextView occursOnLabel = view.findViewById(R.id.occurs_on_label);
+                occursOnLabel.setError("Habit schedule must be set");
+                errorFlag = true;
+            }
+
             // get handler to respond to habit interactions
             HabitInteractionHandler handler = new HabitInteractionHandler();
 
@@ -155,10 +195,11 @@ public class HabitEntryFragment extends DialogFragment {
                     existingHabit.setTitle(habitTitleText);
                     existingHabit.setDate(habitDateText);
                     existingHabit.setReason(habitReasonText);
+                    existingHabit.setSchedule(schedule);
                     /* since this is an edit, we do not add a brand new medicine to the list */
                     handler.updateHabit(existingHabit);
                 } else {
-                    Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText);
+                    Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText, schedule);
                     handler.addHabit(newHabit);
                 }
 

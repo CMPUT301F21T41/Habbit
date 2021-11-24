@@ -1,38 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.HabitEntryFragment"
-    android:orientation="vertical"
-    android:paddingHorizontal="30dp"
-    android:paddingVertical="30dp">
-
-    <EditText
-        android:id="@+id/edit_habit_title"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="@string/habit_title"
-        android:autofillHints="@string/habit_title" />
+        android:layout_height="match_parent"
+        tools:context=".fragments.HabitEntryFragment"
+        android:orientation="vertical"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="30dp">
 
-    <EditText
-        android:id="@+id/edit_habit_date"
-        android:clickable="false"
-        android:cursorVisible="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/start_date" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/habit_title"
+            style="@style/TextStyle_Heading2" />
 
-    <EditText
-        android:id="@+id/edit_habit_reason"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:inputType="text|textMultiLine"
-        android:hint="@string/habit_reason"
-        android:autofillHints="@string/habit_reason"
-        android:gravity="top"/>
+        <EditText
+            android:id="@+id/edit_habit_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="@string/habit_title"
+            android:autofillHints="@string/habit_title"
+            />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/occurs_on_label"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/occurs_on"
+            android:layout_marginTop="20dp"
+            style="@style/TextStyle_Heading2" />
+
+        <LinearLayout
+            android:id="@+id/daypicker_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <include
+                android:id="@+id/daypicker"
+                layout="@layout/daypicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_date"
+            android:layout_marginTop="20dp"
+            style="@style/TextStyle_Heading2" />
+
+        <EditText
+            android:id="@+id/edit_habit_date"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dd_mm_yy" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/habit_reason"
+            android:layout_marginTop="20dp"
+            style="@style/TextStyle_Heading2" />
+
+        <EditText
+            android:id="@+id/edit_habit_reason"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:inputType="text|textMultiLine"
+            android:hint="@string/habit_reason"
+            android:autofillHints="@string/habit_reason"
+            android:gravity="top"/>
+
+    </LinearLayout>
+</ScrollView>

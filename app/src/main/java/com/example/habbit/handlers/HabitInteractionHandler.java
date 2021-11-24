@@ -6,6 +6,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+
 public class HabitInteractionHandler {
     /**
      * This var is of type {@link CollectionReference} and contains the users collection in firestore
@@ -45,6 +47,7 @@ public class HabitInteractionHandler {
         String reasonText = newHabit.getReason();
         String dateText = newHabit.getDate();
         boolean isChecked = newHabit.isChecked();
+        HashMap<String, Boolean> schedule = newHabit.getSchedule();
 
         // update the firestore
         DocumentReference userDoc = userCollectionReference.document(username);
@@ -52,7 +55,8 @@ public class HabitInteractionHandler {
                 .update("title", titleText,
                         "reason", reasonText,
                         "date", dateText,
-                        "checked", isChecked);
+                        "checked", isChecked,
+                        "schedule", schedule);
     }
 
     /**
