@@ -4,24 +4,21 @@ import static android.content.ContentValues.TAG;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.util.Log;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.models.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 
@@ -58,7 +55,7 @@ public class HabitEventInteractionHandler {
     }
 
     /**
-     * Adds a habitevent to the database
+     * Adds a habit event to the database
      * @param habitEvent the {@link HabitEvent} to be added to the firestore database
      */
     public void addHabitEvent(@Nullable HabitEvent habitEvent) {
@@ -88,7 +85,7 @@ public class HabitEventInteractionHandler {
     }
 
     /**
-     * Updates the habitevent in the database
+     * Updates the habit event in the database
      * @param newHabitEvent the {@link HabitEvent} to be updated
      */
     public void updateHabitEvent(@Nullable HabitEvent newHabitEvent) {
@@ -104,33 +101,49 @@ public class HabitEventInteractionHandler {
         Log.d(TAG, newHabitEvent.getId());
     }
 
+    /**
+     * Upload habit event photo to firebase storage
+     * @param habitEvent the {@link HabitEvent} to be named after
+     * @param picture the {@link ImageView} that contained the image
+     */
     public void addHabitEventPhoto(HabitEvent habitEvent, ImageView picture) {
         // Create a storage reference from our app
         StorageReference storageRef;
         storageRef = storage.getReference();
 
-        // Create a reference to "mountains.jpg"
+        // Create a reference to "habit_event_id.jpg"
         StorageReference imageRef = storageRef.child(habitEvent.getId()+".jpg");
 
+        //Upload from data stream
         picture.setDrawingCacheEnabled(true);
         picture.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) picture.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        byte[] data = outputStream.toByteArray();
 
         UploadTask uploadTask = imageRef.putBytes(data);
 
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("Upload failed in addHabitEventPhoto.");
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("Upload success in addHabitEventPhoto.");
-            }
-        });
+        uploadTask
+                .addOnFailureListener(e -> System.out.println("Upload failed in addHabitEventPhoto."))
+                .addOnSuccessListener(taskSnapshot -> System.out.println("Upload success: file"+imageRef.getName()));
+    }
+
+    /**
+     * Download habit event photo to firebase storage
+     * @param habitEvent the {@link HabitEvent} that is related to the picture in storage
+     * @param imageView the {@link ImageView} for the picture to be put in
+     */
+    public void getHabitEventPhoto(HabitEvent habitEvent, ImageView imageView) {
+        StorageReference storageRef;
+        storageRef = storage.getReference();
+        StorageReference imageRef = storageRef.child(habitEvent.getId()+".jpg");
+        imageRef
+                .getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    Log.d("URI", uri.toString());
+                    Picasso.get().load(uri.toString()).into(imageView);
+                })
+                .addOnFailureListener(e -> System.out.println("Something went wrong when retrieving photo"));
     }
 }
