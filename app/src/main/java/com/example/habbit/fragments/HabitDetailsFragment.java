@@ -59,7 +59,7 @@ public class HabitDetailsFragment extends DialogFragment {
         TextView viewDate = view.findViewById(R.id.habit_date);
         TextView viewReason = view.findViewById(R.id.habit_reason);
         TextView btnHabitEvents = view.findViewById(R.id.view_habit_event_link);
-        Switch swtPublicity = view.findViewById(R.id.publicity_switch);
+        TextView txtPublicity = view.findViewById(R.id.habit_is_public);
 
         /* get the habit of the details, if there are any to get */
         final Habit selected = (Habit) (getArguments() != null ?
@@ -72,12 +72,11 @@ public class HabitDetailsFragment extends DialogFragment {
         viewReason.setText(selected != null ? selected.getReason():null);
 
         /* set the switch values */
-        swtPublicity.setChecked(selected != null ? selected.isPublic():null);
         if (selected != null){
-            if (swtPublicity.isChecked()){
-                swtPublicity.setText("Public");
+            if (selected.isPublic()){
+                txtPublicity.setText("Public");
             } else {
-                swtPublicity.setText("Private");
+                txtPublicity.setText("Private");
             }
         }
 

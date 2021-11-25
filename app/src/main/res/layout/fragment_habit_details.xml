@@ -37,12 +37,12 @@
 
         <TextView
             android:id="@+id/reason_label"
+            style="@style/TextStyle_Heading2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:text="Reason:"
-            style="@style/TextStyle_Heading2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -65,21 +65,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:clickable="true"
+            android:focusable="true"
             android:text="@string/view_habit_events"
             android:textColor="@color/FIGMA_BLACK"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:focusable="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Switch
-            android:id="@+id/publicity_switch"
+        <TextView
+            android:id="@+id/habit_is_public"
             style="@style/TextStyle_Heading2"
-            android:layout_width="110dp"
-            android:layout_height="38dp"
-            android:clickable="false"
-            android:text="Public"
+            android:layout_width="109dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="1dp"
+            android:fontFamily="@font/work_sans_semibold"
+            android:text="Private"
             app:layout_constraintBottom_toBottomOf="@+id/habit_date"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/view_habit_event_link"
             app:layout_constraintStart_toStartOf="@+id/view_habit_event_link" />
 
 
