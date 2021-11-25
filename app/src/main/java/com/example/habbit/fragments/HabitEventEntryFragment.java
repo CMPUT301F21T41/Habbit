@@ -57,7 +57,7 @@ public class HabitEventEntryFragment extends DialogFragment {
         /* inflate layout for fragment */
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_habit_event_entry, null);
 
-        ImageView addPhotoBtn = view.findViewById(R.id.add_photo_link);
+        Button addPhotoBtn = view.findViewById(R.id.add_photo_link);
 
         /* get the habit event and habit details from args if exists */
         existingHabitEvent = (HabitEvent) (getArguments() !=null ?

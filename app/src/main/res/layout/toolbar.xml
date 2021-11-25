@@ -11,12 +11,15 @@
     app:titleMarginTop="20dp"
     app:buttonGravity="center_vertical">
 
+
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
         android:src="@drawable/ic__192595"
         android:layout_marginTop="10dp"
-        android:translationX="-160dp">
+        android:translationX="-150dp"
+        android:layout_gravity="start|center_vertical">
+
 
     </ImageView>
 

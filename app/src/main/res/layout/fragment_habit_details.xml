@@ -60,6 +60,27 @@
             tools:text="habit reason" />
 
         <TextView
+            android:id="@+id/schedule_label"
+            style="@style/TextStyle_Heading2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_weight="1"
+            android:text="@string/scheduled_for"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/habit_reason" />
+
+        <TextView
+            android:id="@+id/habit_schedule"
+            style="@style/TextStyle_paragraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:text="@string/example_schedule"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/schedule_label" />
+
+        <TextView
             android:id="@+id/view_habit_event_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
