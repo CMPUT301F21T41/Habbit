@@ -1,10 +1,17 @@
 package com.example.habbit.handlers;
 
+import androidx.annotation.NonNull;
+
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 
@@ -69,7 +76,30 @@ public class HabitInteractionHandler {
         // TODO: Gonna need to figure out how to delete subcollections too, but not yet
         // doesn't really affect the app, just clutters up our firestore
         DocumentReference userDoc = userCollectionReference.document(username);
+
+        // get a reference to the habit's habit events
+        CollectionReference habitEventColRef = userDoc.collection("Habits")
+                .document(habit.getId())
+                .collection("Habit Events");
+
+        // delete every habit event in the habit event collection
+       habitEventColRef.addSnapshotListener(((value, error) -> {
+                    String habitEventID;
+                    assert value != null;
+                    for (QueryDocumentSnapshot habitEventDocument: value){
+                        habitEventDocument.getData();
+
+                        // get the id of each habit event iteratively
+                        habitEventID = habitEventDocument.getId();
+
+                        // delete the respective habit event with id
+                        habitEventColRef.document(habitEventID).delete();
+                    }
+                }));
+
         userDoc.collection("Habits").document(habit.getId())
                 .delete();
+
+
     }
 }
