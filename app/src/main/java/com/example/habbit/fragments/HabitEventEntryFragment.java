@@ -88,7 +88,7 @@ public class HabitEventEntryFragment extends DialogFragment {
         }
 
         HabitEventInteractionHandler handler = new HabitEventInteractionHandler(habit);
-
+        
         if (existingHabitEvent == null) {
             HabitEvent habitEvent = new HabitEvent("placeholder");
             handler.addHabitEvent(habitEvent);
