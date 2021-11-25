@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,7 @@ public class HabitDetailsFragment extends DialogFragment {
         TextView viewDate = view.findViewById(R.id.habit_date);
         TextView viewReason = view.findViewById(R.id.habit_reason);
         TextView btnHabitEvents = view.findViewById(R.id.view_habit_event_link);
+        TextView txtPublicity = view.findViewById(R.id.habit_is_public);
 
         /* get the habit of the details, if there are any to get */
         final Habit selected = (Habit) (getArguments() != null ?
@@ -68,6 +70,15 @@ public class HabitDetailsFragment extends DialogFragment {
         Log.d("Habit Details Fragment", selected != null ? selected.getDate() : null);
         viewDate.setText(selected != null ? selected.getDate():null);
         viewReason.setText(selected != null ? selected.getReason():null);
+
+        /* set the switch values */
+        if (selected != null){
+            if (selected.isPublic()){
+                txtPublicity.setText("Public");
+            } else {
+                txtPublicity.setText("Private");
+            }
+        }
 
         // see habit events on click -> go to habit events screen
         btnHabitEvents.setOnClickListener(view1 -> {
