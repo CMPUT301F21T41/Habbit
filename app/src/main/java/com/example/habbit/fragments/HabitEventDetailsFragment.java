@@ -2,17 +2,20 @@ package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.habbit.R;
+import com.example.habbit.activities.MapActivity;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
@@ -52,6 +55,8 @@ public class HabitEventDetailsFragment extends DialogFragment {
 
         ImageView eventPhoto = view.findViewById(R.id.eventPhoto);
 
+        ImageView viewLocationBtn = view.findViewById(R.id.view_location_link);
+
         /* get the details of the habit, if there are any to get */
         final HabitEvent selectedHabitEvent = (HabitEvent) (getArguments() != null ?
                 getArguments().getSerializable("habitEvent") : null);
@@ -68,6 +73,23 @@ public class HabitEventDetailsFragment extends DialogFragment {
         // get the photo into ImageView
         assert selectedHabitEvent != null;
         handler.getHabitEventPhoto(selectedHabitEvent, eventPhoto);
+
+        //view map
+        viewLocationBtn.setOnClickListener(view3 ->{
+            if(selectedHabitEvent.getLatitude() == 0 && selectedHabitEvent.getLongitude() == 0){
+                Toast.makeText(getActivity(), "No Location Selected yet, Hop to it!", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Intent intent = new Intent(getContext(), MapActivity.class);
+                intent.putExtra("justView",1);
+                intent.putExtra("habitEvent", selectedHabitEvent);
+                intent.putExtra("habit", selectedHabit);
+
+                startActivity(intent);
+            }
+
+
+        });
 
         /* initialize the "View HabitEvent" dialog */
         return new AlertDialog.Builder(getContext())

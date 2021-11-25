@@ -6,12 +6,16 @@
     android:layout_height="match_parent"
     android:padding="22dp">
 
+
+
     <TextView
-        style="@style/TextStyle_Heading2"
         android:id="@+id/comment_lbl"
-        android:layout_width="match_parent"
+        style="@style/TextStyle_Heading2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Comments:" />
+
+
 
     <TextView
         style="@style/TextStyle_paragraph"
@@ -27,6 +31,17 @@
         app:srcCompat="@drawable/placeholder"
         android:adjustViewBounds="true"
         android:contentDescription="Event Photo" />
+
+    <ImageView
+        android:id="@+id/view_location_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+
+        android:src="@drawable/ic_baseline_pin_drop_24"
+        android:translationX="240dp" />
+
 
     <!--    <TextView-->
 <!--        style="@style/TextStyle_Subtitle"-->
