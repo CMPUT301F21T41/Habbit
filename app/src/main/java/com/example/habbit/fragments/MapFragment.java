@@ -511,9 +511,7 @@ public class MapFragment extends Fragment {
              IMapController controller = mMapView.getController();
              controller.setCenter(selectedPoint);
              controller.animateTo(selectedPoint);
-             zoomIn();
-             zoomIn();
-             zoomIn();
+             controller.setZoom(18.0);
         }
 
         setHasOptionsMenu(true);
