@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.MainThread;
 import androidx.fragment.app.Fragment;
@@ -464,9 +465,9 @@ public class MapFragment extends Fragment {
 
 
         //support for map rotation
-        /*mRotationGestureOverlay = new RotationGestureOverlay(mMapView);
+        mRotationGestureOverlay = new RotationGestureOverlay(mMapView);
         mRotationGestureOverlay.setEnabled(true);
-        mMapView.getOverlays().add(this.mRotationGestureOverlay);*/
+        mMapView.getOverlays().add(this.mRotationGestureOverlay);
 
 
         //needed for pinch zooms
@@ -495,10 +496,10 @@ public class MapFragment extends Fragment {
                 public void run() {
                     IMapController controller = mMapView.getController();
                     controller.setCenter(selectedPoint);
-                    Log.d("SeeWhoFirst", "animate point");
+                    Toast.makeText(getContext(),"Found current location!",Toast.LENGTH_LONG).show();
                     //controller.stopAnimation(true);
                 }
-            }, 10000);
+            }, 7000);
         }
         else{
 
