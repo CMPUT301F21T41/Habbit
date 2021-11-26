@@ -3,10 +3,15 @@ package com.example.habbit.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -18,7 +23,9 @@ import com.example.habbit.fragments.HabitEventEntryFragment;
 import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.User;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -43,9 +50,12 @@ public class MainActivity extends AppCompatActivity
     // references to entities used throughout the class
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     String username;
-    ListView habitList;
-    ArrayAdapter<Habit> habitAdapter;
-    ArrayList<Habit> habitDataList;
+    ListView habitListView;
+    ArrayAdapter<Habit> todayHabitAdapter;
+    ArrayAdapter<Habit> allHabitAdapter;
+    ArrayAdapter<Habit> relevantAdapter;
+    ArrayList<Habit> todayHabitList;
+    ArrayList<Habit> allHabitList;
     HabitInteractionHandler habitHandler;
 
     @Override
@@ -53,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // custom toolbar
+        // custom top toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_logout));
@@ -80,28 +90,64 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, dayOfTheWeek);
 
         // get references to UI elements and attach custom adapter
-        habitList = findViewById(R.id.habitListView);
-        habitDataList = User.getUserHabits();
-        habitAdapter = new CustomHabitList(this, habitDataList);
-        habitList.setAdapter(habitAdapter);
+        habitListView = findViewById(R.id.today_habit_list_view);
+        todayHabitList = new ArrayList<>();
+        todayHabitAdapter = new CustomHabitList(this, todayHabitList, true);
+        allHabitList = User.getUserHabits();
+        allHabitAdapter = new CustomHabitList(this, allHabitList, false);
         habitHandler = new HabitInteractionHandler();
+        relevantAdapter =  allHabitAdapter;
+
+        // custom bottom navbar
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch(item.getItemId()) {
+                    case R.id.profile:
+                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        intent.putExtra("USER", username);
+                        startActivity(intent);
+                        break;
+                }
+                return true;
+            }
+        });
+
+        // set a spinner to determine type of habit list to display
+        Spinner habitTypeSpinner =  findViewById(R.id.habit_type_selector);
+        /* create an ArrayAdapter using string array and default spinner layout */
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.habit_types, R.layout.custom_spinner);
+        /* specify layout to use when the list of choices appears */
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        /* connect adapter to spinner */
+        habitTypeSpinner.setAdapter(spinnerAdapter);
+        habitTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0) {
+                    relevantAdapter = allHabitAdapter;
+                } else if (i == 1) {
+                    relevantAdapter = todayHabitAdapter;
+                }
+                habitListView.setAdapter(relevantAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         // set a listener for addHabitButton that will open a habit entry fragment when clicked
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
-        // set a listener for profileNavButton that will open the profile page when clicked
-        final FloatingActionButton profileNavButton = findViewById(R.id.profile_nav_button);
-        profileNavButton.setOnClickListener(view -> {
-            Intent intent = new Intent(this,ProfileActivity.class);
-            intent.putExtra("USER", username);
-            startActivity(intent);
-        });
-
         // set a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
-        habitList.setOnItemClickListener((adapterView, view, i, l) -> {
-            Habit viewHabit = habitAdapter.getItem(i);
+        habitListView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Habit viewHabit = relevantAdapter.getItem(i);
             HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
         });
 
@@ -109,6 +155,7 @@ public class MainActivity extends AppCompatActivity
         userCollectionReference.document(username).collection("Habits").addSnapshotListener((value, error) -> {
             // we first clear all the habits we have currently stored for the user
             User.clearHabits();
+            todayHabitList.clear();
 
             // pull updated list of habits from firestore
             boolean publicity;
@@ -130,19 +177,20 @@ public class MainActivity extends AppCompatActivity
                             publicity);
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
-
+                    User.addHabit(habit);
 
                     // only add the habit to displayed habits if it is scheduled
                     if (habit.getSchedule().get(dayOfTheWeek.substring(0, 3)) && currentDate.compareTo(habit.getDateObject()) >= 0) {
                         Log.d(TAG, document.getId() + " => " + habitData);
-                        habitDataList.add(habit);
+                        todayHabitList.add(habit);
                     }
                 }
             }
 
             // redraw the listview with the newly updated habits
-            habitDataList = User.getUserHabits();
-            habitAdapter.notifyDataSetChanged();
+            // allHabitList = User.getUserHabits();
+            allHabitAdapter.notifyDataSetChanged();
+            todayHabitAdapter.notifyDataSetChanged();
         });
     }
 
