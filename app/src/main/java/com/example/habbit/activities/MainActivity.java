@@ -3,10 +3,13 @@ package com.example.habbit.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -18,7 +21,9 @@ import com.example.habbit.fragments.HabitEventEntryFragment;
 import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.User;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -43,9 +48,11 @@ public class MainActivity extends AppCompatActivity
     // references to entities used throughout the class
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     String username;
-    ListView habitList;
-    ArrayAdapter<Habit> habitAdapter;
-    ArrayList<Habit> habitDataList;
+    ListView todayHabitListView;
+    ArrayAdapter<Habit> todayHabitAdapter;
+    ArrayAdapter<Habit> allHabitAdapter;
+    ArrayList<Habit> todayHabitList;
+    ArrayList<Habit> allHabitList;
     HabitInteractionHandler habitHandler;
 
     @Override
@@ -53,7 +60,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // custom toolbar
+        // custom top toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_logout));
@@ -80,28 +87,48 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, dayOfTheWeek);
 
         // get references to UI elements and attach custom adapter
-        habitList = findViewById(R.id.habitListView);
-        habitDataList = User.getUserHabits();
-        habitAdapter = new CustomHabitList(this, habitDataList);
-        habitList.setAdapter(habitAdapter);
+        todayHabitListView = findViewById(R.id.today_habit_list_view);
+        todayHabitList = User.getUserHabits();
+        todayHabitAdapter = new CustomHabitList(this, todayHabitList);
+        allHabitList = User.getUserHabits();
+        allHabitAdapter = new CustomHabitList(this, allHabitList);
+        todayHabitListView.setAdapter(todayHabitAdapter);
         habitHandler = new HabitInteractionHandler();
+
+        // custom bottom navbar
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                TextView habitListTitle = findViewById(R.id.habit_list_title);
+                switch(item.getItemId()) {
+                    case R.id.profile:
+                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        intent.putExtra("USER", username);
+                        startActivity(intent);
+                        break;
+                    case R.id.all_habits:
+                        Log.d(TAG, "ALL HABITS");
+                        todayHabitListView.setAdapter(allHabitAdapter);
+                        habitListTitle.setText("All Habits");
+                        break;
+                    case R.id.social_feed:
+                        Log.d(TAG, "FEED");
+                        habitListTitle.setText("Today's Habits");
+                        break;
+                }
+                return true;
+            }
+        });
 
         // set a listener for addHabitButton that will open a habit entry fragment when clicked
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
-        // set a listener for profileNavButton that will open the profile page when clicked
-        final FloatingActionButton profileNavButton = findViewById(R.id.profile_nav_button);
-        profileNavButton.setOnClickListener(view -> {
-            Intent intent = new Intent(this,ProfileActivity.class);
-            intent.putExtra("USER", username);
-            startActivity(intent);
-        });
-
         // set a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
-        habitList.setOnItemClickListener((adapterView, view, i, l) -> {
-            Habit viewHabit = habitAdapter.getItem(i);
+        todayHabitListView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Habit viewHabit = todayHabitAdapter.getItem(i);
             HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
         });
 
@@ -131,18 +158,18 @@ public class MainActivity extends AppCompatActivity
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
 
-
                     // only add the habit to displayed habits if it is scheduled
                     if (habit.getSchedule().get(dayOfTheWeek.substring(0, 3)) && currentDate.compareTo(habit.getDateObject()) >= 0) {
                         Log.d(TAG, document.getId() + " => " + habitData);
-                        habitDataList.add(habit);
+                        todayHabitList.add(habit);
                     }
                 }
             }
 
             // redraw the listview with the newly updated habits
-            habitDataList = User.getUserHabits();
-            habitAdapter.notifyDataSetChanged();
+            todayHabitList = User.getUserHabits();
+            todayHabitAdapter.notifyDataSetChanged();
+            allHabitAdapter.notifyDataSetChanged();
         });
     }
 

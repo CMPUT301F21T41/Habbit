@@ -6,17 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
-    android:paddingTop="0dp"
-    android:paddingHorizontal="10dp">
+    android:paddingTop="0dp">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingHorizontal="20dp">
+        android:paddingHorizontal="0dp">
 
         <TextView
             android:id="@+id/habit_list_title"
@@ -26,15 +26,23 @@
             style="@style/TextStyle_Heading1"
             android:layout_gravity="top"
             android:layout_marginTop="75dp"
-            android:layout_marginStart="5dp"/>
+            android:layout_marginStart="5dp"
+            android:paddingHorizontal="20dp"/>
 
         <ListView
-            android:id="@+id/habitListView"
+            android:id="@+id/today_habit_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="500dp"
             android:divider="@null"
-            android:dividerHeight="0dp"/>
+            android:dividerHeight="0dp"
+            android:paddingHorizontal="20dp"/>
+
+        <include
+            android:id="@+id/bottom_navigation"
+            layout="@layout/bottom_navigation_bar" />
+
     </LinearLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_habit_button"
@@ -45,18 +53,8 @@
         android:backgroundTint="@color/gray"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@android:drawable/ic_input_add" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/profile_nav_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="10dp"
-        android:backgroundTint="@color/gray"
-        android:clickable="true"
-        android:focusable="true"
-        app:srcCompat="@drawable/ic_profile" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:translationY="-60dp"/>
 
 
 </FrameLayout>

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -73,7 +72,7 @@ public class AllHabitsActivity extends AppCompatActivity
         }
 
         // get references to UI elements and attach custom adapter
-        habitList = findViewById(R.id.habitListView);
+        habitList = findViewById(R.id.today_habit_list_view);
         habitDataList = User.getUserHabits();
         habitAdapter = new CustomHabitList(this, habitDataList);
         habitList.setAdapter(habitAdapter);
