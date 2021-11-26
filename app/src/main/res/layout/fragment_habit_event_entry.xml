@@ -39,5 +39,23 @@
         android:text="attach image"
         android:drawableRight="@android:drawable/ic_menu_gallery"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location (optional)"
+        style="@style/TextStyle_Heading2" />
+
+    <Button
+        android:id="@+id/add_location_link"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="add location"
+        android:drawableRight="@drawable/ic_baseline_pin_drop_24"
+        />
+
+
+
+
 
 </LinearLayout>

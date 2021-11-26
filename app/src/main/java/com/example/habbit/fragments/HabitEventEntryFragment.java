@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.habbit.R;
 import com.example.habbit.activities.HabitEventsActivity;
+import com.example.habbit.activities.MapActivity;
+import com.example.habbit.activities.ProfileActivity;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
@@ -58,6 +60,7 @@ public class HabitEventEntryFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_habit_event_entry, null);
 
         Button addPhotoBtn = view.findViewById(R.id.add_photo_link);
+        Button addLocationBtn = view.findViewById(R.id.add_location_link);
 
         /* get the habit event and habit details from args if exists */
         existingHabitEvent = (HabitEvent) (getArguments() !=null ?
@@ -88,7 +91,7 @@ public class HabitEventEntryFragment extends DialogFragment {
         }
 
         HabitEventInteractionHandler handler = new HabitEventInteractionHandler(habit);
-        
+
         if (existingHabitEvent == null) {
             HabitEvent habitEvent = new HabitEvent("placeholder");
             handler.addHabitEvent(habitEvent);
@@ -98,6 +101,14 @@ public class HabitEventEntryFragment extends DialogFragment {
                 handler.deleteHabitEvent(existingHabitEvent);
             });
         }
+
+        addLocationBtn.setOnClickListener(view3 ->{
+            Intent intent = new Intent(getContext(), MapActivity.class);
+            intent.putExtra("justView", 0);
+            intent.putExtra("habitEvent", existingHabitEvent);
+            intent.putExtra("habit", habit);
+            startActivity(intent);
+        });
 
         addPhotoBtn.setOnClickListener(view2 -> {
             HabitEventPhotoFragment.newInstance(existingHabitEvent, habit)

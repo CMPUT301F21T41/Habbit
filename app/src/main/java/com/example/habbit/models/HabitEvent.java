@@ -18,6 +18,16 @@ public class HabitEvent implements Serializable {
     private String id;
 
     /**
+     * This var is of type {@link double} and contains the position in terms of lonitude of a {@link HabitEvent}
+     */
+    private double longitude = 0;
+
+    /**
+     * This var is of type {@link double} and contains the position in terms of latitude of a {@link HabitEvent}
+     */
+    private double latitude = 0;
+
+    /**
      * This var is of type {@link String} and contains the date that the habit event was completed
      */
     private String dateCompleted; // TODO: would be cool to know what date the habit event was completed
@@ -30,6 +40,19 @@ public class HabitEvent implements Serializable {
      */
     public HabitEvent(String comment) {
         this.comment = comment;
+    }
+
+    /**
+     * HabitEvent lat/lon constructor
+     *
+     * @param comment of type{@link String} pass in comment
+     * @param latitude of type {@link double} pass latitude of location
+     * @param longitude of type {@link double} pass longitude of location
+     */
+    public HabitEvent(String comment, double latitude,double longitude){
+        this.comment = comment;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     /**
@@ -62,5 +85,21 @@ public class HabitEvent implements Serializable {
      */
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }

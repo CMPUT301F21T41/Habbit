@@ -80,8 +80,12 @@ public class HabitEventsActivity extends AppCompatActivity {
                         Log.d(TAG, document.getId() + " => " + habitEventData);
                         if (!habitEventData.isEmpty()) {
                             // every time we pull from Firestore, get the document ID data and associate it with the HabitEvent object
-                            HabitEvent habitEvent = new HabitEvent(Objects.requireNonNull(habitEventData.get("comment")).toString());
-                            Log.d(TAG, Objects.requireNonNull(habitEventData.get("comment")).toString());
+                            Log.d("seans", habitEventData.get("comment").toString() + habitEventData);
+                            HabitEvent habitEvent = new HabitEvent(Objects.requireNonNull(habitEventData.get("comment")).toString(),
+                                    (double) Objects.requireNonNull(habitEventData.get("latitude")),
+                                    (double) Objects.requireNonNull(habitEventData.get("longitude")));
+                            Log.d("seans", Objects.requireNonNull(habitEventData.get("comment")).toString()
+                                                        + habitEvent.getLatitude() + habitEvent.getLongitude());
 
                             habitEvent.setId(document.getId());
                             habit.addHabitEvent(habitEvent);

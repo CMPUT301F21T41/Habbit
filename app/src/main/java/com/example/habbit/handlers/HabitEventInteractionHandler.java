@@ -107,11 +107,13 @@ public class HabitEventInteractionHandler {
         assert newHabitEvent != null;
         String commentText = newHabitEvent.getComment();
 
+
         // update FireStore
         DocumentReference userDoc = userCollectionReference.document(username)
                 .collection("Habits").document(habit.getId());
         userDoc.collection("Habit Events").document(newHabitEvent.getId())
                 .update("comment", commentText);
+
         Log.d(TAG, newHabitEvent.getId());
     }
 
@@ -160,4 +162,42 @@ public class HabitEventInteractionHandler {
                 })
                 .addOnFailureListener(e -> System.out.println("Something went wrong when retrieving photo"));
     }
+
+    public void addHabitEventLocation(HabitEvent habitEvent){
+
+        assert habitEvent != null;
+        double lat = habitEvent.getLatitude();
+        double lon = habitEvent.getLongitude();
+
+
+        DocumentReference userDoc = userCollectionReference.document(username)
+                .collection("Habits").document(habit.getId());
+        userDoc.collection("Habit Events").document(habitEvent.getId())
+                .update("latitude", lat);
+        userDoc.collection("Habit Events").document(habitEvent.getId())
+                .update("longitude", lon);
+    }
+
+    /*public double getHabitEventLatitude(HabitEvent habitEvent){
+        DocumentReference userDoc = userCollectionReference.document(username)
+                .collection("Habits").document(habit.getId());
+
+        userDoc.collection("Habit Events").document(habitEvent.getId())
+                .get();
+        userDoc.collection("Habit Events").document(habitEvent.getId())
+                .update("longitude", lon);
+
+    }
+
+    public  getHabitEventLongitude(HabitEvent habitEvent){
+        DocumentReference userDoc = userCollectionReference.document(username)
+                .collection("Habits").document(habit.getId());
+
+        userDoc.collection("Habit Events").document(habitEvent.getId())
+                .get("latitude"
+        userDoc.collection("Habit Events").document(habitEvent.getId())
+                .update("longitude", lon);
+
+    }*/
+
 }
