@@ -92,9 +92,9 @@ public class MainActivity extends AppCompatActivity
         // get references to UI elements and attach custom adapter
         habitListView = findViewById(R.id.today_habit_list_view);
         todayHabitList = new ArrayList<>();
-        todayHabitAdapter = new CustomHabitList(this, todayHabitList);
+        todayHabitAdapter = new CustomHabitList(this, todayHabitList, true);
         allHabitList = User.getUserHabits();
-        allHabitAdapter = new CustomHabitList(this, allHabitList);
+        allHabitAdapter = new CustomHabitList(this, allHabitList, false);
         habitHandler = new HabitInteractionHandler();
         relevantAdapter =  allHabitAdapter;
 

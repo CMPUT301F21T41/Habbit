@@ -32,6 +32,11 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
     private final Context context;
 
     /**
+     * This is a {@link boolean}
+     */
+    private final boolean checkboxesVisible;
+
+    /**
      * This is a {@link OnCheckboxClickListener}
      */
     private final OnCheckboxClickListener listener;
@@ -44,12 +49,14 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
      *
      * @param context the context the custom habit list is called in
      * @param habits the list of habits to display
+     * @param checkboxesVisible whether or not to display checkboxes
      */
-    public CustomHabitList(Context context, ArrayList<Habit> habits) {
+    public CustomHabitList(Context context, ArrayList<Habit> habits, boolean checkboxesVisible) {
         super(context, 0, habits);
         this.habits = habits;
         this.context = context;
         this.listener = (OnCheckboxClickListener) context;
+        this.checkboxesVisible = checkboxesVisible;
     }
 
     @NonNull
@@ -68,15 +75,25 @@ public class CustomHabitList extends ArrayAdapter<Habit> {
         TextView habitTitle = view.findViewById(R.id.habit_title);
         TextView habitDate = view.findViewById(R.id.habit_date);
 
-        // setting checkbox value to value stored in the relevant habit object
+        // get reference to checkbox element
         final CheckBox checkBox = view.findViewById(R.id.habit_checkbox);
-        checkBox.setChecked(habit.isChecked());
+        if (checkboxesVisible) {
+            // set visibility of checkbox
+            checkBox.setVisibility(View.VISIBLE);
 
-        // setting checkbox behaviour
-        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            // setting checkbox value to value stored in the relevant habit object
             checkBox.setChecked(habit.isChecked());
-            listener.onCheckboxClick(habit, isChecked);
-        });
+
+            // setting checkbox behaviour
+            checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                checkBox.setChecked(habit.isChecked());
+                listener.onCheckboxClick(habit, isChecked);
+            });
+        } else {
+            // set visibility of checkbox
+            checkBox.setVisibility(View.GONE);
+        }
+
 
         // set texts
         habitTitle.setText(habit.getTitle());
