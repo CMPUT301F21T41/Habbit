@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,9 +50,10 @@ public class MainActivity extends AppCompatActivity
     // references to entities used throughout the class
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     String username;
-    ListView todayHabitListView;
+    ListView habitListView;
     ArrayAdapter<Habit> todayHabitAdapter;
     ArrayAdapter<Habit> allHabitAdapter;
+    ArrayAdapter<Habit> relevantAdapter;
     ArrayList<Habit> todayHabitList;
     ArrayList<Habit> allHabitList;
     HabitInteractionHandler habitHandler;
@@ -87,37 +90,53 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, dayOfTheWeek);
 
         // get references to UI elements and attach custom adapter
-        todayHabitListView = findViewById(R.id.today_habit_list_view);
-        todayHabitList = User.getUserHabits();
+        habitListView = findViewById(R.id.today_habit_list_view);
+        todayHabitList = new ArrayList<>();
         todayHabitAdapter = new CustomHabitList(this, todayHabitList);
         allHabitList = User.getUserHabits();
         allHabitAdapter = new CustomHabitList(this, allHabitList);
-        todayHabitListView.setAdapter(todayHabitAdapter);
         habitHandler = new HabitInteractionHandler();
+        relevantAdapter =  allHabitAdapter;
 
         // custom bottom navbar
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                TextView habitListTitle = findViewById(R.id.habit_list_title);
                 switch(item.getItemId()) {
                     case R.id.profile:
                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         intent.putExtra("USER", username);
                         startActivity(intent);
                         break;
-                    case R.id.all_habits:
-                        Log.d(TAG, "ALL HABITS");
-                        todayHabitListView.setAdapter(allHabitAdapter);
-                        habitListTitle.setText("All Habits");
-                        break;
-                    case R.id.social_feed:
-                        Log.d(TAG, "FEED");
-                        habitListTitle.setText("Today's Habits");
-                        break;
                 }
                 return true;
+            }
+        });
+
+        // set a spinner to determine type of habit list to display
+        Spinner habitTypeSpinner =  findViewById(R.id.habit_type_selector);
+        /* create an ArrayAdapter using string array and default spinner layout */
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.habit_types, R.layout.custom_spinner);
+        /* specify layout to use when the list of choices appears */
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        /* connect adapter to spinner */
+        habitTypeSpinner.setAdapter(spinnerAdapter);
+        habitTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0) {
+                    relevantAdapter = allHabitAdapter;
+                } else if (i == 1) {
+                    relevantAdapter = todayHabitAdapter;
+                }
+                habitListView.setAdapter(relevantAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -127,8 +146,8 @@ public class MainActivity extends AppCompatActivity
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
         // set a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
-        todayHabitListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Habit viewHabit = todayHabitAdapter.getItem(i);
+        habitListView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Habit viewHabit = relevantAdapter.getItem(i);
             HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
         });
 
@@ -136,6 +155,7 @@ public class MainActivity extends AppCompatActivity
         userCollectionReference.document(username).collection("Habits").addSnapshotListener((value, error) -> {
             // we first clear all the habits we have currently stored for the user
             User.clearHabits();
+            todayHabitList.clear();
 
             // pull updated list of habits from firestore
             boolean publicity;
@@ -157,6 +177,7 @@ public class MainActivity extends AppCompatActivity
                             publicity);
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
+                    User.addHabit(habit);
 
                     // only add the habit to displayed habits if it is scheduled
                     if (habit.getSchedule().get(dayOfTheWeek.substring(0, 3)) && currentDate.compareTo(habit.getDateObject()) >= 0) {
@@ -167,9 +188,9 @@ public class MainActivity extends AppCompatActivity
             }
 
             // redraw the listview with the newly updated habits
-            todayHabitList = User.getUserHabits();
-            todayHabitAdapter.notifyDataSetChanged();
+            // allHabitList = User.getUserHabits();
             allHabitAdapter.notifyDataSetChanged();
+            todayHabitAdapter.notifyDataSetChanged();
         });
     }
 
