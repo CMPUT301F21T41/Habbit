@@ -146,7 +146,9 @@ public class MapFragment extends Fragment {
         //Note! we are programmatically construction the map view
         //be sure to handle application lifecycle correct (see note in on pause)
         mMapView = new MapView(inflater.getContext());
-        mTransView = new View(inflater.getContext());
+        final ITileSource tileSource = TileSourceFactory.MAPNIK;
+        mMapView.setTileSource(tileSource);
+        //mTransView = new View(inflater.getContext());
         //mMapView.setLongClickable(true);
         mMapView.setClickable(false);
         mMapView.setDestroyMode(false);
@@ -350,6 +352,7 @@ public class MapFragment extends Fragment {
         GpsMyLocationProvider provider = new GpsMyLocationProvider(requireContext());
         provider.addLocationSource(LocationManager.GPS_PROVIDER);
         mLocationOverlay = new MyLocationNewOverlay(provider, mMapView);
+        mLocationOverlay.enableMyLocation();
         //mLocationOverlay.enableFollowLocation();
         //mMapView.getOverlayManager().add(mLocationOverlay);
         if( (habitEvent.getLatitude() == 0 && habitEvent.getLongitude() == 0) || habitEvent == null) {
@@ -433,10 +436,10 @@ public class MapFragment extends Fragment {
 
 
         //Mini map
-        mMinimapOverlay = new MinimapOverlay(context, mMapView.getTileRequestCompleteHandler());
+        /*mMinimapOverlay = new MinimapOverlay(context, mMapView.getTileRequestCompleteHandler());
         mMinimapOverlay.setWidth(dm.widthPixels / 5);
         mMinimapOverlay.setHeight(dm.heightPixels / 5);
-        mMapView.getOverlays().add(this.mMinimapOverlay);
+        mMapView.getOverlays().add(this.mMinimapOverlay);*/
 
 
         //Copyright overlay
@@ -461,9 +464,9 @@ public class MapFragment extends Fragment {
 
 
         //support for map rotation
-        mRotationGestureOverlay = new RotationGestureOverlay(mMapView);
+        /*mRotationGestureOverlay = new RotationGestureOverlay(mMapView);
         mRotationGestureOverlay.setEnabled(true);
-        mMapView.getOverlays().add(this.mRotationGestureOverlay);
+        mMapView.getOverlays().add(this.mRotationGestureOverlay);*/
 
 
         //needed for pinch zooms
@@ -514,7 +517,7 @@ public class MapFragment extends Fragment {
              controller.setZoom(18.0);
         }
 
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
     }
 
     @Override
@@ -549,7 +552,7 @@ public class MapFragment extends Fragment {
         final String tileSourceName = mPrefs.getString(PREFS_TILE_SOURCE,
                 TileSourceFactory.DEFAULT_TILE_SOURCE.name());
         try {
-            final ITileSource tileSource = TileSourceFactory.getTileSource(tileSourceName);
+            final ITileSource tileSource = TileSourceFactory.MAPNIK;
             mMapView.setTileSource(tileSource);
         } catch (final IllegalArgumentException e) {
             mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
@@ -560,7 +563,7 @@ public class MapFragment extends Fragment {
 
 
 
-    @Override
+   /* @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Put overlay items first
         mMapView.getOverlayManager().onCreateOptionsMenu(menu, MENU_LAST_ID, mMapView);
@@ -599,7 +602,7 @@ public class MapFragment extends Fragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     public void zoomIn() {
         mMapView.getController().zoomIn();

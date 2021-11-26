@@ -9,7 +9,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,12 +19,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.habbit.BuildConfig;
 import com.example.habbit.R;
 import com.example.habbit.fragments.MapFragment;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 
 import org.osmdroid.config.Configuration;
+import org.osmdroid.config.IConfigurationProvider;
 
 import java.util.ArrayList;
 
@@ -35,9 +39,7 @@ public class MapActivity extends AppCompatActivity {
     private static final String MAP_FRAGMENT_TAG = "org.osmdroid.MAP_FRAGMENT_TAG";
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
-    //Configuration configuration = new Configuration();
 
-    //config
 
     /**
      * The idea behind that is to force a MapView refresh when switching from offline to online.
@@ -73,6 +75,10 @@ public class MapActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Configuration.getInstance().load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+
+
+
         //get habitevent
         Intent intent = getIntent();
         int justView = (int) intent.getSerializableExtra("justView");
@@ -87,12 +93,21 @@ public class MapActivity extends AppCompatActivity {
 
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        requestPermissionsIfNecessary(new String[] {
+        /*requestPermissionsIfNecessary(new String[] {
                 // if you need to show the current location, uncomment the line below
+
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 // WRITE_EXTERNAL_STORAGE is required in order to show the map
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-        });
+                //Manifest.permission.WRITE_EXTERNAL_STORAGE
+        });*/
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                         != PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this, "Allow location access for habbit in settings!", Toast.LENGTH_LONG).show();
+            finish();
+
+        }
 
         FragmentManager fm = this.getSupportFragmentManager();
         if (fm.findFragmentByTag(MAP_FRAGMENT_TAG) == null) {
