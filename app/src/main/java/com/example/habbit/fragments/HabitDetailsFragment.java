@@ -20,6 +20,9 @@ import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A {@link Fragment} subclass for the Habit Details Overlay.
  * Use the {@link HabitDetailsFragment#newInstance} factory method to
@@ -60,8 +63,9 @@ public class HabitDetailsFragment extends DialogFragment {
         TextView viewReason = view.findViewById(R.id.habit_reason);
         TextView btnHabitEvents = view.findViewById(R.id.view_habit_event_link);
         TextView txtPublicity = view.findViewById(R.id.habit_is_public);
+        TextView viewSchedule = view.findViewById(R.id.habit_schedule);
 
-        /* get the habit of the details, if there are any to get */
+        /* get the details of the habit, if there are any to get */
         final Habit selected = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
@@ -70,6 +74,16 @@ public class HabitDetailsFragment extends DialogFragment {
         Log.d("Habit Details Fragment", selected != null ? selected.getDate() : null);
         viewDate.setText(selected != null ? selected.getDate():null);
         viewReason.setText(selected != null ? selected.getReason():null);
+
+        /* determine the string to display for schedule */
+        String display_schedule = "";
+        HashMap<String, Boolean> schedule = selected.getSchedule();
+        for (Map.Entry<String, Boolean> day : schedule.entrySet()) {
+            if (day.getValue()) {
+                display_schedule += day.getKey() + ", ";
+            }
+        }
+        viewSchedule.setText(display_schedule.substring(0, display_schedule.length() - 2));
 
         /* set the switch values */
         if (selected != null){

@@ -18,9 +18,9 @@
             android:id="@+id/habit_title"
             style="@style/TextStyle_Heading1"
             android:layout_width="175dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:background="#00FFFFFF"
-            android:paddingVertical="10dp"
+            android:paddingTop="5dp"
             app:layout_constraintBaseline_toBaselineOf="@+id/view_habit_event_link"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Habit Title" />
@@ -29,7 +29,7 @@
             android:id="@+id/habit_date"
             style="@style/TextStyle_Subtitle"
             android:layout_width="166dp"
-            android:layout_height="42dp"
+            android:layout_height="wrap_content"
             android:paddingVertical="3dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/habit_title"
@@ -40,7 +40,7 @@
             style="@style/TextStyle_Heading2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:layout_weight="1"
             android:text="Reason:"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,6 +60,27 @@
             tools:text="habit reason" />
 
         <TextView
+            android:id="@+id/schedule_label"
+            style="@style/TextStyle_Heading2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_weight="1"
+            android:text="@string/scheduled_for"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/habit_reason" />
+
+        <TextView
+            android:id="@+id/habit_schedule"
+            style="@style/TextStyle_paragraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:text="@string/example_schedule"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/schedule_label" />
+
+        <TextView
             android:id="@+id/view_habit_event_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,14 +95,13 @@
         <TextView
             android:id="@+id/habit_is_public"
             style="@style/TextStyle_Heading2"
-            android:layout_width="109dp"
-            android:layout_height="36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="1dp"
             android:fontFamily="@font/work_sans_semibold"
             android:text="Private"
             app:layout_constraintBottom_toBottomOf="@+id/habit_date"
-            app:layout_constraintEnd_toEndOf="@+id/view_habit_event_link"
-            app:layout_constraintStart_toStartOf="@+id/view_habit_event_link" />
+            app:layout_constraintEnd_toEndOf="@+id/view_habit_event_link" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
