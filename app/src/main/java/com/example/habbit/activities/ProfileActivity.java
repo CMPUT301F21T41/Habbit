@@ -25,8 +25,7 @@ import java.util.Objects;
  * Class for profile view {@link AppCompatActivity}
  * Opened from {@link MainActivity}
  */
-public class ProfileActivity extends AppCompatActivity
-        implements ProfileEntryFragment.OnProfileEntryFragmentInteractionListener {
+public class ProfileActivity extends AppCompatActivity {
 
 
     /**
@@ -84,17 +83,6 @@ public class ProfileActivity extends AppCompatActivity
             editProfileButton.setOnClickListener(view -> ProfileEntryFragment.newInstance(userData)
                     .show(getSupportFragmentManager(), "EDIT_PROFILE"));
 
-
         }
-
-    /**
-     * method called when profile edit is confirmed
-     * @param userData, new data used to replace firestore data, of type {@link Map}
-     */
-    @Override
-    public void onEditProfilePressed(Map<String,Object> userData){
-        DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
-        userDoc.update(userData);
-    }
 
 }

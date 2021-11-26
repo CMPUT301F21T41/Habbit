@@ -14,6 +14,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.habbit.R;
+import com.example.habbit.handlers.HabitInteractionHandler;
+import com.example.habbit.handlers.ProfileInteractionHandler;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -25,28 +27,6 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class ProfileEntryFragment extends DialogFragment {
-
-    private OnProfileEntryFragmentInteractionListener listener;
-
-    public interface OnProfileEntryFragmentInteractionListener {
-        void onEditProfilePressed(Map<String,Object> map);
-    }
-
-    /**
-     *
-     *
-     * @param context get context of activity to attach, type {@link Context}
-     */
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnProfileEntryFragmentInteractionListener){
-            listener = (OnProfileEntryFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() +
-                    "must implement OnProfileEntryFragmentInteractionListener");
-        }
-    }
 
     public ProfileEntryFragment(){
         // required empty class constructor
@@ -93,6 +73,9 @@ public class ProfileEntryFragment extends DialogFragment {
         //viewEmail.setHint("Email: " + userData.get("Email"));
         //viewName.setHint("Name: " + userData.get("Name"));
 
+        /* initialize handler to update profile information */
+        ProfileInteractionHandler handler = new ProfileInteractionHandler();
+
         /* initialize the "Edit Profile" dialog */
         AlertDialog viewDialog = new AlertDialog.Builder(getContext())
                 .setView(view)
@@ -101,8 +84,7 @@ public class ProfileEntryFragment extends DialogFragment {
                 .setPositiveButton("Confirm", (dialogInterface, i) -> {
                     userData.put("Email",viewEmail.getText().toString());
                     userData.put("Name",viewName.getText().toString());
-                    listener.onEditProfilePressed(userData);
-
+                    handler.updateUser(userData);
                 })
                 .create();
 
