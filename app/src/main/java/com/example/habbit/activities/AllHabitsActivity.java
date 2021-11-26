@@ -115,7 +115,8 @@ public class AllHabitsActivity extends AppCompatActivity
                     Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
                             Objects.requireNonNull(habitData.get("reason")).toString(),
                             Objects.requireNonNull(habitData.get("date")).toString(),
-                            (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")));
+                            (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")),
+                            (boolean) Objects.requireNonNull(habitData.get("publicity")));
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
                     User.addHabit(habit);

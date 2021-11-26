@@ -9,28 +9,36 @@
     android:paddingHorizontal="30dp"
     android:paddingVertical="30dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/comments_optional"
+        style="@style/TextStyle_Heading2" />
+
     <EditText
         android:id="@+id/edit_habit_event_comment"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:inputType="text|textMultiLine"
-        android:hint="@string/habit_event_comment"
+        android:layout_height="wrap_content"
         android:autofillHints="@string/habit_event_comment"
-        android:gravity="top"/>
+        android:gravity="top"
+        android:hint="@string/habit_event_comment"
+        android:inputType="text|textMultiLine"
+        android:layout_marginBottom="10dp"/>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Image (optional)"
+        style="@style/TextStyle_Heading2" />
 
-            <ImageView
-            android:id="@+id/add_photo_link"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:focusable="true"
-            android:contentDescription="To Power!" />
+    <Button
+        android:id="@+id/add_photo_link"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="attach image"
+        android:drawableRight="@android:drawable/ic_menu_gallery"/>
+
 
             <ImageView
             android:id="@+id/add_location_link"
