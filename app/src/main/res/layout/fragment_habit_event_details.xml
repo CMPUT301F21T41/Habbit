@@ -24,6 +24,15 @@
         android:layout_height="61dp"
         android:text="TextView" />
 
+    <Button
+        android:id="@+id/view_location_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="view location"
+        android:drawableRight="@drawable/ic_baseline_pin_drop_24"
+        />
+
     <ImageView
         android:id="@+id/eventPhoto"
         android:layout_width="match_parent"
@@ -32,15 +41,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="Event Photo" />
 
-    <ImageView
-        android:id="@+id/view_location_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
 
-        android:src="@drawable/ic_baseline_pin_drop_24"
-        android:translationX="240dp" />
 
 
     <!--    <TextView-->

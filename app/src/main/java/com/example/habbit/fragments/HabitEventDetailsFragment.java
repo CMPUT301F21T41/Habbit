@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +56,7 @@ public class HabitEventDetailsFragment extends DialogFragment {
 
         ImageView eventPhoto = view.findViewById(R.id.eventPhoto);
 
-        ImageView viewLocationBtn = view.findViewById(R.id.view_location_link);
+        Button viewLocationBtn = view.findViewById(R.id.view_location_link);
 
         /* get the details of the habit, if there are any to get */
         final HabitEvent selectedHabitEvent = (HabitEvent) (getArguments() != null ?
