@@ -8,4 +8,5 @@
     app:menu="@menu/bottom_navigation_items"
     app:itemBackground="@color/black"
     app:itemIconTint="@android:color/white"
-    app:itemTextColor="@android:color/white" />
+    app:itemTextColor="@android:color/white"
+    android:background="@color/FIGMA_BLACK"/>
