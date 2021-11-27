@@ -38,9 +38,11 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
 
     final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     private FirebaseAuth userAuth;
+
     /**
-     *
-     * @param savedInstanceState
+     * A factory method that is run when the activity is first created
+     * @param savedInstanceState The surrounding information pertinent to the created Activity
+     *                           of type {@link Bundle}
      */
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -49,6 +51,9 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         userAuth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * A factory method that is run when the activity is first started
+     */
     @Override
     public void onStart(){
         super.onStart();
@@ -59,12 +64,19 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         }
     }
 
+    /**
+     * Transitions the application into the {@link MainActivity}
+     */
     private void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-//        intent.putExtra("User",user);
         startActivity(intent);
     }
 
+    /**
+     * Adds the created Firebase User to the collection of users
+     * @param userID The user id, generated with {@link FirebaseUser#getUid()}.
+     *               Of type {@link String}
+     */
     private void addUser(String userID){
         Map<String,Object> userData = new HashMap<>();
         userData.put("User ID", userID);
@@ -75,6 +87,11 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                         Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     *
+     * @param user
+     * @param userName
+     */
     private void addUserName(FirebaseUser user, String userName) {
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(userName)
@@ -94,7 +111,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     /**
      * checks whether or not the entered information is valid and if so continue to {@link MainActivity}
      * @param email
-     * takes a username of type {@link String}
+     * takes an email of type {@link String}
      * @param password
      * takes a password of type {@link String}
      */
@@ -115,18 +132,22 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        String errMessage = "Unknown Error";
-                        if (e instanceof FirebaseAuthInvalidCredentialsException){
-                            errMessage = "Invalid Password";
-                        } else if (e instanceof  FirebaseAuthInvalidUserException) {
+                        String errMessage = e.getLocalizedMessage();
+                        if (e instanceof  FirebaseAuthInvalidUserException){
                             String errCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
                             if (errCode.equals("ERROR_USER_NOT_FOUND")){
-                                errMessage = "User Not Found";
-                            } else {
-                                errMessage = e.getLocalizedMessage();
+                                errMessage = "User not found";
+                            }
+                        } else if (e instanceof FirebaseAuthInvalidCredentialsException){
+                            String errCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
+                            if (errCode.equals("ERROR_INVALID_EMAIL")){
+                                errMessage = "User not found";
+                            } else if (errCode.equals("ERROR_WRONG_PASSWORD")){
+                                errMessage = "Invalid Password";
                             }
                         }
-                        LogErrorFragment.newInstance(errMessage).show(getSupportFragmentManager(),"Log in failure");
+                        LogErrorFragment.newInstance(errMessage)
+                                .show(getSupportFragmentManager(),"Log in failure");
                     }
                 });
     }
@@ -166,16 +187,24 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             String errMessage = e.getLocalizedMessage();
-                            LogErrorFragment.newInstance(errMessage).show(getSupportFragmentManager(),"Registration failure");
+                            if (e instanceof FirebaseAuthInvalidCredentialsException){
+                                String errCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
+                                if (errCode.equals("ERROR_INVALID_EMAIL")){
+                                    errMessage = "Invalid email address";
+                                }
+                            }
+                            LogErrorFragment.newInstance(errMessage)
+                                    .show(getSupportFragmentManager(),"Registration failure");
                         }
                     });
         } else {
-            LogErrorFragment.newInstance("Password Does Not Match").show(getSupportFragmentManager(),"Registration failure");
+            LogErrorFragment.newInstance("Password Does Not Match")
+                    .show(getSupportFragmentManager(),"Registration failure");
         }
     }
 
     /**
-     *
+     * Hides the touch keyboard whenever the user clicks outside of an {@link android.widget.EditText} box
      * @param ev
      * @return
      */
