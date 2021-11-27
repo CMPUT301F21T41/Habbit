@@ -20,11 +20,11 @@
         android:text="LOGIN"/>
 
     <EditText
-        android:id="@+id/log_username"
+        android:id="@+id/log_email"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:hint="Username"/>
+        android:hint="Email"/>
 
     <EditText
         android:id="@+id/log_pass"

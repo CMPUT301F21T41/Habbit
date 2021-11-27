@@ -14,6 +14,8 @@ import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,7 +36,10 @@ public class HabitEventInteractionHandler {
     /**
      * This var is of type {@link String} and contains the username
      */
-    String username;
+//    String username;
+    FirebaseAuth userAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = userAuth.getCurrentUser();
+    String userID;
 
     /**
      * This var is of type {@link HabitInteractionHandler} and is an instantiation of the object that handles {@link Habit} operations
@@ -51,7 +56,8 @@ public class HabitEventInteractionHandler {
      * @param habit provided a {@link Habit}, initialize everything based on it's attributes
      */
     public HabitEventInteractionHandler(Habit habit) {
-        username = User.getUsername();
+//        username = User.getUsername();
+        userID = user.getUid();
         habitHandler = new HabitInteractionHandler();
         this.habit = habit;
     }
@@ -61,7 +67,7 @@ public class HabitEventInteractionHandler {
      * @param habitEvent the {@link HabitEvent} to be added to the firestore database
      */
     public void addHabitEvent(@Nullable HabitEvent habitEvent) {
-        DocumentReference userDoc = userCollectionReference.document(username);
+        DocumentReference userDoc = userCollectionReference.document(userID);
         assert habitEvent != null;
 
         // set the habit checked value to true since we have logged a habit event for the day
@@ -92,7 +98,7 @@ public class HabitEventInteractionHandler {
     public void deleteHabitEvent(HabitEvent habitEvent){
         Log.d("HabitEventHandler", "entered delete habit event");
         Log.d("HabitEventHandler", habitEvent.getId());
-        DocumentReference userDoc = userCollectionReference.document(username)
+        DocumentReference userDoc = userCollectionReference.document(userID)
                 .collection("Habits").document(habit.getId());
         userDoc.collection("Habit Events").document(habitEvent.getId())
                 .delete();
@@ -109,7 +115,7 @@ public class HabitEventInteractionHandler {
 
 
         // update FireStore
-        DocumentReference userDoc = userCollectionReference.document(username)
+        DocumentReference userDoc = userCollectionReference.document(userID)
                 .collection("Habits").document(habit.getId());
         userDoc.collection("Habit Events").document(newHabitEvent.getId())
                 .update("comment", commentText);
@@ -170,7 +176,7 @@ public class HabitEventInteractionHandler {
         double lon = habitEvent.getLongitude();
 
 
-        DocumentReference userDoc = userCollectionReference.document(username)
+        DocumentReference userDoc = userCollectionReference.document(userID)
                 .collection("Habits").document(habit.getId());
         userDoc.collection("Habit Events").document(habitEvent.getId())
                 .update("latitude", lat);

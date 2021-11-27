@@ -17,17 +17,29 @@ import androidx.fragment.app.Fragment;
 import com.example.habbit.R;
 
 /**
- * A simple {@link Fragment} subclass
+ * A simple {@link DialogFragment} subclass
  */
 public class LogErrorFragment extends DialogFragment {
 
+    /**
+     *
+     * @param context
+     */
     @Override
     public void onAttach(@NonNull Context context){
         super.onAttach(context);
     }
 
+    /**
+     * The required empty constructor
+     */
     public LogErrorFragment(){}
 
+    /**
+     *
+     * @param err
+     * @return
+     */
    public static LogErrorFragment newInstance(String err){
         LogErrorFragment fragment = new LogErrorFragment();
         Bundle args = new Bundle();
@@ -36,6 +48,11 @@ public class LogErrorFragment extends DialogFragment {
         return fragment;
    }
 
+    /**
+     *
+     * @param savedInstanceState
+     * @return
+     */
    @NonNull
    @Override
    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
