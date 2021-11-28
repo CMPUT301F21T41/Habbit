@@ -28,8 +28,8 @@
             android:theme="@style/TextStyle_Heading1"
             android:paddingHorizontal="20dp"/>
 
-        <ListView
-            android:id="@+id/today_habit_list_view"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/today_habit_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="500dp"
             android:divider="@null"

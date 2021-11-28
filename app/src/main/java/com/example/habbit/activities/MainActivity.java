@@ -14,6 +14,9 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomHabitList;
@@ -35,12 +38,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-
+// test
 /**
  * This class maintains a listview of Habits belonging to the class {@link Habit}
  */
@@ -57,13 +62,15 @@ public class MainActivity extends AppCompatActivity
     String userID;
 //    String username;
 
-    ListView habitListView;
-    ArrayAdapter<Habit> todayHabitAdapter;
-    ArrayAdapter<Habit> allHabitAdapter;
-    ArrayAdapter<Habit> relevantAdapter;
+    RecyclerView habitRecyclerView;
+    CustomHabitList todayHabitAdapter;
+    CustomHabitList allHabitAdapter;
+    CustomHabitList relevantAdapter;
     ArrayList<Habit> todayHabitList;
     ArrayList<Habit> allHabitList;
     HabitInteractionHandler habitHandler;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, dayOfTheWeek);
 
         // get references to UI elements and attach custom adapter
-        habitListView = findViewById(R.id.today_habit_list_view);
+        habitRecyclerView = findViewById(R.id.today_habit_recycler_view);
         todayHabitList = new ArrayList<>();
         todayHabitAdapter = new CustomHabitList(this, todayHabitList, true);
         allHabitList = User.getUserHabits();
@@ -140,7 +147,8 @@ public class MainActivity extends AppCompatActivity
                 } else if (i == 1) {
                     relevantAdapter = todayHabitAdapter;
                 }
-                habitListView.setAdapter(relevantAdapter);
+                habitRecyclerView.setAdapter(relevantAdapter);
+
             }
 
             @Override
@@ -149,16 +157,16 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        habitRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        
+
         // set a listener for addHabitButton that will open a habit entry fragment when clicked
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
-        // set a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
-        habitListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Habit viewHabit = relevantAdapter.getItem(i);
-            HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
-        });
+
 
         // refresh the listview every time we update Firestore
         userCollectionReference.document(userID).collection("Habits").addSnapshotListener((value, error) -> {
@@ -201,6 +209,9 @@ public class MainActivity extends AppCompatActivity
             allHabitAdapter.notifyDataSetChanged();
             todayHabitAdapter.notifyDataSetChanged();
         });
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(habitRecyclerView);
     }
 
     /**
@@ -219,4 +230,26 @@ public class MainActivity extends AppCompatActivity
             habitHandler.updateHabit(habit);
         }
     }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP |
+            ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            
+            int fromPosition = viewHolder.getAbsoluteAdapterPosition();
+            int toPosition = target.getAbsoluteAdapterPosition();
+
+            Collections.swap(allHabitList, fromPosition, toPosition);
+
+            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
+
 }
