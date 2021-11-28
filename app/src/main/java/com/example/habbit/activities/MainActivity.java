@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,8 +38,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -156,6 +159,8 @@ public class MainActivity extends AppCompatActivity
 
         habitRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        
+
         // set a listener for addHabitButton that will open a habit entry fragment when clicked
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
@@ -204,6 +209,9 @@ public class MainActivity extends AppCompatActivity
             allHabitAdapter.notifyDataSetChanged();
             todayHabitAdapter.notifyDataSetChanged();
         });
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(habitRecyclerView);
     }
 
     /**
@@ -223,6 +231,25 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP |
+            ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            
+            int fromPosition = viewHolder.getAbsoluteAdapterPosition();
+            int toPosition = target.getAbsoluteAdapterPosition();
+
+            Collections.swap(allHabitList, fromPosition, toPosition);
+
+            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
 
 }
