@@ -27,6 +27,9 @@ public class HabitEvent implements Serializable {
      */
     private double latitude = 0;
 
+
+    private String imageURL;
+
     /**
      * This var is of type {@link String} and contains the date that the habit event was completed
      */
@@ -49,8 +52,9 @@ public class HabitEvent implements Serializable {
      * @param latitude of type {@link double} pass latitude of location
      * @param longitude of type {@link double} pass longitude of location
      */
-    public HabitEvent(String comment, double latitude,double longitude){
+    public HabitEvent(String comment, String imageURL, double latitude,double longitude){
         this.comment = comment;
+        this.imageURL = imageURL;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -101,5 +105,13 @@ public class HabitEvent implements Serializable {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 }
