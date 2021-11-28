@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -24,22 +25,20 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.habbit.BuildConfig;
 import com.example.habbit.R;
-import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 
 public class HabitEventPhotoFragment extends DialogFragment {
 
     String currentPhotoPath;
     ImageView photoPreview;
+    Uri imageUri;
 
     /**
      * The result launcher for selecting photo
@@ -49,15 +48,19 @@ public class HabitEventPhotoFragment extends DialogFragment {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if (currentPhotoPath != null) {
-                        File bitmap = new File(currentPhotoPath);
-                        Picasso.get().load(bitmap).into(photoPreview);
-                    } else {
+                    if (currentPhotoPath == null) {
                         Intent data = result.getData();
                         assert data != null;
-                        Uri selectedImageUri = data.getData();
-                        Picasso.get().load(selectedImageUri).into(photoPreview);
+                        imageUri = data.getData();
+                    } else{
+                    File bitmap = new File(currentPhotoPath);
+                    try {
+                        imageUri = Uri.parse(MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(), String.valueOf(bitmap), null,null));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
                     }
+                    }
+                    Picasso.get().load(imageUri).into(photoPreview);
                 }
             }
     );
@@ -92,14 +95,6 @@ public class HabitEventPhotoFragment extends DialogFragment {
         Button galleryBtn = view.findViewById(R.id.takePhotoGallery);
         photoPreview = view.findViewById(R.id.photoPreview);
 
-        final HabitEvent selectedHabitEvent = (HabitEvent) (getArguments() != null ?
-                getArguments().getSerializable("habitEvent") : null);
-
-        final Habit selectedHabit = (Habit) (getArguments() != null ?
-                getArguments().getSerializable("habit") : null);
-
-        HabitEventInteractionHandler handler = new HabitEventInteractionHandler(selectedHabit);
-
         cameraBtn.setOnClickListener(v -> dispatchTakePictureIntent());
         galleryBtn.setOnClickListener(v -> dispatchSelectPictureIntent());
 
@@ -107,9 +102,13 @@ public class HabitEventPhotoFragment extends DialogFragment {
                 .setView(view)
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Submit", (dialogInterface, i) -> {
-                    assert selectedHabitEvent != null;
-                    handler.addHabitEventPhoto(selectedHabitEvent, photoPreview);
-                    // handler.updateHabitEvent(selectedHabitEvent);
+                    if (imageUri != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("bundleKey", imageUri.toString());
+                        requireActivity().getSupportFragmentManager().setFragmentResult("requestKey", bundle);
+                    } else {
+                        Toast.makeText(getActivity(), "Please select a photo", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .create();
     }
@@ -146,8 +145,8 @@ public class HabitEventPhotoFragment extends DialogFragment {
     private void dispatchSelectPictureIntent() {
         Intent selectPictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
         selectPictureIntent.setType("image/*");
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
+        Intent pickIntent = new Intent(Intent.ACTION_PICK);
+        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         Intent chooserIntent = Intent.createChooser(selectPictureIntent, "Select Picture");
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
         cameraActivity.launch(selectPictureIntent);
@@ -159,8 +158,7 @@ public class HabitEventPhotoFragment extends DialogFragment {
      * @throws IOException for error encountered
      */
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "temp";
         File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
