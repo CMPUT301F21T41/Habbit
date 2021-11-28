@@ -26,6 +26,9 @@ import com.example.habbit.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.*;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -49,7 +52,11 @@ public class MainActivity extends AppCompatActivity
 
     // references to entities used throughout the class
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
-    String username;
+    FirebaseAuth userAuth;
+    FirebaseUser user;
+    String userID;
+//    String username;
+
     ListView habitListView;
     ArrayAdapter<Habit> todayHabitAdapter;
     ArrayAdapter<Habit> allHabitAdapter;
@@ -62,6 +69,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        userAuth = FirebaseAuth.getInstance();
 
         // custom top toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -70,17 +78,18 @@ public class MainActivity extends AppCompatActivity
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                userAuth.signOut();
+                Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
+                startActivity(intent);
             }
         });
 
-        // load in the username from the Activity Bundle parameter
-        Bundle b = getIntent().getExtras();
-        if (b==null){
-            username = User.getUsername();
+        // If no one is logged in, set the current user to the default
+        user = userAuth.getCurrentUser();
+        if(user==null){
+            userID = "AlF39kSveNM3BYaUmSQfWqvtsxt1";
         } else {
-            username = b.get("Username").toString();
-            User.setUsername(username);
+            userID = user.getUid();
         }
 
         // get the current date
@@ -106,7 +115,7 @@ public class MainActivity extends AppCompatActivity
                 switch(item.getItemId()) {
                     case R.id.profile:
                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                        intent.putExtra("USER", username);
+                        intent.putExtra("USER", user);
                         startActivity(intent);
                         break;
                 }
@@ -152,7 +161,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         // refresh the listview every time we update Firestore
-        userCollectionReference.document(username).collection("Habits").addSnapshotListener((value, error) -> {
+        userCollectionReference.document(userID).collection("Habits").addSnapshotListener((value, error) -> {
             // we first clear all the habits we have currently stored for the user
             User.clearHabits();
             todayHabitList.clear();

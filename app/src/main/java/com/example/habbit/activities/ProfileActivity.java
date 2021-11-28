@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.example.habbit.fragments.ProfileEntryFragment;
 import com.example.habbit.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,12 +38,14 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * forward declaration of username for user logged in.
      */
-    String userLoggedIn;
+    FirebaseUser userLoggedIn;
+    FirebaseAuth userAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        userAuth = FirebaseAuth.getInstance();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,35 +58,32 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         // get username of user logged in
-        Intent intent = getIntent();
-        userLoggedIn = (String) intent.getSerializableExtra("USER");
-        Map<String,Object> userData = new HashMap<>();
+        userLoggedIn = userAuth.getCurrentUser();
 
         //show username in profile screen
         TextView userText = findViewById(R.id.username_text);
-        userText.setText(userLoggedIn);
-        //show name in profile screen
-        TextView emailText = findViewById(R.id.name_text);
-
-        //listen for changes to firestore and get new data to display
-        DocumentReference userDoc = userCollectionReference.document(userLoggedIn);
-        userDoc.addSnapshotListener((value, error) -> {
-            assert value != null;
-            if (value.get("Email") != null) {
-                        userData.put("Email", Objects.requireNonNull(value.get("Email")).toString());
-                        emailText.setText(Objects.requireNonNull(value.get("Email")).toString());
-
-                    }
-                    if(value.get("Name") != null) {
-                        userData.put("Name", Objects.requireNonNull(value.get("Name")).toString());
-                    }
-                });
-
-            //open edit profile fragment on button press, pass user data to display
-            final Button editProfileButton = findViewById(R.id.edit_profile_button);
-            editProfileButton.setOnClickListener(view -> ProfileEntryFragment.newInstance(userData)
-                    .show(getSupportFragmentManager(), "EDIT_PROFILE"));
-
+        String userName = userLoggedIn.getDisplayName();
+        if (userName==null){
+            userName = "No Set Username";
         }
+        userText.setText(userName);
+
+        userText.setText(userLoggedIn.getDisplayName());
+        //show email in profile screen
+        TextView emailText = findViewById(R.id.name_text);
+        emailText.setText(userLoggedIn.getEmail());
+
+        //open edit profile fragment on button press, pass user data to display
+        final Button editProfileButton = findViewById(R.id.edit_profile_button);
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileEntryFragment.newInstance().show(getSupportFragmentManager(),"EDIT_PROFILE");
+                userText.setText(userLoggedIn.getDisplayName());
+                emailText.setText(userLoggedIn.getEmail());
+            }
+        });
+
+    }
 
 }

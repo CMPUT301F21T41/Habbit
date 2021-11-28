@@ -32,10 +32,17 @@ public class RegisterFragment extends Fragment {
     OnRegisterFragmentInteractionListener listener;
     View view;
 
+    /**
+     *
+     */
     public interface OnRegisterFragmentInteractionListener {
         void OnRegisterPressed(String email, String userName, String password, String passConfirm);
     }
 
+    /**
+     *
+     * @param context
+     */
     @Override
     public void onAttach(@NonNull Context context){
         super.onAttach(context);
@@ -61,6 +68,24 @@ public class RegisterFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     *
+     */
+    public void clearText(){
+        regEmail.setText("");
+        regUser.setText("");
+        regPass.setText("");
+        regPassConfirm.setText("");
+        view.clearFocus();
+    }
+
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         view = inflater.inflate(R.layout.fragment_register,container, false);
