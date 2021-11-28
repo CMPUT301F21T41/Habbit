@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, dayOfTheWeek);
 
         // get references to UI elements and attach custom adapter
-        habitRecyclerView = findViewById(R.id.today_habit_list_view);
+        habitRecyclerView = findViewById(R.id.today_habit_recycler_view);
         todayHabitList = new ArrayList<>();
         todayHabitAdapter = new CustomHabitList(this, todayHabitList, true);
         allHabitList = User.getUserHabits();

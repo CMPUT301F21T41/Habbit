@@ -29,7 +29,7 @@
             android:paddingHorizontal="20dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/today_habit_list_view"
+            android:id="@+id/today_habit_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="500dp"
             android:divider="@null"
