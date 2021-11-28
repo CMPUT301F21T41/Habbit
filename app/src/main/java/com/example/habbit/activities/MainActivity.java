@@ -125,6 +125,9 @@ public class MainActivity extends AppCompatActivity
                         intent.putExtra("USER", user);
                         startActivity(intent);
                         break;
+                    case R.id.search:
+                        Intent intentSearch = new Intent(getApplicationContext(), SearchActivity.class);
+                        startActivity(intentSearch);
                 }
                 return true;
             }
