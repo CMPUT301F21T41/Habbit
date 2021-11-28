@@ -115,7 +115,7 @@ public class HabitEventInteractionHandler {
                                     imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(@NonNull Uri uri) {
-                                            DocumentReference userDoc = userCollectionReference.document(username)
+                                            DocumentReference userDoc = userCollectionReference.document(userID)
                                                     .collection("Habits").document(habit.getId());
                                             userDoc.collection("Habit Events").document(habitEvent.getId())
                                                     .update("imageURL", uri.toString());
@@ -150,6 +150,7 @@ public class HabitEventInteractionHandler {
         storageRef = storage.getReference();
 
         // Create a reference to "habit_event_id.jpg"
+        assert newHabitEvent != null;
         StorageReference imageRef = storageRef.child(newHabitEvent.getId()+".jpg");
 
         //Upload from data stream
@@ -163,7 +164,6 @@ public class HabitEventInteractionHandler {
         UploadTask uploadTask = imageRef.putBytes(data);
 
         // get updated values
-        assert newHabitEvent != null;
         String commentText = newHabitEvent.getComment();
 
 
@@ -181,7 +181,7 @@ public class HabitEventInteractionHandler {
                         @Override
                         public void onSuccess(@NonNull Uri uri) {
 
-                            DocumentReference userDoc = userCollectionReference.document(username)
+                            DocumentReference userDoc = userCollectionReference.document(userID)
                                     .collection("Habits").document(habit.getId());
                             userDoc.collection("Habit Events").document(newHabitEvent.getId())
                                     .update("imageURL", uri.toString());
