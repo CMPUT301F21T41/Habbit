@@ -89,15 +89,14 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
 
     /**
      *
-     * @param user
      * @param userName
      */
-    private void addUserName(FirebaseUser user, String userName) {
+    private void addUserName(String userName) {
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(userName)
                 .build();
 
-        user.updateProfile(profileUpdates)
+        FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -177,7 +176,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                                 // create a new habit collection using the userID as the document name
                                 addUser(user.getUid());
                                 // attach the entered username to the created user as the "Display Name"
-                                addUserName(user,userName);
+                                addUserName(userName);
 
                                 startMainActivity();
                             }
