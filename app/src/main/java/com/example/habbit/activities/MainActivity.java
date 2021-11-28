@@ -14,6 +14,8 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomHabitList;
@@ -57,13 +59,15 @@ public class MainActivity extends AppCompatActivity
     String userID;
 //    String username;
 
-    ListView habitListView;
-    ArrayAdapter<Habit> todayHabitAdapter;
-    ArrayAdapter<Habit> allHabitAdapter;
-    ArrayAdapter<Habit> relevantAdapter;
+    RecyclerView habitRecyclerView;
+    CustomHabitList todayHabitAdapter;
+    CustomHabitList allHabitAdapter;
+    CustomHabitList relevantAdapter;
     ArrayList<Habit> todayHabitList;
     ArrayList<Habit> allHabitList;
     HabitInteractionHandler habitHandler;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +103,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, dayOfTheWeek);
 
         // get references to UI elements and attach custom adapter
-        habitListView = findViewById(R.id.today_habit_list_view);
+        habitRecyclerView = findViewById(R.id.today_habit_list_view);
         todayHabitList = new ArrayList<>();
         todayHabitAdapter = new CustomHabitList(this, todayHabitList, true);
         allHabitList = User.getUserHabits();
@@ -140,7 +144,8 @@ public class MainActivity extends AppCompatActivity
                 } else if (i == 1) {
                     relevantAdapter = todayHabitAdapter;
                 }
-                habitListView.setAdapter(relevantAdapter);
+                habitRecyclerView.setAdapter(relevantAdapter);
+
             }
 
             @Override
@@ -149,16 +154,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        habitRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         // set a listener for addHabitButton that will open a habit entry fragment when clicked
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
 
-        // set a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
-        habitListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Habit viewHabit = relevantAdapter.getItem(i);
-            HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
-        });
+
 
         // refresh the listview every time we update Firestore
         userCollectionReference.document(userID).collection("Habits").addSnapshotListener((value, error) -> {
@@ -219,4 +222,7 @@ public class MainActivity extends AppCompatActivity
             habitHandler.updateHabit(habit);
         }
     }
+
+    
+
 }
