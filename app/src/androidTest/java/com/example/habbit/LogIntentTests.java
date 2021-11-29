@@ -62,6 +62,16 @@ public class LogIntentTests {
             Log.i(TAG,FirebaseAuth.getInstance().getCurrentUser().toString());
             FirebaseAuth.getInstance().signOut();
         }
+
+        // asserts that the current activity is LogInActivity, otherwise notify that it is the wrong activity
+        solo.assertCurrentActivity("Wrong Activity",LogInActivity.class);
+
+        // asserts that there is no user signed in
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assertEquals(null,user);
+
+        // asserts that the LogInFragment is opened (with the title text 'LOGIN')
+        assertTrue(solo.searchText("LOGIN"));
     }
 
     /**
@@ -75,23 +85,13 @@ public class LogIntentTests {
 
     @Test
     public void logInEmptyTest(){
-        // asserts that the current activity is LogInActivity, otherwise notify that it is the wrong activity
-        solo.assertCurrentActivity("Wrong Activity",LogInActivity.class);
-
-        // asserts that there is no user signed in
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assertEquals(null,user);
-
-        // asserts that the LogInFragment is opened (with the title text 'LOGIN')
-        assertTrue(solo.searchText("LOGIN"));
-
         // click on the log in button without entering all credentials
         View logButton = solo.getView(R.id.log_button);
         solo.clickOnView(logButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("Credentials fields cannot be empty",
-                1,5000));
+        assertTrue(solo.waitForText("Credentials fields cannot be empty.",
+                1,10000));
         solo.clickOnButton("Ok");
 
         // click on the log in button without entering a password
@@ -99,8 +99,8 @@ public class LogIntentTests {
         solo.clickOnView(logButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("Credentials fields cannot be empty",
-                1,5000));
+        assertTrue(solo.waitForText("Credentials fields cannot be empty.",
+                1,10000));
         solo.clickOnButton("Ok");
 
         // click on the log in button without entering an email
@@ -108,8 +108,8 @@ public class LogIntentTests {
         solo.clickOnView(logButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("Credentials fields cannot be empty",
-                1,5000));
+        assertTrue(solo.waitForText("Credentials fields cannot be empty.",
+                1,10000));
         solo.clickOnButton("Ok");
     }
 
@@ -118,16 +118,6 @@ public class LogIntentTests {
      */
     @Test
     public void logInSuccessTest(){
-        // asserts that the current activity is LogInActivity, otherwise notify that it is the wrong activity
-        solo.assertCurrentActivity("Wrong Activity",LogInActivity.class);
-
-        // asserts that there is no user signed in
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assertEquals(null,user);
-
-        // asserts that the LogInFragment is opened (with the title text 'LOGIN')
-        assertTrue(solo.searchText("LOGIN"));
-
         solo.enterText((EditText) solo.getView(R.id.log_email),defaultEmail);
         solo.enterText((EditText) solo.getView(R.id.log_pass),defaultPass);
 
@@ -147,16 +137,6 @@ public class LogIntentTests {
      */
     @Test
     public void logInErrorTest(){
-        // asserts that the current activity is LogInActivity, otherwise notify that it is the wrong activity
-        solo.assertCurrentActivity("Wrong Activity",LogInActivity.class);
-
-        // asserts that there is no user signed in
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assertEquals(null,user);
-
-        // asserts that the LogInFragment is opened (with the title text 'LOGIN')
-        assertTrue(solo.searchText("LOGIN"));
-
         // ERROR 1: correct user email, incorrect password
         solo.enterText((EditText) solo.getView(R.id.log_email),defaultEmail);
         solo.enterText((EditText) solo.getView(R.id.log_pass),"incorrectPass");
@@ -165,33 +145,28 @@ public class LogIntentTests {
         solo.clickOnView(logInButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("Invalid Password",1,5000));
+        assertTrue(solo.waitForText("Invalid Password.",1,10000));
         solo.clickOnButton("Ok");
 
         // ERROR 2: User account is not found
         // i.e., invalid email input (xxx@xxx.xx not followed) or
         // valid email not associated with any user
+
+        solo.clearEditText((EditText) solo.getView(R.id.log_email));
+        solo.clearEditText((EditText) solo.getView(R.id.log_pass));
+
         solo.enterText((EditText) solo.getView(R.id.log_email),"defaultEmail");
         solo.enterText((EditText) solo.getView(R.id.log_pass),"incorrectPass");
+
         solo.clickOnView(logInButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("User not found",1,5000));
+        assertTrue(solo.waitForText("User not found.",1,10000));
         solo.clickOnButton("Ok");
     }
 
     @Test
     public void switchFragTest(){
-        // asserts that the current activity is LogInActivity, otherwise notify that it is the wrong activity
-        solo.assertCurrentActivity("Wrong Activity",LogInActivity.class);
-
-        // asserts that there is no user signed in
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assertEquals(null,user);
-
-        // asserts that the LogInFragment is opened (with the title text 'LOGIN')
-        assertTrue(solo.searchText("LOGIN"));
-
         View logChangeButton = solo.getView(R.id.log_change_button);
         solo.clickOnView(logChangeButton);
 
@@ -207,16 +182,6 @@ public class LogIntentTests {
 
     @Test
     public void registerEmptyTest(){
-        // asserts that the current activity is LogInActivity, otherwise notify that it is the wrong activity
-        solo.assertCurrentActivity("Wrong Activity",LogInActivity.class);
-
-        // asserts that there is no user signed in
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assertEquals(null,user);
-
-        // asserts that the LogInFragment is opened (with the title text 'LOGIN')
-        assertTrue(solo.searchText("LOGIN"));
-
         View logChangeButton = solo.getView(R.id.log_change_button);
         solo.clickOnView(logChangeButton);
 
@@ -224,23 +189,13 @@ public class LogIntentTests {
         solo.clickOnView(registerButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("Credentials fields cannot be empty",
-                1,5000));
+        assertTrue(solo.waitForText("Credentials fields cannot be empty.",
+                1,10000));
         solo.clickOnButton("Ok");
     }
 
     @Test
     public void registerSuccessTest(){
-        // asserts that the current activity is LogInActivity, otherwise notify that it is the wrong activity
-        solo.assertCurrentActivity("Wrong Activity",LogInActivity.class);
-
-        // asserts that there is no user signed in
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assertEquals(null,user);
-
-        // asserts that the LogInFragment is opened (with the title text 'LOGIN')
-        assertTrue(solo.searchText("LOGIN"));
-
         View logChangeButton = solo.getView(R.id.log_change_button);
         solo.clickOnView(logChangeButton);
 
@@ -258,16 +213,6 @@ public class LogIntentTests {
         // assert that the correct user is logged in
         assertEquals("logintenttests@email.com",
                 FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
-        // TODO: Figure out why this always returns null
-        // see addUserName in LogInActivity for why this is a mystery
-        String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        if (userName == null){
-            Log.i(TAG,"still null");
-        } else {
-            assertEquals("LogIntentUser",
-                    FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        }
 
         // delete the user just created so that the test can be run multiple times
         userCollectionReference.document(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -288,16 +233,6 @@ public class LogIntentTests {
 
     @Test
     public void registerErrorTest(){
-        // asserts that the current activity is LogInActivity, otherwise notify that it is the wrong activity
-        solo.assertCurrentActivity("Wrong Activity",LogInActivity.class);
-
-        // asserts that there is no user signed in
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assertEquals(null,user);
-
-        // asserts that the LogInFragment is opened (with the title text 'LOGIN')
-        assertTrue(solo.searchText("LOGIN"));
-
         View logChangeButton = solo.getView(R.id.log_change_button);
         solo.clickOnView(logChangeButton);
 
@@ -311,11 +246,17 @@ public class LogIntentTests {
         solo.clickOnView(registerButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("Passwords do not match",
-                1,5000));
+        assertTrue(solo.waitForText("Passwords do not match.",
+                1,10000));
         solo.clickOnButton("Ok");
 
         // ERROR 2: Invalid email address
+
+        solo.clearEditText((EditText) solo.getView(R.id.reg_email));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_username));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_pass));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_pass_confirm));
+
         solo.enterText((EditText) solo.getView(R.id.reg_email),"newuser");
         solo.enterText((EditText) solo.getView(R.id.reg_username),"newUser");
         solo.enterText((EditText) solo.getView(R.id.reg_pass),"Password");
@@ -324,11 +265,17 @@ public class LogIntentTests {
         solo.clickOnView(registerButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("Invalid email address",
-                1,5000));
+        assertTrue(solo.waitForText("Invalid email address.",
+                1,10000));
         solo.clickOnButton("Ok");
 
         // ERROR 3: Email address is already associated with another account
+
+        solo.clearEditText((EditText) solo.getView(R.id.reg_email));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_username));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_pass));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_pass_confirm));
+
         solo.enterText((EditText) solo.getView(R.id.reg_email),defaultEmail);
         solo.enterText((EditText) solo.getView(R.id.reg_username),"newUser");
         solo.enterText((EditText) solo.getView(R.id.reg_pass),"Password");
@@ -337,11 +284,17 @@ public class LogIntentTests {
         solo.clickOnView(registerButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("The email address is already in use by another account",
-                1,5000));
+        assertTrue(solo.waitForText("The email address is already in use by another account.",
+                1,10000));
         solo.clickOnButton("Ok");
 
         // ERROR 4: Username is already associated with another account
+
+        solo.clearEditText((EditText) solo.getView(R.id.reg_email));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_username));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_pass));
+        solo.clearEditText((EditText) solo.getView(R.id.reg_pass_confirm));
+
         solo.enterText((EditText) solo.getView(R.id.reg_email),"newemail@email.com");
         solo.enterText((EditText) solo.getView(R.id.reg_username),defaultName);
         solo.enterText((EditText) solo.getView(R.id.reg_pass),"Password");
@@ -350,8 +303,8 @@ public class LogIntentTests {
         solo.clickOnView(registerButton);
         solo.waitForDialogToOpen();
 
-        assertTrue(solo.waitForText("User with this username already exists",
-                1,5000));
+        assertTrue(solo.waitForText("User with this username already exists.",
+                1,10000));
         solo.clickOnButton("Ok");
 
     }
