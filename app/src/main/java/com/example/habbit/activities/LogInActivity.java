@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.*;
 
@@ -36,8 +38,10 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     // TAG used for debugging
     private static final String TAG = "LogInActivity";
 
-    final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
+    static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
+    static final CollectionReference nameCollectionReference = FirebaseFirestore.getInstance().collection("userNames");
     private FirebaseAuth userAuth;
+    private boolean userNameExists = false;
 
     /**
      * A factory method that is run when the activity is first created
@@ -49,6 +53,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
         userAuth = FirebaseAuth.getInstance();
+        userNameExists = false;
     }
 
     /**
@@ -77,12 +82,20 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
      * @param userID The user id, generated with {@link FirebaseUser#getUid()}.
      *               Of type {@link String}
      */
-    private void addUser(String userID){
+    private void addUser(String userID, String username){
         Map<String,Object> userData = new HashMap<>();
         userData.put("User ID", userID);
         userCollectionReference.document(userID)
                 .set(userData)
                 .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
+                        Toast.LENGTH_SHORT).show());
+
+        Map<String,Object> userNames = new HashMap<>();
+        userNames.put("User Name",username);
+        nameCollectionReference.document(username)
+                .set(userNames)
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added username!", Toast.LENGTH_LONG).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
                         Toast.LENGTH_SHORT).show());
     }
@@ -107,15 +120,41 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                 });
     }
 
-    /**
-     * checks whether or not the entered information is valid and if so continue to {@link MainActivity}
-     * @param email
-     * takes an email of type {@link String}
-     * @param password
-     * takes a password of type {@link String}
-     */
-    @Override
-    public void OnLogInPressed(String email, String password){
+    private void registerAccount(String email, String password, String userName){
+        userAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            Log.d(TAG,"createUserWithEmail:success");
+                            FirebaseUser user = userAuth.getCurrentUser();
+
+                            // create a new habit collection using the userID as the document name
+                            addUser(user.getUid(),userName);
+                            // attach the entered username to the created user as the "Display Name"
+                            addUserName(userName);
+
+                            startMainActivity();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        String errMessage = e.getLocalizedMessage();
+                        if (e instanceof FirebaseAuthInvalidCredentialsException){
+                            String errCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
+                            if (errCode.equals("ERROR_INVALID_EMAIL")){
+                                errMessage = "Invalid email address.";
+                            }
+                        }
+                        LogErrorFragment.newInstance(errMessage)
+                                .show(getSupportFragmentManager(),"Registration failure");
+                    }
+                });
+    }
+
+    private void signIn(String email, String password){
         userAuth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -123,7 +162,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                         if (task.isSuccessful()){
                             // Sign-in success, start MainActivity with new user information
                             Log.d(TAG,"createUserWithEmail:success");
-                            FirebaseUser user = userAuth.getCurrentUser();
+//                            FirebaseUser user = userAuth.getCurrentUser();
                             startMainActivity();
                         }
                     }
@@ -135,20 +174,40 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                         if (e instanceof  FirebaseAuthInvalidUserException){
                             String errCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
                             if (errCode.equals("ERROR_USER_NOT_FOUND")){
-                                errMessage = "User not found";
+                                errMessage = "User not found.";
                             }
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException){
                             String errCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
                             if (errCode.equals("ERROR_INVALID_EMAIL")){
-                                errMessage = "User not found";
+                                errMessage = "User not found.";
                             } else if (errCode.equals("ERROR_WRONG_PASSWORD")){
-                                errMessage = "Invalid Password";
+                                errMessage = "Invalid Password.";
                             }
                         }
                         LogErrorFragment.newInstance(errMessage)
                                 .show(getSupportFragmentManager(),"Log in failure");
                     }
                 });
+    }
+
+    /**
+     * checks whether or not the entered information is valid and if so continue to {@link MainActivity}
+     * @param email
+     * takes an email of type {@link String}
+     * @param password
+     * takes a password of type {@link String}
+     */
+    @Override
+    public void OnLogInPressed(String email, String password){
+        EditText emailText = findViewById(R.id.log_email);
+        EditText passText = findViewById(R.id.log_pass);
+
+        if (emailText.getText().toString().equals("") || passText.getText().toString().equals("")){
+            LogErrorFragment.newInstance("Credentials fields cannot be empty.")
+                    .show(getSupportFragmentManager(),"Log in failure");
+        } else {
+            signIn(email,password);
+        }
     }
 
     /**
@@ -164,41 +223,31 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
      */
     @Override
     public void OnRegisterPressed(String email, String userName, String password, String passConfirm){
-        if (password.equals(passConfirm)){
-            userAuth.createUserWithEmailAndPassword(email,password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+        if(email.equals("") || userName.equals("") || password.equals("") || passConfirm.equals("")) {
+            LogErrorFragment.newInstance("Credentials fields cannot be empty.")
+                    .show(getSupportFragmentManager(),"Registration failure");
+        } else if (!password.equals(passConfirm)){
+            LogErrorFragment.newInstance("Passwords do not match.")
+                    .show(getSupportFragmentManager(),"Registration failure");
+        } else {
+            nameCollectionReference.document(userName)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()){
-                                Log.d(TAG,"createUserWithEmail:success");
-                                FirebaseUser user = userAuth.getCurrentUser();
-
-                                // create a new habit collection using the userID as the document name
-                                addUser(user.getUid());
-                                // attach the entered username to the created user as the "Display Name"
-                                addUserName(userName);
-
-                                startMainActivity();
-                            }
-                        }
-                    })
-                    .addOnFailureListener(this, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            String errMessage = e.getLocalizedMessage();
-                            if (e instanceof FirebaseAuthInvalidCredentialsException){
-                                String errCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
-                                if (errCode.equals("ERROR_INVALID_EMAIL")){
-                                    errMessage = "Invalid email address";
+                                DocumentSnapshot doc = task.getResult();
+                                if (doc.exists()){
+                                    Toast.makeText(getApplicationContext(),"Got in here",Toast.LENGTH_SHORT).show();
+                                    LogErrorFragment.newInstance("User with this username already exists.")
+                                            .show(getSupportFragmentManager(),"Registration failure");
+                                } else {
+                                    registerAccount(email,password,userName);
                                 }
                             }
-                            LogErrorFragment.newInstance(errMessage)
-                                    .show(getSupportFragmentManager(),"Registration failure");
                         }
                     });
-        } else {
-            LogErrorFragment.newInstance("Password Does Not Match")
-                    .show(getSupportFragmentManager(),"Registration failure");
         }
     }
 
