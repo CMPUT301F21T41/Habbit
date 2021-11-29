@@ -3,6 +3,7 @@ package com.example.habbit.activities;
 import static android.content.ContentValues.TAG;
 import static com.example.habbit.activities.MainActivity.userCollectionReference;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.example.habbit.fragments.HabitEventDetailsFragment;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -31,13 +34,18 @@ public class HabitEventsActivity extends AppCompatActivity {
     // get entities to be used throughout the class
     CustomHabitEventList habitEventAdapter;
     ArrayList<HabitEvent> habitEventDataList;
-    String username;
+//    String username;
+    FirebaseAuth userAuth;
+    FirebaseUser user;
+    String userID;
     Habit habit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_events);
+        userAuth = FirebaseAuth.getInstance();
+        user = userAuth.getCurrentUser();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,7 +69,7 @@ public class HabitEventsActivity extends AppCompatActivity {
         habitEventList.setAdapter(habitEventAdapter);
 
         // get user login
-        username = User.getUsername();
+        userID = user.getUid();
 
         // instantiate a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
         habitEventList.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -70,7 +78,7 @@ public class HabitEventsActivity extends AppCompatActivity {
         });
 
         // initialize/update the list every time there is a change made to the habit events
-        userCollectionReference.document(username).collection("Habits").document(habit.getId())
+        userCollectionReference.document(userID).collection("Habits").document(habit.getId())
                 .collection("Habit Events").addSnapshotListener((value, error) -> {
                     habit.clearHabitEvents();
                     Map<String,Object> habitEventData;
@@ -82,6 +90,7 @@ public class HabitEventsActivity extends AppCompatActivity {
                             // every time we pull from Firestore, get the document ID data and associate it with the HabitEvent object
                             Log.d("seans", habitEventData.get("comment").toString() + habitEventData);
                             HabitEvent habitEvent = new HabitEvent(Objects.requireNonNull(habitEventData.get("comment")).toString(),
+                                    Objects.requireNonNull(habitEventData.get("imageURL")).toString(),
                                     (double) Objects.requireNonNull(habitEventData.get("latitude")),
                                     (double) Objects.requireNonNull(habitEventData.get("longitude")));
                             Log.d("seans", Objects.requireNonNull(habitEventData.get("comment")).toString()

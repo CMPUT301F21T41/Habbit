@@ -8,22 +8,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.example.habbit.BuildConfig;
 import com.example.habbit.R;
 import com.example.habbit.fragments.MapFragment;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
+import com.squareup.picasso.Picasso;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.config.IConfigurationProvider;
@@ -39,7 +44,10 @@ public class MapActivity extends AppCompatActivity {
     private static final String MAP_FRAGMENT_TAG = "org.osmdroid.MAP_FRAGMENT_TAG";
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
-
+    private double lat;
+    private double lon;
+    String city;
+    String province;
 
     /**
      * The idea behind that is to force a MapView refresh when switching from offline to online.
@@ -79,6 +87,7 @@ public class MapActivity extends AppCompatActivity {
 
 
 
+
         //get habitevent
         Intent intent = getIntent();
         int justView = (int) intent.getSerializableExtra("justView");
@@ -110,6 +119,28 @@ public class MapActivity extends AppCompatActivity {
         }
 
         FragmentManager fm = this.getSupportFragmentManager();
+        //FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        fm.setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                lat = bundle.getDouble("latKey");
+                lon = bundle.getDouble("lonKey");
+                city = bundle.getString("city");
+                province = bundle.getString("province");
+                Log.d("mapreturn","LAT: "+lat+"LON: "+lon);
+                Log.d("mapreturn","city: "+city+"Province: " +province);
+                Intent intentB = new Intent();
+                intentB.putExtra("lat",lat);
+                intentB.putExtra("lon",lon);
+                intentB.putExtra("city",city);
+                intentB.putExtra("province",province);
+                setResult(RESULT_OK,intentB);
+                finish();
+
+                /*Uri uri = Uri.parse(result);
+                Picasso.get().load(uri).into(imageView);*/
+            }
+        });
         if (fm.findFragmentByTag(MAP_FRAGMENT_TAG) == null) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("habitEvent",habitEvent);

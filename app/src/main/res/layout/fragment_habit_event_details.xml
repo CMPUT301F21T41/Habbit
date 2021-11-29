@@ -33,6 +33,13 @@
         android:drawableRight="@drawable/ic_baseline_pin_drop_24"
         />
 
+    <TextView
+        android:id="@+id/location_text_v"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        style="@style/TextStyle_Heading2"/>
+
     <ImageView
         android:id="@+id/eventPhoto"
         android:layout_width="match_parent"

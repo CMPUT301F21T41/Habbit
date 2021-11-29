@@ -14,8 +14,13 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.habbit.R;
+import com.example.habbit.handlers.HabitInteractionHandler;
+import com.example.habbit.handlers.ProfileInteractionHandler;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -26,72 +31,64 @@ import java.util.Map;
  */
 public class ProfileEntryFragment extends DialogFragment {
 
-    private OnProfileEntryFragmentInteractionListener listener;
-
-    public interface OnProfileEntryFragmentInteractionListener {
-        void onEditProfilePressed(Map<String,Object> map);
-    }
-
-    /**
-     *
-     *
-     * @param context get context of activity to attach, type {@link Context}
-     */
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnProfileEntryFragmentInteractionListener){
-            listener = (OnProfileEntryFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() +
-                    "must implement OnProfileEntryFragmentInteractionListener");
-        }
-    }
+    FirebaseAuth userAuth;
+    FirebaseUser user;
 
     public ProfileEntryFragment(){
         // required empty class constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param userData User data shown to user on profile edit, of type {@link Map}.
-     * @return A new instance of fragment {@link ProfileEntryFragment}.
-     */
-    public static ProfileEntryFragment newInstance(Map<String,Object> userData){
-        Bundle args = new Bundle();
-        args.putSerializable("USER", (Serializable) userData);
+//    /**
+//     * Use this factory method to create a new instance of
+//     * this fragment using the provided parameters.
+//     *
+//     * @param userData User data shown to user on profile edit, of type {@link Map}.
+//     * @return A new instance of fragment {@link ProfileEntryFragment}.
+//     */
+//    public static ProfileEntryFragment newInstance(Map<String,Object> userData){
+//        Bundle args = new Bundle();
+//        args.putSerializable("USER", (Serializable) userData);
+//
+//        ProfileEntryFragment fragment = new ProfileEntryFragment();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+
+    public static ProfileEntryFragment newInstance(){
+//        Bundle args = new Bundle();
+//        args.putSerializable("USER",(Serializable) user);
 
         ProfileEntryFragment fragment = new ProfileEntryFragment();
-        fragment.setArguments(args);
+//        fragment.setArguments(args);
         return fragment;
     }
+
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
         /* Inflate layout for fragment */
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_profile_entry,null);
+        userAuth = FirebaseAuth.getInstance();
 
         /* connect Views to xml text fields */
         EditText viewEmail = view.findViewById(R.id.edit_profile_email);
         EditText viewName = view.findViewById(R.id.edit_profile_name);
 
         /* get the user data to display */
-        final Map<String,Object> userData = (Map<String, Object>) (getArguments() != null ?
-               getArguments().getSerializable("USER") : null);
-
+//        final FirebaseUser user = (FirebaseUser) (getArguments() != null ? getArguments().getSerializable("USER") : null);
+        user = userAuth.getCurrentUser();
 
         /* set the text for the TextViews (null if habit is null) */
-        viewEmail.setText(userData.get("Email").toString());
-        if(userData.get("Name") != null){
-            viewName.setText(userData.get("Name").toString());
+        String userName = "No Set Username";
+        viewEmail.setText(user.getEmail());
+        if (user.getDisplayName()!=null){
+            userName = user.getDisplayName();
         }
+        viewName.setText(userName);
 
-
-        //viewEmail.setHint("Email: " + userData.get("Email"));
-        //viewName.setHint("Name: " + userData.get("Name"));
+        /* initialize handler to update profile information */
+        ProfileInteractionHandler handler = new ProfileInteractionHandler();
 
         /* initialize the "Edit Profile" dialog */
         AlertDialog viewDialog = new AlertDialog.Builder(getContext())
@@ -99,9 +96,12 @@ public class ProfileEntryFragment extends DialogFragment {
                 .setTitle("Edit Profile")
                 .setNeutralButton("Close",null)
                 .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                    userData.put("Email",viewEmail.getText().toString());
-                    userData.put("Name",viewName.getText().toString());
-                    listener.onEditProfilePressed(userData);
+                    String name = viewName.getText().toString();
+                    String email = viewEmail.getText().toString();
+                    handler.updateUser(user, name, email);
+
+                    viewEmail.setText(user.getEmail());
+                    viewName.setText(user.getDisplayName());
 
                 })
                 .create();

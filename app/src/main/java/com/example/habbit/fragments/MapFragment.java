@@ -1,8 +1,8 @@
 // Created by plusminus on 00:23:14 - 03.10.2008
 package com.example.habbit.fragments;
 
+import java.io.IOException;
 import java.lang.Math;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,6 +13,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import com.example.habbit.models.HabitEvent;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.location.GeocoderNominatim;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -63,6 +65,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -128,6 +131,8 @@ public class MapFragment extends Fragment {
     boolean touched = false;
     boolean lockTillLocFound = true;
 
+    //Bundle bundle = new Bundle();
+
     public static MapFragment newInstance() {
         return new MapFragment();
     }
@@ -181,10 +186,16 @@ public class MapFragment extends Fragment {
                         Log.d("lookee",String.valueOf(lon));
                         habitEvent.setLatitude(lat);
                         habitEvent.setLongitude(lon);
-                        //Habit habit = new Habit();
-                        HabitEventInteractionHandler h = new HabitEventInteractionHandler(habit);
-                        h.addHabitEventLocation(habitEvent);
-                        getActivity().finish();
+
+                        Bundle bundle = new Bundle();
+                        bundle.putDouble("latKey", lat);
+                        bundle.putDouble("lonKey", lon);
+
+                        requireActivity().getSupportFragmentManager().setFragmentResult("requestKey", bundle);
+
+                        //HabitEventInteractionHandler h = new HabitEventInteractionHandler(habit);
+                        //h.addHabitEventLocation(habitEvent);
+                        //getActivity().finish();
 
                     }
                     touched = true;
@@ -199,6 +210,7 @@ public class MapFragment extends Fragment {
         } catch (Exception ex) {
             Log.e("Error", "Exception loading drawable");
         }
+
 
         mMapView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
             /**

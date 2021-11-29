@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="habit_types">
+        <item>All Habits</item>
+        <item>Today\'s Habits</item>
+    </string-array>
+</resources>

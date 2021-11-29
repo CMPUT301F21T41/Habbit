@@ -70,6 +70,11 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
 
         //set image
         assert habitEvent != null;
+        String imageURL = habitEvent.getImageURL();
+        if (imageURL.equals("")){
+            imageURL = "gs://habbit-fc707.appspot.com/placeholder.png";
+            habitEvent.setImageURL(imageURL);
+        }
         handler.getHabitEventPhoto(habitEvent, eventPhoto);
 
         // Set texts
@@ -87,6 +92,7 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
 //            completedOntTimeTxt = "Not completed on time :(";
 //        }
         habitEventComment.setText(commentTxt);
+
 //        habitEventCompletedOnTime.setText(completedOntTimeTxt);
 
         return view;
