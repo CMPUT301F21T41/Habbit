@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,8 +22,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.*;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +39,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     // TAG used for debugging
     private static final String TAG = "LogInActivity";
 
-    final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
+    static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     private FirebaseAuth userAuth;
 
     /**
@@ -73,9 +76,10 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     }
 
     /**
-     * Adds the created Firebase User to the collection of users
-     * @param userID The user id, generated with {@link FirebaseUser#getUid()}.
-     *               Of type {@link String}
+     * Adds the userID and username of the newly created User account to the 'users' and 'userNames'
+     * Firebase collections respectively.
+     * @param userID
+     * @param username
      */
     private void addUser(String userID, String username){
         Map<String,Object> userData = new HashMap<>();
@@ -83,15 +87,32 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         userData.put("Username", username);
         userCollectionReference.document(userID)
                 .set(userData)
-                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show())
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Successfully added user!", Toast.LENGTH_LONG).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
                         Toast.LENGTH_SHORT).show());
     }
 
+    private void deleteUser(String userID){
+        userCollectionReference.document(userID)
+                .delete()
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Successfully deleted user!", Toast.LENGTH_LONG).show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
+                        Toast.LENGTH_SHORT).show());
+
+        userAuth.getCurrentUser().delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            Log.d(TAG,"User account deleted");
+                        }
+                    }
+                });
+    }
+
     /**
-     *
-     * @param user
-     * @param userName
+     * Updates the display name of the associated {@link FirebaseUser}.
+     * @param userName The new display name for the account. Of type {@link String}.
      */
     private void addUserName(FirebaseUser user, String userName) {
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -114,28 +135,67 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         userData.put("User ID", user.getUid());
         userCollectionReference.document(user.getUid())
                 .set(userData)
-                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show())
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Successfully added user!", Toast.LENGTH_LONG).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
                         Toast.LENGTH_SHORT).show());
     }
 
     /**
-     * checks whether or not the entered information is valid and if so continue to {@link MainActivity}
-     * @param email
-     * takes an email of type {@link String}
-     * @param password
-     * takes a password of type {@link String}
+     * Uses the FirebaseAuth factory method {@link FirebaseAuth#createUserWithEmailAndPassword(String, String)}
+     * to register a new user account.
+     * @param email The email address associated with the new account. Of type {@link String}.
+     * @param password The password for the new account. Of type {@link String}.
+     * @param userName The username to be associated with the new account. Of type {@link String}.
      */
-    @Override
-    public void OnLogInPressed(String email, String password){
+    private void registerAccount(String email, String password, String userName){
+        userAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            Log.d(TAG,"createUserWithEmail:success");
+                            FirebaseUser user = userAuth.getCurrentUser();
+
+                            // create a new habit collection using the userID as the document name
+                            addUser(user.getUid(),userName);
+                            // attach the entered username to the created user as the "Display Name"
+                            addUserName(user,userName);
+
+                            startMainActivity();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        String errMessage = e.getLocalizedMessage();
+                        if (e instanceof FirebaseAuthInvalidCredentialsException){
+                            String errCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
+                            if (errCode.equals("ERROR_INVALID_EMAIL")){
+                                errMessage = "Invalid email address.";
+                            }
+                        }
+                        LogErrorFragment.newInstance(errMessage)
+                                .show(getSupportFragmentManager(),"Registration failure");
+                    }
+                });
+    }
+
+    /**
+     * Uses the FirebaseAuth factory method {@link FirebaseAuth#createUserWithEmailAndPassword(String, String)}
+     * to sign in a user to an existing account. Opens an error message using {@link LogErrorFragment#newInstance(String)}
+     * if the entered credentials are invalid.
+     * @param email The registered email address of the account. Of type {@link String}.
+     * @param password The registered password for the account. Of type {@link String}.
+     */
+    private void signIn(String email, String password){
         userAuth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            // Sign-in success, start MainActivity with new user information
                             Log.d(TAG,"createUserWithEmail:success");
-                            FirebaseUser user = userAuth.getCurrentUser();
+                            // Sign-in success, start MainActivity
                             startMainActivity();
                         }
                     }
@@ -147,14 +207,14 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                         if (e instanceof  FirebaseAuthInvalidUserException){
                             String errCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
                             if (errCode.equals("ERROR_USER_NOT_FOUND")){
-                                errMessage = "User not found";
+                                errMessage = "User not found.";
                             }
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException){
                             String errCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
                             if (errCode.equals("ERROR_INVALID_EMAIL")){
-                                errMessage = "User not found";
+                                errMessage = "User not found.";
                             } else if (errCode.equals("ERROR_WRONG_PASSWORD")){
-                                errMessage = "Invalid Password";
+                                errMessage = "Invalid Password.";
                             }
                         }
                         LogErrorFragment.newInstance(errMessage)
@@ -164,63 +224,74 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     }
 
     /**
-     * Registers a new user with a provided email, userName, password, and confirmed password
+     * Checks whether or not the appropriate credentials are given, and if so
+     * calls the {@link LogInActivity#signIn(String, String)} method.
      * @param email
-     * Takes an email of type {@link String}
-     * @param userName
-     * Takes a userName of type {@link String}
+     * Takes an email of type {@link String}.
      * @param password
-     * Takes a password of type {@link String}
-     * @param passConfirm
-     * Takes a password Confirmation of type {@link String} that needs to match the password
+     * Takes a password of type {@link String}.
      */
     @Override
-    public void OnRegisterPressed(String email, String userName, String password, String passConfirm){
-        if (password.equals(passConfirm)){
-            userAuth.createUserWithEmailAndPassword(email,password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()){
-                                Log.d(TAG,"createUserWithEmail:success");
-                                FirebaseUser user = userAuth.getCurrentUser();
-
-                                // create a new habit collection using the userID as the document name
-                                addUser(user.getUid(), userName);
-                                // attach the entered username to the created user as the "Display Name"
-                                addUserName(user,userName);
-
-                                startMainActivity();
-                            }
-                        }
-                    })
-                    .addOnFailureListener(this, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            String errMessage = e.getLocalizedMessage();
-                            if (e instanceof FirebaseAuthInvalidCredentialsException){
-                                String errCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
-                                if (errCode.equals("ERROR_INVALID_EMAIL")){
-                                    errMessage = "Invalid email address";
-                                }
-                            }
-                            LogErrorFragment.newInstance(errMessage)
-                                    .show(getSupportFragmentManager(),"Registration failure");
-                        }
-                    });
+    public void OnLogInPressed(String email, String password){
+        if (email.equals("") || password.equals("")){
+            LogErrorFragment.newInstance("Credentials fields cannot be empty.")
+                    .show(getSupportFragmentManager(),"Log in failure");
         } else {
-            LogErrorFragment.newInstance("Password Does Not Match")
-                    .show(getSupportFragmentManager(),"Registration failure");
+            signIn(email,password);
         }
     }
 
     /**
-     * Hides the touch keyboard whenever the user clicks outside of an {@link android.widget.EditText} box
+     * Checks whether or not the appropriate credentials are given, and if so
+     * calls the {@link LogInActivity#registerAccount(String, String, String)} method.
+     * @param email
+     * Takes an email of type {@link String}.
+     * @param userName
+     * Takes a userName of type {@link String}.
+     * @param password
+     * Takes a password of type {@link String}.
+     * @param passConfirm
+     * Takes a password confirmation of type {@link String} that needs to match the password.
+     */
+    @Override
+    public void OnRegisterPressed(String email, String userName, String password, String passConfirm){
+        // check to see if any credential fields are blank
+        if(email.equals("") || userName.equals("") || password.equals("") || passConfirm.equals("")) {
+            LogErrorFragment.newInstance("Credentials fields cannot be empty.")
+                    .show(getSupportFragmentManager(),"Registration failure");
+        // check to see if the passwords match
+        } else if (!password.equals(passConfirm)){
+            LogErrorFragment.newInstance("Passwords do not match.")
+                    .show(getSupportFragmentManager(),"Registration failure");
+        } else {
+            // check to see if the given username is already associated with a user account
+            userCollectionReference.whereEqualTo("Username",userName)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()){
+                                if (task.getResult().size()!=0){
+                                    // if so, throw an error
+                                    Toast.makeText(getApplicationContext(),"Got in here",Toast.LENGTH_SHORT).show();
+                                    LogErrorFragment.newInstance("User with this username already exists.")
+                                            .show(getSupportFragmentManager(),"Registration failure");
+                                } else {
+                                    // otherwise, try and register the account
+                                    registerAccount(email,password,userName);
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Hides the touch keyboard whenever the user clicks outside of an {@link android.widget.EditText} box.
      * @param ev
      * @return
      */
     // code taken from https://stackoverflow.com/questions/4165414/how-to-hide-soft-keyboard-on-android-after-clicking-outside-edittext
-    // closes the keyboard when you click outside of the edittext
     // TODO: see if we can adapt this to avoid plagiarism lol
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
 
     // references to entities used throughout the class
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
+    static final CollectionReference nameCollectionReference = FirebaseFirestore.getInstance().collection("userNames");
     FirebaseAuth userAuth;
     FirebaseUser user;
     String userID;
@@ -80,8 +81,9 @@ public class MainActivity extends AppCompatActivity
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userAuth.signOut();
+                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
         });

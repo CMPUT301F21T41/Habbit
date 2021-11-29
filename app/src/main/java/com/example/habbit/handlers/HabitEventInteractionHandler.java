@@ -35,10 +35,6 @@ public class HabitEventInteractionHandler {
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
     static final FirebaseStorage storage = FirebaseStorage.getInstance();
 
-    /**
-     * This var is of type {@link String} and contains the username
-     */
-//    String username;
     FirebaseAuth userAuth = FirebaseAuth.getInstance();
     FirebaseUser user = userAuth.getCurrentUser();
     String userID;
