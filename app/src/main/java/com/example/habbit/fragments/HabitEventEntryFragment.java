@@ -172,7 +172,7 @@ public class HabitEventEntryFragment extends DialogFragment {
         int progress = habit.getProgress();
         progress++;
         habit.setProgress(progress);
-        System.out.println("THE PROGRESS IS " + progress);
+        System.out.println("THE HABIT IS "+habit.getId()+" THE PROGRESS IS " + progress);
     }
 
     @NonNull

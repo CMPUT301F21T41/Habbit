@@ -240,10 +240,11 @@ public class HabitEntryFragment extends DialogFragment {
                     existingHabit.setReason(habitReasonText);
                     existingHabit.setSchedule(schedule);
                     existingHabit.setPublicity(publicitySwitch.isChecked());
+                    existingHabit.setProgress(existingHabit.getProgress());
                     /* since this is an edit, we do not add a brand new medicine to the list */
                     handler.updateHabit(existingHabit);
                 } else {
-                    Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText, schedule, habitIsPublic);
+                    Habit newHabit = new Habit(habitTitleText, habitReasonText, habitDateText, schedule, habitIsPublic, 0);
                     handler.addHabit(newHabit);
                 }
 

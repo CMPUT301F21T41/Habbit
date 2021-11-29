@@ -58,7 +58,7 @@ public class Habit implements Serializable {
     /**
      * This var is of type {@link int} and represents the amount of times a habit is to be repeated throughout the week
      */
-    private int habitFrequency = 0;
+    private int habitFrequency;
 
     /**
      * This var is of type {@link int} and represents the numerical amount of the progress bar. Every new habit defaults to 0
@@ -77,13 +77,14 @@ public class Habit implements Serializable {
      * @param date give a date to be formatted and turned into {@link String}
      * @param schedule give a schedule for days of the week that the habit should be completed {@link HashMap}
      */
-    public Habit(String title, String reason, String date, HashMap<String, Boolean> schedule, Boolean isPublic) {
+    public Habit(String title, String reason, String date, HashMap<String, Boolean> schedule, Boolean isPublic, int progress) {
         this.title = title;
         this.reason = reason;
         this.date = date;
         habitEvents = new ArrayList<HabitEvent>(); // initialize habitEvents list
         this.schedule = schedule;
         this.habitIsPublic = isPublic;
+        this.progress = progress;
     }
 
     /**
