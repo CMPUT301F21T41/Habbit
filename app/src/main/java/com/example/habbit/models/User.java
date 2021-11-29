@@ -145,4 +145,8 @@ public class User extends Profile implements Serializable {
         User.relationships = relationships;
     }
 
+    public static void clearRelationships() {
+        User.relationships.clear();
+    }
+
 }

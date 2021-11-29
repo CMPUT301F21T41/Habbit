@@ -52,51 +52,55 @@ public class FriendProfileActivity extends AppCompatActivity {
         TextView usernameText = findViewById(R.id.friend_profile_name);
         usernameText.setText(habbitor.getUsername());
 
-        // get references to UI elements and attach custom adapter
-        friendHabitListView = findViewById(R.id.friend_habit_list);
-        friendHabitList = habbitor.getPublicHabits();
-        friendHabitAdapter = new CustomHabitFriendList(this, friendHabitList);
-        friendHabitListView.setAdapter(friendHabitAdapter);
+        // determine whether or not we have permission to view
+        if (habbitor.isFriend()) {
+            // get references to UI elements and attach custom adapter
+            friendHabitListView = findViewById(R.id.friend_habit_list);
+            friendHabitList = habbitor.getPublicHabits();
+            friendHabitAdapter = new CustomHabitFriendList(this, friendHabitList);
+            friendHabitListView.setAdapter(friendHabitAdapter);
 
-        Log.d("FriendProfile", habbitor.getUserID());
-        // get habits
-        userCollectionReference.document(habbitor.getUserID()).collection("Habits").addSnapshotListener((value, error) -> {
-            // first clear all habits we have currently stored for this friend
-            habbitor.clearPublicHabits();
+            Log.d("FriendProfile", habbitor.getUserID());
+            // get habits
+            userCollectionReference.document(habbitor.getUserID()).collection("Habits").addSnapshotListener((value, error) -> {
+                // first clear all habits we have currently stored for this friend
+                habbitor.clearPublicHabits();
 
-            // pull updated list of habits from firestore
-            boolean publicity;
-            Map<String, Object> habitData;
-            assert value != null;
-            for (QueryDocumentSnapshot document: value) {
-                Log.d("FriendProfile", "It has data!");
-                habitData = document.getData();
-                if (!habitData.isEmpty()) {
-                    Log.d("FriendProfile", "It is not empty!");
-                    // TODO: why this way
-                    if (habitData.get("public") == null) {
-                        publicity = true;
-                    } else {
-                        publicity = (boolean) habitData.get("public");
-                    }
+                // pull updated list of habits from firestore
+                boolean publicity;
+                Map<String, Object> habitData;
+                assert value != null;
+                for (QueryDocumentSnapshot document : value) {
+                    Log.d("FriendProfile", "It has data!");
+                    habitData = document.getData();
+                    if (!habitData.isEmpty()) {
+                        Log.d("FriendProfile", "It is not empty!");
+                        // TODO: why this way
+                        if (habitData.get("public") == null) {
+                            publicity = true;
+                        } else {
+                            publicity = (boolean) habitData.get("public");
+                        }
 
-                    Log.d("FriendProfile", "Publicity: " + String.valueOf(publicity));
-                    if (publicity) {
-                        Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
-                                Objects.requireNonNull(habitData.get("reason")).toString(),
-                                Objects.requireNonNull(habitData.get("date")).toString(),
-                                (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")),
-                                publicity);
-                        habit.setId(document.getId());
-                        habbitor.addPublicHabit(habit);
-                        Log.d("FriendProfile", habbitor.getPublicHabits().get(0).getTitle());
-                        Log.d("FriendProfile", "Should be drawing listview");
+                        Log.d("FriendProfile", "Publicity: " + String.valueOf(publicity));
+                        if (publicity) {
+                            Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
+                                    Objects.requireNonNull(habitData.get("reason")).toString(),
+                                    Objects.requireNonNull(habitData.get("date")).toString(),
+                                    (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")),
+                                    publicity);
+                            habit.setId(document.getId());
+                            habbitor.addPublicHabit(habit);
+                            Log.d("FriendProfile", habbitor.getPublicHabits().get(0).getTitle());
+                            Log.d("FriendProfile", "Should be drawing listview");
+                        }
                     }
                 }
-            }
 
-            // redraw listview with newly updated habits
-            friendHabitAdapter.notifyDataSetChanged();
-        });
+                // redraw listview with newly updated habits
+                friendHabitAdapter.notifyDataSetChanged();
+            });
+        }
+
     }
 }

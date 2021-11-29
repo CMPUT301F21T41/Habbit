@@ -1,5 +1,6 @@
 package com.example.habbit.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -9,13 +10,16 @@ import android.util.Log;
 import android.widget.ListView;
 
 import com.example.habbit.R;
-import com.example.habbit.adapters.CustomFriendList;
+import com.example.habbit.adapters.CustomHabbitorList;
 import com.example.habbit.handlers.UserInteractionHandler;
 import com.example.habbit.models.Habbitor;
 import com.example.habbit.models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -31,7 +35,7 @@ public class SocialFeedActivity extends AppCompatActivity {
     String userID;
 
     // adapters and arraylist for friend list
-    CustomFriendList habbitorAdapter;
+    CustomHabbitorList habbitorAdapter;
     ArrayList<Habbitor> habbitors;
     ListView habbitorListView;
 
@@ -58,7 +62,7 @@ public class SocialFeedActivity extends AppCompatActivity {
 
         // get references to UI elements and attach custom adapter
         habbitors = User.getHabbitors();
-        habbitorAdapter = new CustomFriendList(this, habbitors);
+        habbitorAdapter = new CustomHabbitorList(this, habbitors);
         habbitorListView = findViewById(R.id.habbitor_list);
         habbitorListView.setAdapter(habbitorAdapter);
 
@@ -76,35 +80,44 @@ public class SocialFeedActivity extends AppCompatActivity {
         userCollectionReference.addSnapshotListener((value, error) -> {
             // we first clear all the friends we have currently stored for the user
             User.clearHabbitors();
+            User.clearRelationships();
 
-            HashMap<String, Integer> relationships = User.getRelationships();
+            DocumentReference docRef = userCollectionReference.document(user.getUid());
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                    HashMap<String, Integer> relationships = (HashMap<String, Integer>) documentSnapshot.get("Relationships");
 
-            Map<String, Object> userData;
-            // get all users
-            for(QueryDocumentSnapshot document: value) {
-                userData = document.getData();
-                if (!userData.isEmpty()) {
-                    String name = (String) userData.get("Username");
-                    String userID = (String) userData.get("User ID");
-                    if (name != null && !name.equals(user.getDisplayName())) {
-                        Log.d("SocialFeedActivity", "Getting User name " + name + userData.get("User ID"));
-                        Habbitor habbitor = new Habbitor(name, userID);
-                        Integer relationshipToUser = relationships.get(userID);
-                        if (relationshipToUser == null) {
-                            // default relationship is stranger
-                            User.addRelationship(userID, Habbitor.relationshipTypes.get("Stranger"));
+                    Map<String, Object> userData;
+                    // get all users
+                    for(QueryDocumentSnapshot document: value) {
+                        userData = document.getData();
+                        if (!userData.isEmpty()) {
+                            String name = (String) userData.get("Username");
+                            String userID = (String) userData.get("User ID");
+                            if (name != null && !name.equals(user.getDisplayName())) {
+                                Log.d("SocialFeedActivity", "Getting User name " + name + userData.get("User ID"));
+                                Habbitor habbitor = new Habbitor(name, userID);
+                                Integer relationshipToUser = Integer.valueOf(String.valueOf(relationships.get(userID)));
+                                if (relationshipToUser == null) {
+                                    // default relationship is stranger
+                                    User.addRelationship(userID, Habbitor.relationshipTypes.get("Stranger"));
+                                } else {
+                                    User.addRelationship(userID, relationshipToUser);
+                                }
+                                habbitor.setRelationship(relationshipToUser);
+                                User.addHabbitor(habbitor);
+                            }
                         }
-                        habbitor.setRelationship(relationshipToUser);
-                        User.addHabbitor(habbitor);
                     }
+
+                    // update the user relationships map in firestore so we have it for next time
+                    handler.updateUserRelationships(user.getUid(), relationships);
+                    // redraw listview
+                    habbitorAdapter.notifyDataSetChanged();
                 }
-            }
+            });
 
-            // update the user relationships map in firestore so we have it for next time
-            handler.updateUserRelationships(user.getUid(), relationships);
-
-            // redraw listview
-            habbitorAdapter.notifyDataSetChanged();
         });
 
     }

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 /**
  * This class represents a list of friends
  */
-public class CustomFriendList extends ArrayAdapter<Habbitor> {
+public class CustomHabbitorList extends ArrayAdapter<Habbitor> {
 
     /**
      * This variable is a {@link ArrayList} containing
@@ -44,7 +44,7 @@ public class CustomFriendList extends ArrayAdapter<Habbitor> {
      * @param context
      * @param habbitors
      */
-    public CustomFriendList(Context context, ArrayList<Habbitor> habbitors) {
+    public CustomHabbitorList(Context context, ArrayList<Habbitor> habbitors) {
         super(context, 0, habbitors);
         this.habbitors = habbitors;
         this.context = context;
@@ -61,15 +61,11 @@ public class CustomFriendList extends ArrayAdapter<Habbitor> {
 
         Habbitor habbitor = habbitors.get(position);
 
-        Log.d("CustomFriendList", "Is Stranger?" + String.valueOf(habbitor.isStranger()));
-        Log.d("CustomFriendList", "Is Friend?" + String.valueOf(habbitor.isFriend()));
-        Log.d("CustomFriendList", "Is Acquaintance" + String.valueOf(habbitor.isAcquaintance()));
-
-        // TODO: get name of friend to display
+        // get name of friend to display
         TextView friendNameView = view.findViewById(R.id.friend_name);
         friendNameView.setText(habbitor.getUsername());
 
-        // TODO: linking button text to follow status of friend
+        // linking button text to follow status of friend
         Button followButton = view.findViewById(R.id.follow_button);
         String followStatus = "Follow";
         if (habbitor.isStranger()) {
@@ -81,24 +77,20 @@ public class CustomFriendList extends ArrayAdapter<Habbitor> {
         }
         followButton.setText(followStatus);
 
-        followButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Integer newRelationship;
+        followButton.setOnClickListener(view1 -> {
+            Integer newRelationship;
 
-                if (habbitor.isStranger()) {
-                    followButton.setText("Pending");
-                    newRelationship = Habbitor.relationshipTypes.get("Acquaintance");
-                    User.addRelationship(habbitor.getUserID(), newRelationship);
-                    habbitor.setRelationship(newRelationship);
-                    UserInteractionHandler handler = new UserInteractionHandler();
-                    Log.d("CustomFriendList:", habbitor.getUserID());
-                    Log.d("CustomFriendList:", String.valueOf(User.getRelationships().get(habbitor.getUserID())));
-                    handler.updateUserRelationships(User.getUserID(), User.getRelationships());
-                }
+            if (habbitor.isStranger()) {
+                followButton.setText("Pending");
+                newRelationship = Habbitor.relationshipTypes.get("Acquaintance");
+                User.addRelationship(habbitor.getUserID(), newRelationship);
+                habbitor.setRelationship(newRelationship);
+                UserInteractionHandler handler = new UserInteractionHandler();
+                Log.d("CustomFriendList:", habbitor.getUserID());
+                Log.d("CustomFriendList:", String.valueOf(User.getRelationships().get(habbitor.getUserID())));
+                handler.updateUserRelationships(User.getUserID(), User.getRelationships());
             }
         });
-        // TODO: on click of the list item, take to friend's profile page
 
         return view;
     }
