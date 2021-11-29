@@ -1,18 +1,21 @@
 package com.example.habbit.handlers;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.habbit.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileInteractionHandler {
@@ -20,6 +23,9 @@ public class ProfileInteractionHandler {
      * reference to firestore users collection
      */
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
+    static final CollectionReference nameCollectionReference = FirebaseFirestore.getInstance().collection("userNames");
+    private FirebaseAuth userAuth;
+
     private static final String TAG = "ProfileInteractHandler";
 
     /**

@@ -85,7 +85,7 @@ public class LogIntentTests {
         View logButton = solo.getView(R.id.log_button);
         solo.clickOnView(logButton);
 
-        assertTrue(solo.waitForText("Credentials fields cannot be empty",
+        assertTrue(solo.waitForText("Credentials fields cannot be empty.",
                 1,2000));
         solo.clickOnButton("Ok");
 
@@ -93,7 +93,7 @@ public class LogIntentTests {
         solo.enterText((EditText) solo.getView(R.id.log_email),defaultEmail);
         solo.clickOnView(logButton);
 
-        assertTrue(solo.waitForText("Credentials fields cannot be empty",
+        assertTrue(solo.waitForText("Credentials fields cannot be empty.",
                 1,2000));
         solo.clickOnButton("Ok");
 
@@ -101,7 +101,7 @@ public class LogIntentTests {
         solo.enterText((EditText) solo.getView(R.id.log_pass),defaultPass);
         solo.clickOnView(logButton);
 
-        assertTrue(solo.waitForText("Credentials fields cannot be empty",
+        assertTrue(solo.waitForText("Credentials fields cannot be empty.",
                 1,2000));
         solo.clickOnButton("Ok");
     }
@@ -157,7 +157,7 @@ public class LogIntentTests {
         View logInButton = solo.getView(R.id.log_button);
         solo.clickOnView(logInButton);
 
-        assertTrue(solo.waitForText("Invalid Password",1,2000));
+        assertTrue(solo.waitForText("Invalid Password.",1,2000));
         solo.clickOnButton("Ok");
 
         // ERROR 2: User account is not found
@@ -167,7 +167,7 @@ public class LogIntentTests {
         solo.enterText((EditText) solo.getView(R.id.log_pass),"incorrectPass");
         solo.clickOnView(logInButton);
 
-        assertTrue(solo.waitForText("User not found",1,2000));
+        assertTrue(solo.waitForText("User not found.",1,2000));
         solo.clickOnButton("Ok");
     }
 
@@ -214,7 +214,7 @@ public class LogIntentTests {
         View registerButton = solo.getView(R.id.reg_button);
         solo.clickOnView(registerButton);
 
-        assertTrue(solo.waitForText("Credentials fields cannot be empty",
+        assertTrue(solo.waitForText("Credentials fields cannot be empty.",
                 1,2000));
         solo.clickOnButton("Ok");
     }
@@ -295,7 +295,7 @@ public class LogIntentTests {
         View registerButton = solo.getView(R.id.reg_button);
         solo.clickOnView(registerButton);
 
-        assertTrue(solo.waitForText("Passwords do not match",
+        assertTrue(solo.waitForText("Passwords do not match.",
                 1,2000));
         solo.clickOnButton("Ok");
 
@@ -307,7 +307,7 @@ public class LogIntentTests {
 
         solo.clickOnView(registerButton);
 
-        assertTrue(solo.waitForText("Invalid email address",
+        assertTrue(solo.waitForText("Invalid email address.",
                 1,2000));
         solo.clickOnButton("Ok");
 
