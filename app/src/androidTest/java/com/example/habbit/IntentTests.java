@@ -218,7 +218,7 @@ public class IntentTests {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
 
         // click on profile nav button
-        View profileNavButton = solo.getView(R.id.profile_nav_button);
+        View profileNavButton = solo.getView(R.id.profile);
         solo.clickOnView(profileNavButton);
 
         // check that we have entered a new activity
