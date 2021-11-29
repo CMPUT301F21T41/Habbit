@@ -58,9 +58,9 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
     @Override
     public void onBindViewHolder(@NonNull CustomHabitList.ViewHolder holder, int position) {
         final Habit habit = habits.get(position);
-
         HashMap<String,Boolean> schedule = habit.getSchedule();
         Date date = habit.getDateObject();
+        View view = LayoutInflater.from(context).inflate(R.layout.fragment_habit_event_entry, null);
 
         //Calculate Frequency
         int frequency = 0;
@@ -81,16 +81,17 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
 
 
         // Increment Progressbar
-        int progress = 0;
+        //int progress = 0;
 
 //        if (day == 1) {
 //            habit.setProgress(progress);
 //        } else {
-        progress = habit.getProgress()/frequency;
+
+        int progress = (habit.getProgress()*100/frequency);
+        holder.progressBar.setProgress(progress);
 //        }
-        ProgressBar progressBar = holder.progressBar;
-        progressBar.setProgress(progress);
-        System.out.println("The number is:" + progress);
+        System.out.println("Habit = "+ habit.getId()+", progress = "+progress+ ", progressINT = "+habit.getProgress());
+
 
         if (checkboxesVisible) {
             // set visibility of checkbox
@@ -174,7 +175,7 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
             this.habitTitle = (TextView) view.findViewById(R.id.habit_title);
             this.habitDate = (TextView) view.findViewById(R.id.habit_date);
             this.checkBox = view.findViewById(R.id.habit_checkbox);
-            this.progressBar= view.findViewById(R.id.habit_progressbar);
+            this.progressBar = view.findViewById(R.id.habit_progressbar);
         }
     }
 }

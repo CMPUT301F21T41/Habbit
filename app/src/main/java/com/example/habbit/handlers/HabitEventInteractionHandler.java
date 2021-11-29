@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class HabitEventInteractionHandler {
@@ -183,7 +184,7 @@ public class HabitEventInteractionHandler {
 
         // Get dateCompleted
         String myFormat = "yyyy-MM-dd"; // format of date desired
-        String dateCompleted = new SimpleDateFormat(myFormat).format(Calendar.getInstance().getTime());
+        String dateCompleted = new SimpleDateFormat(myFormat, Locale.US).format(Calendar.getInstance().getTime());
 
 
         // update FireStore
