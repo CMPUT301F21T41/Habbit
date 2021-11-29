@@ -84,6 +84,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     private void addUser(String userID, String username){
         Map<String,Object> userData = new HashMap<>();
         userData.put("User ID", userID);
+        userData.put("Username", username);
         userCollectionReference.document(userID)
                 .set(userData)
                 .addOnSuccessListener(documentReference -> Toast.makeText(this, "Successfully added user!", Toast.LENGTH_LONG).show())
@@ -103,12 +104,12 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
      * Updates the display name of the associated {@link FirebaseUser}.
      * @param userName The new display name for the account. Of type {@link String}.
      */
-    private void updateUserName(String userName) {
+    private void addUserName(FirebaseUser user, String userName) {
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(userName)
                 .build();
 
-        FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates)
+        user.updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -117,6 +118,16 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                         }
                     }
                 });
+
+        // update firestore instance
+        Map<String,Object> userData = new HashMap<>();
+        userData.put("Username", userName);
+        userData.put("User ID", user.getUid());
+        userCollectionReference.document(user.getUid())
+                .set(userData)
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
+                        Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -138,7 +149,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                             // create a new habit collection using the userID as the document name
                             addUser(user.getUid(),userName);
                             // attach the entered username to the created user as the "Display Name"
-                            updateUserName(userName);
+                            addUserName(userAuth.getCurrentUser(),userName);
 
                             startMainActivity();
                         }

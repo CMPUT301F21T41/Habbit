@@ -1,5 +1,7 @@
 package com.example.habbit.handlers;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.example.habbit.models.Habit;

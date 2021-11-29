@@ -2,7 +2,6 @@ package com.example.habbit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +13,9 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.habbit.R;
-import com.example.habbit.handlers.HabitInteractionHandler;
-import com.example.habbit.handlers.ProfileInteractionHandler;
+import com.example.habbit.handlers.UserInteractionHandler;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -88,7 +82,7 @@ public class ProfileEntryFragment extends DialogFragment {
         viewName.setText(userName);
 
         /* initialize handler to update profile information */
-        ProfileInteractionHandler handler = new ProfileInteractionHandler();
+        UserInteractionHandler handler = new UserInteractionHandler();
 
         /* initialize the "Edit Profile" dialog */
         AlertDialog viewDialog = new AlertDialog.Builder(getContext())
