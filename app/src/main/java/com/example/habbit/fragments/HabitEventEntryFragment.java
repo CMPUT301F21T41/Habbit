@@ -59,8 +59,8 @@ public class HabitEventEntryFragment extends DialogFragment {
     HabitEvent existingHabitEvent;
     private double lat;
     private double lon;
-    String city;
-    String province;
+    String city = "none";
+    String province = "none";
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     TextView locText;
@@ -336,12 +336,16 @@ public class HabitEventEntryFragment extends DialogFragment {
                 if (existingHabitEvent == null) {
                     Log.d("WOW","went here");
                     existingHabitEvent = new HabitEvent(comment, "", lat, lon);
+                    existingHabitEvent.setCity(city);
+                    existingHabitEvent.setProvince(province);
                     handler.addHabitEvent(existingHabitEvent, imageView);
                 } else {
                     Log.d("latslons","lats: "+ lat+"lons: "+lon);
                     existingHabitEvent.setComment(comment);
                     existingHabitEvent.setLatitude(lat);
                     existingHabitEvent.setLongitude(lon);
+                    existingHabitEvent.setCity(city);
+                    existingHabitEvent.setProvince(province);
                     handler.updateHabitEvent(existingHabitEvent, imageView);
                 }
                 System.out.println("habit event ="+existingHabitEvent.getId());

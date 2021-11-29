@@ -92,7 +92,9 @@ public class HabitEventsActivity extends AppCompatActivity {
                             HabitEvent habitEvent = new HabitEvent(Objects.requireNonNull(habitEventData.get("comment")).toString(),
                                     Objects.requireNonNull(habitEventData.get("imageURL")).toString(),
                                     (double) Objects.requireNonNull(habitEventData.get("latitude")),
-                                    (double) Objects.requireNonNull(habitEventData.get("longitude")));
+                                    (double) Objects.requireNonNull(habitEventData.get("longitude")),
+                                    Objects.requireNonNull(habitEventData.get("city").toString()),
+                                    Objects.requireNonNull(habitEventData.get("province")).toString());
                             Log.d("seans", Objects.requireNonNull(habitEventData.get("comment")).toString()
                                                         + habitEvent.getLatitude() + habitEvent.getLongitude());
 

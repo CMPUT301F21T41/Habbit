@@ -60,9 +60,13 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
         }
 
         HabitEvent habitEvent = habitEvents.get(position);
+        String city = habitEvent.getCity();
+        String province = habitEvent.getProvince();
 
         // Linking xml text fields to text views in CustomHabitList.java
         TextView habitEventComment = view.findViewById(R.id.habit_event_comment);
+        TextView locText = view.findViewById(R.id.location_text_list_v);
+
 //        TextView habitEventCompletedOnTime = view.findViewById(R.id.habit_event_completed_on_time);
 
         ImageView eventPhoto = view.findViewById(R.id.habit_event_photo);
@@ -92,6 +96,10 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
 //            completedOntTimeTxt = "Not completed on time :(";
 //        }
         habitEventComment.setText(commentTxt);
+        if(!city.equals("none") && !city.equals("none")){
+            locText.setText(city+", "+province);
+        }
+
 
 //        habitEventCompletedOnTime.setText(completedOntTimeTxt);
 
