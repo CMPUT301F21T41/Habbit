@@ -23,7 +23,12 @@ public class User extends Profile implements Serializable {
     /**
      * This is of type {@link ArrayList<Habit>} and contains the list of {@link Habit} for the user
      */
-    private static final ArrayList<Habit> userHabits = new ArrayList<>();
+    private static ArrayList<Habit> userHabits = new ArrayList<>();
+
+    /**
+     * This var is of type {@link ArrayList<Friend>} and contains the list of the profile's friends
+     */
+    private static ArrayList<Friend> friends = new ArrayList<>();
 
     /**
      * Constructor for User object
@@ -54,23 +59,35 @@ public class User extends Profile implements Serializable {
     }
 
     /**
-     *
-     * @return returns a {@link String} with a formatted view of the User's habits
-     */
-    public static String printHabits(){
-        String ret = "Habits: ";
-        for(Habit habit: userHabits){
-            ret = ret.concat(habit.getTitle() + " " + habit.getReason() + " " + habit.getDate() + "\r\n");
-        }
-        return ret;
-    }
-
-    /**
      * This function returns {@link User#userHabits}
      * @return The return type is {@link ArrayList}
      */
     public static ArrayList<Habit> getUserHabits(){
         return userHabits;
+    }
+
+    /**
+     * This function adds a friend to the users list of friends
+     *
+     * @param friend The {@link Friend} we want to add
+     */
+    public static void addFriend(Friend friend) {
+        friends.add(friend);
+    }
+
+    /**
+     * This function clears the {@link User#friends}
+     */
+    public static void clearFriends() {
+        friends.clear();
+    }
+
+    /**
+     * Gets the users friends
+     * @return The return type is {@link ArrayList<Friend>}
+     */
+    public static ArrayList<Friend> getUserFriends() {
+        return friends;
     }
 
     /**

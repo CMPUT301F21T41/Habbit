@@ -34,7 +34,6 @@ public class HabitEventsActivity extends AppCompatActivity {
     // get entities to be used throughout the class
     CustomHabitEventList habitEventAdapter;
     ArrayList<HabitEvent> habitEventDataList;
-//    String username;
     FirebaseAuth userAuth;
     FirebaseUser user;
     String userID;
