@@ -27,6 +27,17 @@ public class HabitEvent implements Serializable {
      */
     private double latitude = 0;
 
+    /**
+     * This var is of type {@link String} and contains the position in terms of city of a {@link HabitEvent}
+     */
+    private String city;
+
+    /**
+     * This var is of type {@link String} and contains the position in terms of province of a {@link HabitEvent}
+     */
+    private String province;
+
+
 
     private String imageURL;
 
@@ -57,6 +68,22 @@ public class HabitEvent implements Serializable {
         this.imageURL = imageURL;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    /**
+     * HabitEvent lat/lon constructor
+     *
+     * @param comment of type{@link String} pass in comment
+     * @param latitude of type {@link double} pass latitude of location
+     * @param longitude of type {@link double} pass longitude of location
+     */
+    public HabitEvent(String comment, String imageURL, double latitude,double longitude,String city, String province){
+        this.comment = comment;
+        this.imageURL = imageURL;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.city = city;
+        this.province = province;
     }
 
     /**
@@ -113,5 +140,21 @@ public class HabitEvent implements Serializable {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

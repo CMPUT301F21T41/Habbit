@@ -165,6 +165,10 @@ public class HabitEventInteractionHandler {
 
         // get updated values
         String commentText = newHabitEvent.getComment();
+        double lat = newHabitEvent.getLatitude();
+        double lon =  newHabitEvent.getLongitude();
+        String city = newHabitEvent.getCity();
+        String province = newHabitEvent.getProvince();
 
 
         // update FireStore
@@ -172,6 +176,14 @@ public class HabitEventInteractionHandler {
                 .collection("Habits").document(habit.getId());
         userDoc.collection("Habit Events").document(newHabitEvent.getId())
                 .update("comment", commentText);
+        userDoc.collection("Habit Events").document(newHabitEvent.getId())
+                .update("latitude", lat);
+        userDoc.collection("Habit Events").document(newHabitEvent.getId())
+                .update("longitude", lon);
+        userDoc.collection("Habit Events").document(newHabitEvent.getId())
+                .update("city", city);
+        userDoc.collection("Habit Events").document(newHabitEvent.getId())
+                .update("province", province);
 
         uploadTask
                 .addOnFailureListener(e -> System.out.println("Upload failed in addHabitEventPhoto."))
