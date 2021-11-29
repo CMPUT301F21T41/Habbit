@@ -23,6 +23,7 @@ import com.example.habbit.R;
 import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.activities.MapActivity;
 import com.example.habbit.activities.ProfileActivity;
+import com.example.habbit.adapters.CustomHabitEventList;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
@@ -57,6 +58,13 @@ public class HabitEventEntryFragment extends DialogFragment {
         args.putSerializable("habit", habit);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void incrementProgress(Habit habit) {
+        int progress = habit.getProgress();
+        progress++;
+        habit.setProgress(progress);
+        System.out.println("THE PROGRESS IS " + progress);
     }
 
     @NonNull
@@ -143,7 +151,9 @@ public class HabitEventEntryFragment extends DialogFragment {
             } else {
                 /* part where either create a new habit event OR adjusting an existing one */
                 if (existingHabitEvent == null) {
-                    existingHabitEvent = new HabitEvent(comment, "", 0, 0);
+                    // increment progress
+                    incrementProgress(habit);
+                    existingHabitEvent = new HabitEvent(comment, "", 0, 0, "");
                     handler.addHabitEvent(existingHabitEvent, imageView);
                 } else {
                     existingHabitEvent.setComment(comment);

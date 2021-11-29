@@ -26,6 +26,9 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class HabitEventInteractionHandler {
@@ -91,6 +94,10 @@ public class HabitEventInteractionHandler {
         DocumentReference userDoc = userCollectionReference.document(userID);
         assert habitEvent != null;
 
+        // Get dateCompleted
+        String myFormat = "yyyy-MM-dd"; // format of date desired
+        String dateCompleted = new SimpleDateFormat(myFormat).format(Calendar.getInstance().getTime());
+
         // set the habit checked value to true since we have logged a habit event for the day
         habit.setChecked(true);
         habitHandler.updateHabit(habit);
@@ -103,10 +110,17 @@ public class HabitEventInteractionHandler {
                     @Override
                     public void onSuccess(@NonNull DocumentReference documentReference) {
                         habitEvent.setId(documentReference.getId());
+
+                        //update habit id
                         userDoc.collection("Habits")
                                 .document(habit.getId()).collection("Habit Events")
                                 .document(habitEvent.getId())
                                 .update("id", habitEvent.getId());
+                        //update dateCompleted
+                        userDoc.collection("Habits")
+                                .document(habit.getId()).collection("Habit Events")
+                                .document(habitEvent.getId())
+                                .update("dateCompleted", dateCompleted);
 
                         uploadTask
                                 .addOnFailureListener(e -> System.out.println("Upload failed in addHabitEventPhoto."))
@@ -115,6 +129,7 @@ public class HabitEventInteractionHandler {
                                     imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(@NonNull Uri uri) {
+                                            // update imageURL
                                             DocumentReference userDoc = userCollectionReference.document(userID)
                                                     .collection("Habits").document(habit.getId());
                                             userDoc.collection("Habit Events").document(habitEvent.getId())
@@ -166,12 +181,19 @@ public class HabitEventInteractionHandler {
         // get updated values
         String commentText = newHabitEvent.getComment();
 
+        // Get dateCompleted
+        String myFormat = "yyyy-MM-dd"; // format of date desired
+        String dateCompleted = new SimpleDateFormat(myFormat).format(Calendar.getInstance().getTime());
+
 
         // update FireStore
         DocumentReference userDoc = userCollectionReference.document(userID)
                 .collection("Habits").document(habit.getId());
         userDoc.collection("Habit Events").document(newHabitEvent.getId())
                 .update("comment", commentText);
+        userDoc.collection("Habit Events").document(newHabitEvent.getId())
+                .update("dateCompleted", dateCompleted);
+
 
         uploadTask
                 .addOnFailureListener(e -> System.out.println("Upload failed in addHabitEventPhoto."))

@@ -1,6 +1,11 @@
 package com.example.habbit.models;
 
+import android.annotation.SuppressLint;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class HabitEvent implements Serializable {
     // TODO: something that holds an image attachment
@@ -33,7 +38,7 @@ public class HabitEvent implements Serializable {
     /**
      * This var is of type {@link String} and contains the date that the habit event was completed
      */
-    private String dateCompleted; // TODO: would be cool to know what date the habit event was completed
+    private String dateCompleted;
 
 
     /**
@@ -46,17 +51,33 @@ public class HabitEvent implements Serializable {
     }
 
     /**
+     * This function returns {@link HabitEvent#dateCompleted} in Date Object form
+     * @return The return type is {@link Date}
+     */
+    @SuppressLint("SimpleDateFormat")
+    public Date getDateObject() {
+        Date dateObj = null;
+        try {
+            dateObj = new SimpleDateFormat("yyyy-MM-dd").parse(dateCompleted);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateObj;
+    }
+
+    /**
      * HabitEvent lat/lon constructor
      *
      * @param comment of type{@link String} pass in comment
      * @param latitude of type {@link double} pass latitude of location
      * @param longitude of type {@link double} pass longitude of location
      */
-    public HabitEvent(String comment, String imageURL, double latitude,double longitude){
+    public HabitEvent(String comment, String imageURL, double latitude,double longitude, String dateCompleted ){
         this.comment = comment;
         this.imageURL = imageURL;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.dateCompleted = dateCompleted;
     }
 
     /**
@@ -113,5 +134,21 @@ public class HabitEvent implements Serializable {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    /**
+     * This function returns {@link HabitEvent#dateCompleted}
+     * @return The return type is {@link String}
+     */
+    public String getDate() {
+        return dateCompleted;
+    }
+
+    /**
+     * This function sets {@link HabitEvent#dateCompleted} which is of type {@link String}
+     * @param date The date we want to give to the habit
+     */
+    public void setDate(String date) {
+        this.dateCompleted = date;
     }
 }
