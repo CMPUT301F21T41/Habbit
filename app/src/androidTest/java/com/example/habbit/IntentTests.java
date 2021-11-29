@@ -13,6 +13,7 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.activities.MainActivity;
+import com.example.habbit.activities.MapActivity;
 import com.example.habbit.activities.ProfileActivity;
 import com.robotium.solo.Solo;
 
@@ -215,6 +216,60 @@ public class IntentTests {
     }
 
     /**
+     * Check Map Activity functionality
+     */
+    @Test
+    public void mapActivityTest() {
+        // asserts that the current activity is MainActivity, otherwise notify that it is the wrong activity
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        //change view to day view
+        solo.clickOnText("All Habits");
+        solo.waitForText("Today's Habits");
+        solo.clickOnText("Today's Habits");
+        //go to habit event entry
+        solo.clickOnCheckBox(0);
+        // click on add location button
+        View addLocLink = solo.getView(R.id.add_location_link);
+        solo.clickOnView(addLocLink);
+        // check that we have entered a new activity
+        solo.assertCurrentActivity("Wrong Activity", MapActivity.class);
+        //wait for location found message
+        assertTrue(solo.waitForText("Click me to confirm location, or double-tap to select another!"));
+        //confirm pin is on screen
+        Boolean isVisible = (Boolean) solo.getCurrentActivity().getResources().getDrawable(R.drawable.ic__192595).isVisible();
+        assertTrue(isVisible);
+        //confirm first message is displayed
+        assertTrue(solo.searchText("Click me to confirm location, or double-tap to select another!"));
+        //click center of screen to confrim current location
+        solo.clickOnImage(R.drawable.ic__192595);
+        //make sure confirmation message is displayed
+        assertTrue(solo.searchText("Click Me Again to Confirm Location!"));
+        //click again to finalize
+        solo.clickOnImage(R.drawable.ic__192595);
+        //confirm map exit and city matches location picked on fragment
+        solo.assertCurrentActivity("Wrong Activity!", MainActivity.class);
+        assertTrue(solo.searchText("Edmonton, Alberta"));
+        //click confirm
+        solo.clickOnText("CONFIRM");
+        //navigate to habit event view
+        solo.clickInList(0);
+        solo.clickOnText("View Habit Events");
+        //make sure we are in habit events activity
+        solo.assertCurrentActivity("Wrong Activity!", HabitEventsActivity.class);
+        //confirm that the city shows up in the listview
+        assertTrue(solo.searchText("Edmonton, Alberta"));
+        //navigate to habitevent view
+        solo.clickInList(0);
+        //make sure curretn city shows up in habitevent view
+        solo.searchText("Edmonton, Alberta");
+
+
+
+
+
+    }
+
+    /**
      * Check profile nav button
      */
     @Test
@@ -229,6 +284,8 @@ public class IntentTests {
         // check that we have entered a new activity
         solo.assertCurrentActivity("Wrong Activity", ProfileActivity.class);
     }
+
+
 
     /**
      * Closes the activity after each test

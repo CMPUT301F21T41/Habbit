@@ -18,6 +18,7 @@ public class HabitUnitTest {
     HashMap<String, Boolean> schedule;
     boolean isPublic = true;
 
+
     private Habit mockHabit() {
         return new Habit(sampleTitle, sampleReason, sampleDate, schedule, isPublic);
     }
