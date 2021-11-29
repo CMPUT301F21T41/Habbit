@@ -88,7 +88,8 @@ public class FriendProfileActivity extends AppCompatActivity {
                                     Objects.requireNonNull(habitData.get("reason")).toString(),
                                     Objects.requireNonNull(habitData.get("date")).toString(),
                                     (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")),
-                                    publicity);
+                                    publicity,
+                                    ((Long) Objects.requireNonNull(habitData.get("progress"))).intValue());
                             habit.setId(document.getId());
                             habbitor.addPublicHabit(habit);
                             Log.d("FriendProfile", habbitor.getPublicHabits().get(0).getTitle());

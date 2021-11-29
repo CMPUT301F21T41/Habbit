@@ -3,12 +3,14 @@ package com.example.habbit.activities;
 import static android.content.ContentValues.TAG;
 import static com.example.habbit.activities.MainActivity.userCollectionReference;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -39,6 +41,14 @@ public class HabitEventsActivity extends AppCompatActivity {
     FirebaseUser user;
     String userID;
     Habit habit;
+
+    @Override
+    public void finish() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("progress", habit.getProgress());
+        setResult(Activity.RESULT_OK, resultIntent);
+        super.finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +104,7 @@ public class HabitEventsActivity extends AppCompatActivity {
                                     (double) Objects.requireNonNull(habitEventData.get("latitude")),
                                     (double) Objects.requireNonNull(habitEventData.get("longitude")),
                                     Objects.requireNonNull(habitEventData.get("city").toString()),
-                                    Objects.requireNonNull(habitEventData.get("province")).toString());
-                                    (double) Objects.requireNonNull(habitEventData.get("longitude")),
+                                    Objects.requireNonNull(habitEventData.get("province")).toString(),
                                     Objects.requireNonNull(habitEventData.get("dateCompleted").toString()));
                             Log.d("seans", Objects.requireNonNull(habitEventData.get("comment")).toString()
                                                         + habitEvent.getLatitude() + habitEvent.getLongitude());

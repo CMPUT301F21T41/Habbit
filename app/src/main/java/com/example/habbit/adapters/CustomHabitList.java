@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.habbit.R;
 import com.example.habbit.activities.MainActivity;
 import com.example.habbit.fragments.HabitDetailsFragment;
+import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
 
 import java.util.ArrayList;
@@ -81,17 +82,19 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
 
 
         // Increment Progressbar
-        //int progress = 0;
-
-//        if (day == 1) {
-//            habit.setProgress(progress);
-//        } else {
-
-        int progress = (habit.getProgress()*100/frequency);
+        int progress = 0;
+        HabitInteractionHandler handler = new HabitInteractionHandler();
+        if (day == 1 && habit.isChecked()) {
+            habit.setProgress(1);
+        } else if (day == 1 && !habit.isChecked()) {
+            habit.setProgress(0);
+        } else {
+        progress = (habit.getProgress()*100/frequency);
         holder.progressBar.setProgress(0);
         holder.progressBar.setProgress(progress);
-//        }
-        System.out.println("Habit = "+ habit.getId()+", progress = "+progress+ ", progressINT = "+habit.getProgress());
+        }
+        handler.updateHabit(habit);
+        // System.out.println("Habit = "+ habit.getId()+", progress = "+progress+ ", progressINT = "+habit.getProgress());
 
 
         if (checkboxesVisible) {

@@ -1,5 +1,6 @@
 package com.example.habbit.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -17,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.habbit.R;
 import com.example.habbit.activities.HabitEventsActivity;
+import com.example.habbit.adapters.CustomHabitList;
 import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
 
@@ -30,6 +36,21 @@ import java.util.Map;
  */
 
 public class HabitDetailsFragment extends DialogFragment {
+
+    Habit selected;
+    HabitInteractionHandler handler;
+
+    ActivityResultLauncher<Intent> habitEventsActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    assert result.getData() != null;
+                    int returnValue = result.getData().getIntExtra("progress", 0);
+                    selected.setProgress(returnValue);
+                    handler.updateHabit(selected);
+                }
+            });
 
     public HabitDetailsFragment(){
         // required empty class constructor
@@ -66,7 +87,7 @@ public class HabitDetailsFragment extends DialogFragment {
         TextView viewSchedule = view.findViewById(R.id.habit_schedule);
 
         /* get the details of the habit, if there are any to get */
-        final Habit selected = (Habit) (getArguments() != null ?
+        selected = (Habit) (getArguments() != null ?
                 getArguments().getSerializable("habit") : null);
 
         /* set the text for the TextViews (null if habit is null) */
@@ -99,11 +120,11 @@ public class HabitDetailsFragment extends DialogFragment {
             Intent i = new Intent(getContext(), HabitEventsActivity.class);
             // pass the selected habit on to the next activity
             i.putExtra("habit", selected);
-            startActivity(i);
+            habitEventsActivity.launch(i);
         });
 
         // get handler for habit interactions
-        HabitInteractionHandler handler = new HabitInteractionHandler();
+        handler = new HabitInteractionHandler();
 
         /* initialize the "View Habit" dialog */
         return new AlertDialog.Builder(getContext())
