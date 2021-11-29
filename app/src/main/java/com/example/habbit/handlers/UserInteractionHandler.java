@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.example.habbit.models.Habbitor;
 import com.example.habbit.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -70,7 +71,22 @@ public class UserInteractionHandler {
         userCollectionReference.document(userID).update(userData);
     }
 
-    public void getUserRelationships() {
-
+    public void addRequest(String userID, String habbitorID) {
+        DocumentReference docRef = userCollectionReference.document(habbitorID);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                ArrayList<String> requests;
+                if (documentSnapshot.get("Requests") == null) {
+                    requests = new ArrayList<String>();
+                } else {
+                    requests = (ArrayList<String>) documentSnapshot.get("Requests");
+                }
+                requests.add(userID);
+                Map<String, Object> userData = new HashMap<>();
+                userData.put("Requests", requests);
+                userCollectionReference.document(habbitorID).update(userData);
+            }
+        });
     }
 }

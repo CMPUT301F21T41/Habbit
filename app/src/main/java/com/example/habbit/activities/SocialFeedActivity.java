@@ -78,16 +78,20 @@ public class SocialFeedActivity extends AppCompatActivity {
 
         // refresh the listview every time we update Firestore
         userCollectionReference.addSnapshotListener((value, error) -> {
-            // we first clear all the friends we have currently stored for the user
-            User.clearHabbitors();
-            User.clearRelationships();
-
             DocumentReference docRef = userCollectionReference.document(user.getUid());
             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                    HashMap<String, Integer> relationships = (HashMap<String, Integer>) documentSnapshot.get("Relationships");
+                    // we first clear all the friends we have currently stored for the user
+                    User.clearHabbitors();
+                    User.clearRelationships();
 
+                    HashMap<String, Integer> relationships;
+                    if (documentSnapshot.get("Relationships") == null) {
+                        relationships = new HashMap<String, Integer>();
+                    } else {
+                        relationships = (HashMap<String, Integer>) documentSnapshot.get("Relationships");
+                    }
                     Map<String, Object> userData;
                     // get all users
                     for(QueryDocumentSnapshot document: value) {
@@ -98,13 +102,15 @@ public class SocialFeedActivity extends AppCompatActivity {
                             if (name != null && !name.equals(user.getDisplayName())) {
                                 Log.d("SocialFeedActivity", "Getting User name " + name + userData.get("User ID"));
                                 Habbitor habbitor = new Habbitor(name, userID);
-                                Integer relationshipToUser = Integer.valueOf(String.valueOf(relationships.get(userID)));
-                                if (relationshipToUser == null) {
+                                Object relationObject = relationships.get(userID);
+                                Integer relationshipToUser;
+                                if (relationObject == null) {
                                     // default relationship is stranger
-                                    User.addRelationship(userID, Habbitor.relationshipTypes.get("Stranger"));
+                                    relationshipToUser = Habbitor.relationshipTypes.get("Stranger");
                                 } else {
-                                    User.addRelationship(userID, relationshipToUser);
+                                    relationshipToUser = Integer.valueOf(String.valueOf(relationObject));
                                 }
+                                User.addRelationship(userID, relationshipToUser);
                                 habbitor.setRelationship(relationshipToUser);
                                 User.addHabbitor(habbitor);
                             }

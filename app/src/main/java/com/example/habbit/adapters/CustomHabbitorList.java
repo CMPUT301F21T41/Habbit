@@ -89,6 +89,7 @@ public class CustomHabbitorList extends ArrayAdapter<Habbitor> {
                 Log.d("CustomFriendList:", habbitor.getUserID());
                 Log.d("CustomFriendList:", String.valueOf(User.getRelationships().get(habbitor.getUserID())));
                 handler.updateUserRelationships(User.getUserID(), User.getRelationships());
+                handler.addRequest(User.getUserID(), habbitor.getUserID());
             }
         });
 

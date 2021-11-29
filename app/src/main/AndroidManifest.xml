@@ -27,6 +27,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Habbit">
         <activity
+            android:name=".activities.FollowRequestsActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.FriendProfileActivity"
             android:exported="true"
             android:parentActivityName=".activities.SocialFeedActivity">
@@ -57,7 +60,7 @@
         </activity>
         <activity
             android:name=".activities.MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activities.MapActivity"
             android:parentActivityName=".activities.HabitEventsActivity">

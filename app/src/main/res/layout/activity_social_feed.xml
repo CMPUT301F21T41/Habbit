@@ -10,6 +10,12 @@
       android:id="@+id/toolbar"
       layout="@layout/toolbar" />
 
+  <Button
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="See Follow Requests"
+      android:padding="10dp"/>
+
   <ListView
       android:id="@+id/habbitor_list"
       android:layout_width="match_parent"
