@@ -88,6 +88,7 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
 //        } else {
 
         int progress = (habit.getProgress()*100/frequency);
+        holder.progressBar.setProgress(0);
         holder.progressBar.setProgress(progress);
 //        }
         System.out.println("Habit = "+ habit.getId()+", progress = "+progress+ ", progressINT = "+habit.getProgress());

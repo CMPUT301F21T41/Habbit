@@ -24,6 +24,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.habbit.R;
 import com.example.habbit.activities.MapActivity;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
+import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 
@@ -180,8 +181,14 @@ public class HabitEventDetailsFragment extends DialogFragment {
         return new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setNeutralButton("Close",null)
-                .setNegativeButton("Delete", (dialogInterface, i) ->
-                        handler.deleteHabitEvent(selectedHabitEvent))
+                .setNegativeButton("Delete", (dialogInterface, i) -> {
+                    handler.deleteHabitEvent(selectedHabitEvent);
+                    assert selectedHabit != null;
+                    int progress = selectedHabit.getProgress();
+                    progress--;
+                    selectedHabit.setProgress(progress);
+                    System.out.println("DEC = "+selectedHabit.getProgress());
+                })
                 .setPositiveButton("Edit",(dialogInterface, i) ->
                         HabitEventEntryFragment.newInstance(selectedHabitEvent, selectedHabit)
                         .show(requireActivity().getSupportFragmentManager(), "ADD_HABIT_EVENT"))
