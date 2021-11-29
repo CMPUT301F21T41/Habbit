@@ -7,8 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -31,7 +29,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.*;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -60,7 +56,6 @@ public class MainActivity extends AppCompatActivity
     FirebaseAuth userAuth;
     FirebaseUser user;
     String userID;
-//    String username;
 
     RecyclerView habitRecyclerView;
     CustomHabitList todayHabitAdapter;
@@ -98,6 +93,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             userID = user.getUid();
         }
+        User.setUserID(userID);
 
         // get the current date
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
@@ -119,15 +115,16 @@ public class MainActivity extends AppCompatActivity
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
                 switch(item.getItemId()) {
                     case R.id.profile:
-                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         intent.putExtra("USER", user);
                         startActivity(intent);
                         break;
-                    case R.id.search:
-                        Intent intentSearch = new Intent(getApplicationContext(), SearchActivity.class);
-                        startActivity(intentSearch);
+                    case R.id.social_feed:
+                        intent = new Intent(getApplicationContext(), SocialFeedActivity.class);
+                        startActivity(intent);
                 }
                 return true;
             }
@@ -135,14 +132,18 @@ public class MainActivity extends AppCompatActivity
 
         // set a spinner to determine type of habit list to display
         Spinner habitTypeSpinner =  findViewById(R.id.habit_type_selector);
+
         /* create an ArrayAdapter using string array and default spinner layout */
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.habit_types, R.layout.custom_spinner);
+
         /* specify layout to use when the list of choices appears */
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         /* connect adapter to spinner */
         habitTypeSpinner.setAdapter(spinnerAdapter);
         habitTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            // TODO: extract this out if have time
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i == 0) {
@@ -168,8 +169,6 @@ public class MainActivity extends AppCompatActivity
         final FloatingActionButton addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(view -> HabitEntryFragment.newInstance(null)
                 .show(getSupportFragmentManager(), "ADD_HABIT"));
-
-
 
         // refresh the listview every time we update Firestore
         userCollectionReference.document(userID).collection("Habits").addSnapshotListener((value, error) -> {
