@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +13,6 @@ import androidx.annotation.Nullable;
 
 import com.example.habbit.R;
 import com.example.habbit.models.Friend;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 
@@ -58,6 +56,8 @@ public class CustomFriendList extends ArrayAdapter<Friend> {
         Friend friend = friends.get(position);
 
         // TODO: get name of friend to display
+        TextView friendNameView = view.findViewById(R.id.friend_name);
+        friendNameView.setText(friend.getUsername());
 
         // TODO: linking button text to follow status of friend
 

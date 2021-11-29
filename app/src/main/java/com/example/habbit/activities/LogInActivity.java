@@ -77,9 +77,10 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
      * @param userID The user id, generated with {@link FirebaseUser#getUid()}.
      *               Of type {@link String}
      */
-    private void addUser(String userID){
+    private void addUser(String userID, String username){
         Map<String,Object> userData = new HashMap<>();
         userData.put("User ID", userID);
+        userData.put("Username", username);
         userCollectionReference.document(userID)
                 .set(userData)
                 .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show())
@@ -106,6 +107,16 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                         }
                     }
                 });
+
+        // update firestore instance
+        Map<String,Object> userData = new HashMap<>();
+        userData.put("Username", userName);
+        userData.put("User ID", user.getUid());
+        userCollectionReference.document(user.getUid())
+                .set(userData)
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
+                        Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -175,7 +186,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                                 FirebaseUser user = userAuth.getCurrentUser();
 
                                 // create a new habit collection using the userID as the document name
-                                addUser(user.getUid());
+                                addUser(user.getUid(), userName);
                                 // attach the entered username to the created user as the "Display Name"
                                 addUserName(user,userName);
 

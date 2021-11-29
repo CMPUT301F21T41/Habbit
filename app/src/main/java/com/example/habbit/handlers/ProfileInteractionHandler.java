@@ -1,6 +1,7 @@
 package com.example.habbit.handlers;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -13,6 +14,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileInteractionHandler {
@@ -50,5 +52,11 @@ public class ProfileInteractionHandler {
                         }
                     }
                 });
+
+        // update firestore instance
+        Map<String,Object> userData = new HashMap<>();
+        userData.put("Username", name);
+        userCollectionReference.document(user.getUid())
+                .set(userData);
     }
 }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal"
+    tools:context=".activities.FriendProfileActivity" >
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/image_rect"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_round_rect" />
+
+        <ImageView
+            android:id="@+id/image_profile"
+            android:layout_width="272dp"
+            android:layout_height="272dp"
+            android:layout_gravity="center"
+            android:translationY="-25dp"
+            app:srcCompat="@drawable/ic_profile" />
+
+        <TextView
+            android:id="@+id/friend_profile_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:textAlignment="center"
+            android:translationY="-30dp"
+            android:text="TextView"
+            android:textSize="30sp"
+            android:textColor="@color/gray" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/edit_profile_button"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginVertical="20dp"
+        android:layout_width="340dp"
+        android:layout_height="34.5dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="Edit Profile" />
+
+    <ListView
+        android:id="@+id/friend_habit_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
+
+
+</LinearLayout>

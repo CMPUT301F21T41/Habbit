@@ -29,12 +29,6 @@ import java.util.Objects;
  */
 public class ProfileActivity extends AppCompatActivity {
 
-
-    /**
-     * reference to firestore users collection
-     */
-    static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
-
     /**
      * forward declaration of username for user logged in.
      */
@@ -51,12 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_baseline_arrow_back_24));
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         // get username of user logged in
         userLoggedIn = userAuth.getCurrentUser();
@@ -76,13 +65,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         //open edit profile fragment on button press, pass user data to display
         final Button editProfileButton = findViewById(R.id.edit_profile_button);
-        editProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProfileEntryFragment.newInstance().show(getSupportFragmentManager(),"EDIT_PROFILE");
-                userText.setText(userLoggedIn.getDisplayName());
-                emailText.setText(userLoggedIn.getEmail());
-            }
+        editProfileButton.setOnClickListener(v -> {
+            ProfileEntryFragment.newInstance().show(getSupportFragmentManager(),"EDIT_PROFILE");
+            userText.setText(userLoggedIn.getDisplayName());
+            emailText.setText(userLoggedIn.getEmail());
         });
 
     }
