@@ -10,7 +10,8 @@ import android.widget.ListView;
 
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomFriendList;
-import com.example.habbit.models.Friend;
+import com.example.habbit.handlers.UserInteractionHandler;
+import com.example.habbit.models.Habbitor;
 import com.example.habbit.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SocialFeedActivity extends AppCompatActivity {
@@ -29,15 +31,16 @@ public class SocialFeedActivity extends AppCompatActivity {
     String userID;
 
     // adapters and arraylist for friend list
-    CustomFriendList friendAdapter;
-    ArrayList<Friend> friends;
-    ListView friendListView;
+    CustomFriendList habbitorAdapter;
+    ArrayList<Habbitor> habbitors;
+    ListView habbitorListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_feed);
         userAuth = FirebaseAuth.getInstance();
+        UserInteractionHandler handler = new UserInteractionHandler();
 
         // custom top toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -54,25 +57,27 @@ public class SocialFeedActivity extends AppCompatActivity {
         }
 
         // get references to UI elements and attach custom adapter
-        friends = User.getUserFriends();
-        friendAdapter = new CustomFriendList(this, friends);
-        friendListView = findViewById(R.id.friend_list);
-        friendListView.setAdapter(friendAdapter);
+        habbitors = User.getHabbitors();
+        habbitorAdapter = new CustomFriendList(this, habbitors);
+        habbitorListView = findViewById(R.id.habbitor_list);
+        habbitorListView.setAdapter(habbitorAdapter);
 
         // listener for friends list that will open a Profile view when a Habit is selected
-        friendListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Friend friend = (Friend) friendAdapter.getItem(i);
+        habbitorListView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Habbitor habbitor = (Habbitor) habbitorAdapter.getItem(i);
 
             // open the friend profile
             Intent intent = new Intent(this, FriendProfileActivity.class);
-            intent.putExtra("FRIEND", friend);
+            intent.putExtra("FRIEND", habbitor);
             startActivity(intent);
         });
 
         // refresh the listview every time we update Firestore
         userCollectionReference.addSnapshotListener((value, error) -> {
             // we first clear all the friends we have currently stored for the user
-            User.clearFriends();
+            User.clearHabbitors();
+
+            HashMap<String, Integer> relationships = User.getRelationships();
 
             Map<String, Object> userData;
             // get all users
@@ -83,15 +88,23 @@ public class SocialFeedActivity extends AppCompatActivity {
                     String userID = (String) userData.get("User ID");
                     if (name != null && !name.equals(user.getDisplayName())) {
                         Log.d("SocialFeedActivity", "Getting User name " + name + userData.get("User ID"));
-                        Friend friend = new Friend(name, (String) userID);
-
-                        User.addFriend(friend);
+                        Habbitor habbitor = new Habbitor(name, userID);
+                        Integer relationshipToUser = relationships.get(userID);
+                        if (relationshipToUser == null) {
+                            // default relationship is stranger
+                            User.addRelationship(userID, Habbitor.relationshipTypes.get("Stranger"));
+                        }
+                        habbitor.setRelationship(relationshipToUser);
+                        User.addHabbitor(habbitor);
                     }
                 }
             }
 
+            // update the user relationships map in firestore so we have it for next time
+            handler.updateUserRelationships(user.getUid(), relationships);
+
             // redraw listview
-            friendAdapter.notifyDataSetChanged();
+            habbitorAdapter.notifyDataSetChanged();
         });
 
     }

@@ -6,14 +6,13 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomHabitFriendList;
 import com.example.habbit.adapters.CustomHabitList;
-import com.example.habbit.models.Friend;
+import com.example.habbit.models.Habbitor;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -47,23 +46,23 @@ public class FriendProfileActivity extends AppCompatActivity {
 
         // get username of profile to be displayed
         Intent intent = getIntent();
-        Friend friend = (Friend) intent.getSerializableExtra("FRIEND");
+        Habbitor habbitor = (Habbitor) intent.getSerializableExtra("FRIEND");
 
         // show username in profile screen
         TextView usernameText = findViewById(R.id.friend_profile_name);
-        usernameText.setText(friend.getUsername());
+        usernameText.setText(habbitor.getUsername());
 
         // get references to UI elements and attach custom adapter
         friendHabitListView = findViewById(R.id.friend_habit_list);
-        friendHabitList = friend.getPublicHabits();
+        friendHabitList = habbitor.getPublicHabits();
         friendHabitAdapter = new CustomHabitFriendList(this, friendHabitList);
         friendHabitListView.setAdapter(friendHabitAdapter);
 
-        Log.d("FriendProfile", friend.getUserID());
+        Log.d("FriendProfile", habbitor.getUserID());
         // get habits
-        userCollectionReference.document(friend.getUserID()).collection("Habits").addSnapshotListener((value, error) -> {
+        userCollectionReference.document(habbitor.getUserID()).collection("Habits").addSnapshotListener((value, error) -> {
             // first clear all habits we have currently stored for this friend
-            friend.clearPublicHabits();
+            habbitor.clearPublicHabits();
 
             // pull updated list of habits from firestore
             boolean publicity;
@@ -89,8 +88,8 @@ public class FriendProfileActivity extends AppCompatActivity {
                                 (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")),
                                 publicity);
                         habit.setId(document.getId());
-                        friend.addPublicHabit(habit);
-                        Log.d("FriendProfile", friend.getPublicHabits().get(0).getTitle());
+                        habbitor.addPublicHabit(habit);
+                        Log.d("FriendProfile", habbitor.getPublicHabits().get(0).getTitle());
                         Log.d("FriendProfile", "Should be drawing listview");
                     }
                 }

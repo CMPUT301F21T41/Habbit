@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             userID = user.getUid();
         }
+        User.setUserID(userID);
 
         // get the current date
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE");

@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.habbit.models.Habbitor;
 import com.example.habbit.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -12,12 +13,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProfileInteractionHandler {
+public class UserInteractionHandler {
     /**
      * reference to firestore users collection
      */
@@ -58,5 +62,15 @@ public class ProfileInteractionHandler {
         userData.put("Username", name);
         userCollectionReference.document(user.getUid())
                 .set(userData);
+    }
+
+    public void updateUserRelationships(String userID, HashMap<String, Integer> relationships) {
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("Relationships", relationships);
+        userCollectionReference.document(userID).update(userData);
+    }
+
+    public void getUserRelationships() {
+
     }
 }
