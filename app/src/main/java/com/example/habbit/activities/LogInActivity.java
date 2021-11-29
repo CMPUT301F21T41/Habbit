@@ -25,6 +25,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.*;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,6 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
     private static final String TAG = "LogInActivity";
 
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
-    static final CollectionReference nameCollectionReference = FirebaseFirestore.getInstance().collection("userNames");
     private FirebaseAuth userAuth;
 
     /**
@@ -90,14 +90,24 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                 .addOnSuccessListener(documentReference -> Toast.makeText(this, "Successfully added user!", Toast.LENGTH_LONG).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
                         Toast.LENGTH_SHORT).show());
+    }
 
-        Map<String,Object> userNames = new HashMap<>();
-        userNames.put("User Name",username);
-        nameCollectionReference.document(username)
-                .set(userNames)
-                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Successfully added username!", Toast.LENGTH_LONG).show())
+    private void deleteUser(String userID){
+        userCollectionReference.document(userID)
+                .delete()
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Successfully deleted user!", Toast.LENGTH_LONG).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
                         Toast.LENGTH_SHORT).show());
+
+        userAuth.getCurrentUser().delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            Log.d(TAG,"User account deleted");
+                        }
+                    }
+                });
     }
 
     /**
@@ -125,7 +135,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
         userData.put("User ID", user.getUid());
         userCollectionReference.document(user.getUid())
                 .set(userData)
-                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Succesfully added user!", Toast.LENGTH_LONG).show())
+                .addOnSuccessListener(documentReference -> Toast.makeText(this, "Successfully added user!", Toast.LENGTH_LONG).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!",
                         Toast.LENGTH_SHORT).show());
     }
@@ -149,7 +159,7 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                             // create a new habit collection using the userID as the document name
                             addUser(user.getUid(),userName);
                             // attach the entered username to the created user as the "Display Name"
-                            addUserName(userAuth.getCurrentUser(),userName);
+                            addUserName(user,userName);
 
                             startMainActivity();
                         }
@@ -255,14 +265,13 @@ public class LogInActivity extends AppCompatActivity implements LogInFragment.On
                     .show(getSupportFragmentManager(),"Registration failure");
         } else {
             // check to see if the given username is already associated with a user account
-            nameCollectionReference.document(userName)
+            userCollectionReference.whereEqualTo("Username",userName)
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()){
-                                DocumentSnapshot doc = task.getResult();
-                                if (doc.exists()){
+                                if (task.getResult().size()!=0){
                                     // if so, throw an error
                                     Toast.makeText(getApplicationContext(),"Got in here",Toast.LENGTH_SHORT).show();
                                     LogErrorFragment.newInstance("User with this username already exists.")
