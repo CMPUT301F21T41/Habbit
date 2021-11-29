@@ -108,6 +108,7 @@ public class SocialFeedActivity extends AppCompatActivity {
                         if (!userData.isEmpty()) {
                             String name = (String) userData.get("Username");
                             String userID = (String) userData.get("User ID");
+                            Log.d("TAAAAG", user.getDisplayName());
                             if (name != null && !name.equals(user.getDisplayName())) {
                                 Log.d("SocialFeedActivity", "Getting User name " + name + userData.get("User ID"));
                                 Habbitor habbitor = new Habbitor(name, userID);
@@ -128,10 +129,10 @@ public class SocialFeedActivity extends AppCompatActivity {
 
                     // update the user relationships map in firestore so we have it for next time
                     handler.updateUserRelationships(user.getUid(), relationships);
-                    // redraw listview
-                    habbitorAdapter.notifyDataSetChanged();
                 }
             });
+            // redraw listview
+            habbitorAdapter.notifyDataSetChanged();
 
         });
 

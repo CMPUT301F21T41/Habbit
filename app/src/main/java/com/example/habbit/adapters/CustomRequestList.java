@@ -72,7 +72,8 @@ public class CustomRequestList extends ArrayAdapter<String> {
                 // add a bunch of stuff
                 handler.acceptRequest(User.getUserID(), habbitorID);
                 User.removeRequest(habbitorID);
-                view.setVisibility(View.GONE);
+                handler.updateUserRequests(User.getUserID(), User.getRequests());
+                notifyDataSetChanged();
             }
         });
 
@@ -82,9 +83,12 @@ public class CustomRequestList extends ArrayAdapter<String> {
             @Override
             public void onClick(View view) {
                 User.removeRequest(habbitorID);
-                view.setVisibility(View.GONE);
+                handler.updateUserRequests(User.getUserID(), User.getRequests());
+                notifyDataSetChanged();
             }
         });
+
+
         return view;
     }
 }

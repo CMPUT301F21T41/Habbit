@@ -1,5 +1,7 @@
 package com.example.habbit.models;
 
+import com.example.habbit.handlers.UserInteractionHandler;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

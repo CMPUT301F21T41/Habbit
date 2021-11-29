@@ -19,6 +19,8 @@ import com.example.habbit.models.Habbitor;
 import com.example.habbit.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -58,7 +60,6 @@ public class CustomHabbitorList extends ArrayAdapter<Habbitor> {
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.friend_list_content, parent, false);
         }
-
         Habbitor habbitor = habbitors.get(position);
 
         // get name of friend to display
@@ -67,7 +68,7 @@ public class CustomHabbitorList extends ArrayAdapter<Habbitor> {
 
         // linking button text to follow status of friend
         Button followButton = view.findViewById(R.id.follow_button);
-        String followStatus = "Follow";
+        String followStatus = "";
         if (habbitor.isStranger()) {
             followStatus = "Follow";
         } else if (habbitor.isAcquaintance()) {

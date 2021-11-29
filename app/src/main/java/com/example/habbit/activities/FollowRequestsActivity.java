@@ -50,7 +50,6 @@ public class FollowRequestsActivity extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                User.clearRequests();
                 ArrayList<String> requests;
                 if (documentSnapshot.get("Requests") == null) {
                     requests = new ArrayList<String>();
@@ -58,6 +57,7 @@ public class FollowRequestsActivity extends AppCompatActivity {
                     requests = (ArrayList<String>) documentSnapshot.get("Requests");
                 }
                 User.setRequests(requests);
+                requestAdapter.notifyDataSetChanged();
             }
         });
 

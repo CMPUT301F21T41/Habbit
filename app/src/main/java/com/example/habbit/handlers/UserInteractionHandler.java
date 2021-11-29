@@ -40,22 +40,16 @@ public class UserInteractionHandler {
                 .build();
 
         user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Log.d(TAG,"User profile updated");
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Log.d(TAG,"User profile updated");
                     }
                 });
 
         user.updateEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Log.d(TAG,"User email address updated");
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Log.d(TAG,"User email address updated");
                     }
                 });
 
@@ -69,6 +63,12 @@ public class UserInteractionHandler {
     public void updateUserRelationships(String userID, HashMap<String, Integer> relationships) {
         Map<String, Object> userData = new HashMap<>();
         userData.put("Relationships", relationships);
+        userCollectionReference.document(userID).update(userData);
+    }
+
+    public void updateUserRequests(String userID, ArrayList<String> requests) {
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("Requests", requests);
         userCollectionReference.document(userID).update(userData);
     }
 
