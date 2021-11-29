@@ -8,14 +8,18 @@ import com.example.habbit.models.HabitEvent;
 
 import org.junit.Test;
 
+import java.util.HashMap;
+
 public class HabitUnitTest {
 
     String sampleTitle = "Habit title";
     String sampleReason = "Habit reason";
     String sampleDate = "2020-04-12";
+    HashMap<String, Boolean> schedule;
+    boolean isPublic = true;
 
     private Habit mockHabit() {
-        return new Habit(sampleTitle, sampleReason, sampleDate);
+        return new Habit(sampleTitle, sampleReason, sampleDate, schedule, isPublic);
     }
 
     @Test
@@ -24,6 +28,8 @@ public class HabitUnitTest {
         assertEquals(sampleTitle, habit.getTitle());
         assertEquals(sampleReason, habit.getReason());
         assertEquals(sampleDate, habit.getDate());
+        assertEquals(schedule, habit.getSchedule());
+        assertEquals(isPublic, habit.isPublic());
     }
 
     @Test
@@ -33,6 +39,7 @@ public class HabitUnitTest {
         String editedDate = "2020-04-17";
         String editedId = "ABC";
         boolean editedChecked = true;
+        boolean isPublic = false;
 
         Habit habit = mockHabit();
         habit.setTitle(editedTitle);
@@ -45,6 +52,8 @@ public class HabitUnitTest {
         assertEquals(editedId, habit.getId());
         habit.setChecked(editedChecked);
         assertEquals(editedChecked, habit.isChecked());
+        habit.setPublicity(isPublic);
+        assertEquals(isPublic, habit.isPublic());
     }
 
     @Test
