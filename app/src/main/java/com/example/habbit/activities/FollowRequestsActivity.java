@@ -1,6 +1,7 @@
 package com.example.habbit.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -16,7 +17,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 
@@ -46,19 +49,18 @@ public class FollowRequestsActivity extends AppCompatActivity {
         requestListView = findViewById(R.id.requests_list);
         requestListView.setAdapter(requestAdapter);
 
-        DocumentReference docRef = userCollectionReference.document(User.getUserID());
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                ArrayList<String> requests;
-                if (documentSnapshot.get("Requests") == null) {
-                    requests = new ArrayList<String>();
-                } else {
-                    requests = (ArrayList<String>) documentSnapshot.get("Requests");
-                }
-                User.setRequests(requests);
-                requestAdapter.notifyDataSetChanged();
+        // initialize/update the list of requests every time there is a change made
+        userCollectionReference.document(User.getUserID()).addSnapshotListener((value, error) -> {
+            User.clearRequests();
+            if (value.get("Requests") == null) {
+                requests = new ArrayList<>();
+            } else {
+                requests = (ArrayList<String>) value.get("Requests");
             }
+            for (String habbitorID: requests) {
+                User.addRequest(habbitorID);
+            }
+            requestAdapter.notifyDataSetChanged();
         });
 
     }
