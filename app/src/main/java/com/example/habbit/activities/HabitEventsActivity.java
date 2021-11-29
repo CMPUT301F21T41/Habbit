@@ -34,6 +34,7 @@ public class HabitEventsActivity extends AppCompatActivity {
     // get entities to be used throughout the class
     CustomHabitEventList habitEventAdapter;
     ArrayList<HabitEvent> habitEventDataList;
+//    String username;
     FirebaseAuth userAuth;
     FirebaseUser user;
     String userID;
@@ -94,6 +95,8 @@ public class HabitEventsActivity extends AppCompatActivity {
                                     (double) Objects.requireNonNull(habitEventData.get("longitude")),
                                     Objects.requireNonNull(habitEventData.get("city").toString()),
                                     Objects.requireNonNull(habitEventData.get("province")).toString());
+                                    (double) Objects.requireNonNull(habitEventData.get("longitude")),
+                                    Objects.requireNonNull(habitEventData.get("dateCompleted").toString()));
                             Log.d("seans", Objects.requireNonNull(habitEventData.get("comment")).toString()
                                                         + habitEvent.getLatitude() + habitEvent.getLongitude());
 

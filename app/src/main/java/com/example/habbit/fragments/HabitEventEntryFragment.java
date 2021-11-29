@@ -1,8 +1,5 @@
 package com.example.habbit.fragments;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -38,6 +35,7 @@ import com.example.habbit.R;
 import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.activities.MapActivity;
 import com.example.habbit.activities.ProfileActivity;
+import com.example.habbit.adapters.CustomHabitEventList;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
@@ -168,6 +166,13 @@ public class HabitEventEntryFragment extends DialogFragment {
         args.putSerializable("habit", habit);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void incrementProgress(Habit habit) {
+        int progress = habit.getProgress();
+        progress++;
+        habit.setProgress(progress);
+        System.out.println("THE PROGRESS IS " + progress);
     }
 
     @NonNull
@@ -338,6 +343,8 @@ public class HabitEventEntryFragment extends DialogFragment {
                     existingHabitEvent = new HabitEvent(comment, "", lat, lon);
                     existingHabitEvent.setCity(city);
                     existingHabitEvent.setProvince(province);
+                    // increment progress
+                    incrementProgress(habit);
                     handler.addHabitEvent(existingHabitEvent, imageView);
                 } else {
                     Log.d("latslons","lats: "+ lat+"lons: "+lon);
