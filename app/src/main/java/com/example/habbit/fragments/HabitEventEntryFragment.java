@@ -18,14 +18,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,18 +33,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.habbit.R;
-import com.example.habbit.activities.HabitEventsActivity;
 import com.example.habbit.activities.MapActivity;
-import com.example.habbit.activities.ProfileActivity;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
-import com.google.api.Distribution;
 import com.squareup.picasso.Picasso;
 
 import org.osmdroid.bonuspack.location.GeocoderNominatim;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -170,6 +164,13 @@ public class HabitEventEntryFragment extends DialogFragment {
         return fragment;
     }
 
+    public void incrementProgress(Habit habit) {
+        int progress = habit.getProgress();
+        progress++;
+        habit.setProgress(progress);
+        System.out.println("THE HABIT IS "+habit.getId()+" THE PROGRESS IS " + progress);
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -186,7 +187,7 @@ public class HabitEventEntryFragment extends DialogFragment {
         assert getArguments() != null;
         Habit habit = (Habit) getArguments().getSerializable("habit");
 
-        HabitEvent habitEvent = new HabitEvent("","",0,0);
+        HabitEvent habitEvent = new HabitEvent("","",0,0,"", "", "");
 
         EditText commentField = view.findViewById(R.id.edit_habit_event_comment);
 
@@ -335,9 +336,11 @@ public class HabitEventEntryFragment extends DialogFragment {
                 /* part where either create a new habit event OR adjusting an existing one */
                 if (existingHabitEvent == null) {
                     Log.d("WOW","went here");
-                    existingHabitEvent = new HabitEvent(comment, "", lat, lon);
+                    existingHabitEvent = new HabitEvent(comment, "", lat, lon, "", "", "");
                     existingHabitEvent.setCity(city);
                     existingHabitEvent.setProvince(province);
+                    // increment progress
+                    incrementProgress(habit);
                     handler.addHabitEvent(existingHabitEvent, imageView);
                 } else {
                     Log.d("latslons","lats: "+ lat+"lons: "+lon);

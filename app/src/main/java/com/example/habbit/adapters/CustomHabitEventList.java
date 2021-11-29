@@ -16,7 +16,10 @@ import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
 import com.example.habbit.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * This class represents a list of habit events
@@ -68,6 +71,7 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
         TextView locText = view.findViewById(R.id.location_text_list_v);
 
 //        TextView habitEventCompletedOnTime = view.findViewById(R.id.habit_event_completed_on_time);
+        TextView habitEventDateCompleted = view.findViewById(R.id.habit_event_date);
 
         ImageView eventPhoto = view.findViewById(R.id.habit_event_photo);
         HabitEventInteractionHandler handler = new HabitEventInteractionHandler(habit);
@@ -87,6 +91,13 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
             commentTxt = "No Comment.";
         }
 
+        // Get dateCompleted
+        String myFormat = "yyyy-MM-dd"; // format of date desired
+        String dateCompleted = new SimpleDateFormat(myFormat).format(Calendar.getInstance().getTime());
+        if (dateCompleted.equals("")){
+            dateCompleted = new SimpleDateFormat(myFormat).format(Calendar.getInstance().getTime());
+        }
+
 //        String completedOntTimeTxt;
 //
 //        // TODO: take random string from a list of strings for completion/noncompletion messages
@@ -101,6 +112,7 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
         }
 
 
+        habitEventDateCompleted.setText(dateCompleted);
 //        habitEventCompletedOnTime.setText(completedOntTimeTxt);
 
         return view;

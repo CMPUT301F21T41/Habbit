@@ -195,7 +195,8 @@ public class MainActivity extends AppCompatActivity
                             Objects.requireNonNull(habitData.get("reason")).toString(),
                             Objects.requireNonNull(habitData.get("date")).toString(),
                             (HashMap<String, Boolean>) Objects.requireNonNull(habitData.get("schedule")),
-                            publicity);
+                            publicity,
+                            ((Long) Objects.requireNonNull(habitData.get("progress"))).intValue());
                     habit.setChecked((boolean) Objects.requireNonNull(habitData.get("checked")));
                     habit.setId(document.getId());
                     User.addHabit(habit);

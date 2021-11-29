@@ -1,6 +1,7 @@
 package com.example.habbit.models;
 
 import android.annotation.SuppressLint;
+import android.widget.ProgressBar;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -49,6 +50,22 @@ public class Habit implements Serializable {
 
     private boolean habitIsPublic;
 
+    /**
+     * This var is of type {@link ProgressBar} and represents the visual indicator to how close to completion the user is compared to its intended habit frequency
+     */
+    private ProgressBar progressBar;
+
+    /**
+     * This var is of type {@link int} and represents the amount of times a habit is to be repeated throughout the week
+     */
+    private int habitFrequency;
+
+    /**
+     * This var is of type {@link int} and represents the numerical amount of the progress bar. Every new habit defaults to 0
+     */
+    private int progress = 0;
+
+
     // empty constructor needed to use Firestore add()
     public Habit() {}
 
@@ -60,13 +77,14 @@ public class Habit implements Serializable {
      * @param date give a date to be formatted and turned into {@link String}
      * @param schedule give a schedule for days of the week that the habit should be completed {@link HashMap}
      */
-    public Habit(String title, String reason, String date, HashMap<String, Boolean> schedule, Boolean isPublic) {
+    public Habit(String title, String reason, String date, HashMap<String, Boolean> schedule, Boolean isPublic, int progress) {
         this.title = title;
         this.reason = reason;
         this.date = date;
         habitEvents = new ArrayList<HabitEvent>(); // initialize habitEvents list
         this.schedule = schedule;
         this.habitIsPublic = isPublic;
+        this.progress = progress;
     }
 
     /**
@@ -218,4 +236,34 @@ public class Habit implements Serializable {
     public void setPublicity(boolean isPublic) {
         this.habitIsPublic = isPublic;
     }
+
+    /**
+     * This function returns the number of times a habit is to be done on a weekly basis
+     * @param schedule is of type {@link HashMap}
+     * @return is of type {@link int} and will return the number of times a habit is to be done
+     */
+
+    /**
+     * This function returns {@link Habit#habitFrequency}
+     * @return The return type is {@link int}
+     */
+    public int getHabitFrequency() { return habitFrequency; }
+
+    /**
+     * This function sets {@link Habit#habitFrequency}
+     * @param habitFrequency is the amount of times a habit is to be repeated during the week
+     */
+    public void setHabitFrequency(int habitFrequency) { this.habitFrequency = habitFrequency; }
+
+    /**
+     * This function returns {@link Habit#progress}
+     * @return The return type is {@link int}
+     */
+    public int getProgress() { return progress; }
+
+    /**
+     * This function sets {@link Habit#progress} which is of type {@link int}
+     * @param progress is the numerical amount of progress shown in the progressBar
+     */
+    public void setProgress(int progress) { this.progress = progress; }
 }
