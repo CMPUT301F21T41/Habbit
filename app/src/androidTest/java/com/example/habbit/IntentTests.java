@@ -62,11 +62,15 @@ public class IntentTests {
         View addHabitButton = solo.getView(R.id.add_habit_button);
         solo.clickOnView(addHabitButton);
 
+        // get privacy toggle
+        View privacyToggle = solo.getView(R.id.edit_publicity_switch);
+
         // get calendar view
         View editDateView = solo.getView(R.id.edit_habit_date);
 
         // get view for edit text for each field and enter in values
         solo.enterText((EditText) solo.getView(R.id.edit_habit_title), "Sample Title");
+        solo.clickOnView(privacyToggle);
         solo.clickOnView(editDateView);
         solo.setDatePicker(0, 2021, 2, 16);
         solo.clickOnText("OK");
@@ -79,6 +83,7 @@ public class IntentTests {
         // verify habit details
         solo.clickInList(1);
         assertTrue(solo.waitForText("Sample Title", 1, 2000));
+        assertTrue(solo.searchText("Public"));
         assertTrue(solo.searchText("2021-03-16"));
         assertTrue(solo.searchText("Sample Habit Reason"));
         solo.clickOnText("Close");
@@ -218,7 +223,7 @@ public class IntentTests {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
 
         // click on profile nav button
-        View profileNavButton = solo.getView(R.id.profile_nav_button);
+        View profileNavButton = solo.getView(R.id.profile);
         solo.clickOnView(profileNavButton);
 
         // check that we have entered a new activity
