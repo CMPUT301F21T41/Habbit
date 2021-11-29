@@ -53,6 +53,11 @@ public class User extends Profile implements Serializable {
     private static HashMap<String, Integer> relationships = new HashMap<>();
 
     /**
+     * This var is of type {@link ArrayList<String>} and contains IDs of habbitors who have requested to follow
+     */
+    private static ArrayList<String> requests = new ArrayList<>();
+
+    /**
      * Registers a relationship between habbitor and current user
      *
      * @param habbitorID The habbitorID whose relationship to add or update
@@ -149,4 +154,23 @@ public class User extends Profile implements Serializable {
         User.relationships.clear();
     }
 
+    public static void addRequest(String habbitorID) {
+        User.requests.add(habbitorID);
+    }
+
+    public static void removeRequest(String habbitorID) {
+        User.requests.remove(habbitorID);
+    }
+
+    public static void setRequests(ArrayList<String> requests) {
+        User.requests = requests;
+    }
+
+    public static void clearRequests() {
+        User.requests.clear();
+    }
+
+    public static ArrayList<String> getRequests() {
+        return User.requests;
+    }
 }

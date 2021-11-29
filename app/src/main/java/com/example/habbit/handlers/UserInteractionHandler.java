@@ -1,6 +1,7 @@
 package com.example.habbit.handlers;
 
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -89,4 +90,35 @@ public class UserInteractionHandler {
             }
         });
     }
+
+    public void displayName(String habbitorID, TextView nameView) {
+        userCollectionReference.document(habbitorID)
+                .get().addOnSuccessListener(documentSnapshot -> {
+            String name = (String) documentSnapshot.get("Username");
+            nameView.setText(name);
+        });
+    }
+
+    public void acceptRequest(String userID, String habbitorID) {
+        // change relationship from habbitor to user as friend
+        Integer newRelationship = Habbitor.relationshipTypes.get("Friend");
+
+        DocumentReference docRef = userCollectionReference.document(habbitorID);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                HashMap<String, Integer> relationships;
+                if (documentSnapshot.get("Relationships") == null) {
+                    relationships = new HashMap<String, Integer>();
+                } else {
+                    relationships = (HashMap<String, Integer>) documentSnapshot.get("Relationships");
+                }
+                relationships.put(userID, newRelationship);
+                Map<String, Object> userData = new HashMap<>();
+                userData.put("Relationships", relationships);
+                userCollectionReference.document(habbitorID).update(userData);
+            }
+        });
+    }
+
 }

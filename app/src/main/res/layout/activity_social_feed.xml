@@ -11,6 +11,7 @@
       layout="@layout/toolbar" />
 
   <Button
+      android:id="@+id/view_follow_requests"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="See Follow Requests"

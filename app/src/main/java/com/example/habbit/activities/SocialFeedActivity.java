@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.habbit.R;
@@ -51,6 +53,13 @@ public class SocialFeedActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_baseline_arrow_back_24));
         toolbar.setNavigationOnClickListener(v -> finish());
+
+        // get button to navigate to follow requests
+        Button button = findViewById(R.id.view_follow_requests);
+        button.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), FollowRequestsActivity.class);
+            startActivity(intent);
+        });
 
         // If no one is logged in, set the current user to the default
         user = userAuth.getCurrentUser();

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingVertical="20dp"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/request_name"
+            style="@style/TextStyle_Heading1"
+            android:layout_width="166dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="Profile Name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/accept_follow"
+            android:layout_width="98dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="120dp"
+            android:focusable="false"
+            android:text="Accept"
+            app:layout_constraintBaseline_toBaselineOf="@+id/friend_name"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/deny_follow"
+            android:layout_width="98dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="12dp"
+            android:focusable="false"
+            android:text="Deny"
+            android:backgroundTint="@color/gray"
+            app:layout_constraintBaseline_toBaselineOf="@+id/friend_name"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
