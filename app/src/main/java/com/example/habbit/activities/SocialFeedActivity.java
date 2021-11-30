@@ -1,19 +1,14 @@
 package com.example.habbit.activities;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomHabbitorList;
@@ -84,7 +79,7 @@ public class SocialFeedActivity extends AppCompatActivity {
             Habbitor habbitor = (Habbitor) habbitorAdapter.getItem(i);
 
             // open the friend profile
-            Intent intent = new Intent(this, FriendProfileActivity.class);
+            Intent intent = new Intent(this, HabbitorProfileActivity.class);
             intent.putExtra("FRIEND", habbitor);
             startActivity(intent);
         });

@@ -7,20 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handles the attributes that pertain to a User object
+ */
 public class User extends Profile implements Serializable {
-
-    /**
-     * Constructor for User object
-     *
-     * @param email provide an email of type {@link String}
-     * @param username provide a username of type {@link String}
-     * @param password provide a password of type {@link String}
-     */
-    public User(String email, String username, String password){
-
-    }
-
-    public User(){}
 
     /**
      * This var is of type {@link String} and contains the username of the current user
@@ -28,15 +18,8 @@ public class User extends Profile implements Serializable {
     private static String username = "DefaultUser";
 
     /**
-     * type {@link String} and contains the password of the current user
+     * This var is of type {@link String} and contains the userID of the current user
      */
-    private static String password;
-
-    /**
-     * type {@link String} and contains the email of the current user
-     */
-    private static String email;
-
     private static String userID;
 
     /**

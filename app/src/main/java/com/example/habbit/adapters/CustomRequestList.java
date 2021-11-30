@@ -23,6 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter class to control behaviour of follow request items within a listview
+ */
 public class CustomRequestList extends ArrayAdapter<String> {
     /**
      * This variable is a {@link java.util.ArrayList} containing

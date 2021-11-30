@@ -30,7 +30,7 @@
             android:name=".activities.FollowRequestsActivity"
             android:exported="true" />
         <activity
-            android:name=".activities.FriendProfileActivity"
+            android:name=".activities.HabbitorProfileActivity"
             android:exported="true"
             android:parentActivityName=".activities.SocialFeedActivity">
 

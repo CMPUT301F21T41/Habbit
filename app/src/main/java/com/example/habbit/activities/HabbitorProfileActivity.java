@@ -1,38 +1,42 @@
 package com.example.habbit.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomHabitFriendList;
-import com.example.habbit.adapters.CustomHabitList;
 import com.example.habbit.models.Habbitor;
+import com.example.habbit.models.Habit;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.example.habbit.models.Habit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class FriendProfileActivity extends AppCompatActivity {
-    /**
-     * reference to firestore users collection
-     */
+/**
+ * Class that controls the display behaviour of a friend's profile page
+ */
+public class HabbitorProfileActivity extends AppCompatActivity {
+
+    // reference to firestore instance
     static final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
 
+    // get reference to elements we'll need throughout the class
     ListView friendHabitListView;
     CustomHabitFriendList friendHabitAdapter;
     ArrayList<Habit> friendHabitList;
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,18 +75,17 @@ public class FriendProfileActivity extends AppCompatActivity {
                 Map<String, Object> habitData;
                 assert value != null;
                 for (QueryDocumentSnapshot document : value) {
-                    Log.d("FriendProfile", "It has data!");
                     habitData = document.getData();
+
+                    // make sure habit data is not empty before extracting values
                     if (!habitData.isEmpty()) {
-                        Log.d("FriendProfile", "It is not empty!");
-                        // TODO: why this way
+                        // set the publicity to true by default
                         if (habitData.get("public") == null) {
                             publicity = true;
                         } else {
                             publicity = (boolean) habitData.get("public");
                         }
-
-                        Log.d("FriendProfile", "Publicity: " + String.valueOf(publicity));
+                        // only add the habit if it is public
                         if (publicity) {
                             Habit habit = new Habit(Objects.requireNonNull(habitData.get("title")).toString(),
                                     Objects.requireNonNull(habitData.get("reason")).toString(),

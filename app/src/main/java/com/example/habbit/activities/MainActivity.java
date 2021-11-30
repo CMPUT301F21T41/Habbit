@@ -2,8 +2,6 @@ package com.example.habbit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habbit.R;
 import com.example.habbit.adapters.CustomHabitList;
-import com.example.habbit.fragments.HabitDetailsFragment;
 import com.example.habbit.fragments.HabitEntryFragment;
 import com.example.habbit.fragments.HabitEventEntryFragment;
 import com.example.habbit.handlers.HabitInteractionHandler;
@@ -26,7 +23,6 @@ import com.example.habbit.models.Habit;
 import com.example.habbit.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -41,7 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-// test
 /**
  * This class maintains a listview of Habits belonging to the class {@link Habit}
  */
@@ -58,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     FirebaseUser user;
     String userID;
 
+    // forward declaration to variables we will need throughout the class
     RecyclerView habitRecyclerView;
     CustomHabitList todayHabitAdapter;
     CustomHabitList allHabitAdapter;
@@ -78,14 +74,11 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_logout));
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
+        toolbar.setNavigationOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         });
 
         // If no one is logged in, set the current user to the default
@@ -101,7 +94,6 @@ public class MainActivity extends AppCompatActivity
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
         Date currentDate = new Date();
         String dayOfTheWeek = sdf.format(currentDate);
-        Log.d(TAG, dayOfTheWeek);
 
         // get references to UI elements and attach custom adapter
         habitRecyclerView = findViewById(R.id.today_habit_recycler_view);
@@ -114,22 +106,19 @@ public class MainActivity extends AppCompatActivity
 
         // custom bottom navbar
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent intent;
-                switch(item.getItemId()) {
-                    case R.id.profile:
-                        intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                        intent.putExtra("USER", user);
-                        startActivity(intent);
-                        break;
-                    case R.id.social_feed:
-                        intent = new Intent(getApplicationContext(), SocialFeedActivity.class);
-                        startActivity(intent);
-                }
-                return true;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent intent;
+            switch(item.getItemId()) {
+                case R.id.profile:
+                    intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    intent.putExtra("USER", user);
+                    startActivity(intent);
+                    break;
+                case R.id.social_feed:
+                    intent = new Intent(getApplicationContext(), SocialFeedActivity.class);
+                    startActivity(intent);
             }
+            return true;
         });
 
         // set a spinner to determine type of habit list to display
@@ -145,7 +134,6 @@ public class MainActivity extends AppCompatActivity
         /* connect adapter to spinner */
         habitTypeSpinner.setAdapter(spinnerAdapter);
         habitTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            // TODO: extract this out if have time
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i == 0) {
@@ -203,14 +191,12 @@ public class MainActivity extends AppCompatActivity
 
                     // only add the habit to displayed habits if it is scheduled
                     if (habit.getSchedule().get(dayOfTheWeek.substring(0, 3)) && currentDate.compareTo(habit.getDateObject()) >= 0) {
-                        Log.d(TAG, document.getId() + " => " + habitData);
                         todayHabitList.add(habit);
                     }
                 }
             }
 
             // redraw the listview with the newly updated habits
-            // allHabitList = User.getUserHabits();
             allHabitAdapter.notifyDataSetChanged();
             todayHabitAdapter.notifyDataSetChanged();
         });
@@ -224,7 +210,6 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onCheckboxClick(Habit habit, boolean isChecked) {
-        Log.d(TAG, "i was clicked!");
         if (isChecked && !habit.isChecked()) {
             // only launch a new habit event entry fragment if the checkbox was clicked to true and
             // the currently stored habit checked value is false

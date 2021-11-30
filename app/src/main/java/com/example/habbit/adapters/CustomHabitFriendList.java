@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -33,6 +32,7 @@ public class CustomHabitFriendList extends ArrayAdapter<Habit> {
     private final Context context;
 
     /**
+     * Constructor for custom habit friend list
      *
      * @param context the context the custom habit list is called in
      * @param habits the list of habits to display
@@ -70,6 +70,7 @@ public class CustomHabitFriendList extends ArrayAdapter<Habit> {
             }
         }
 
+        // set the progress
         ProgressBar progressBar = view.findViewById(R.id.habit_progressbar);
         progressBar.setProgress(habit.getProgress()*100/frequency);
 

@@ -4,18 +4,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habbit.R;
-import com.example.habbit.activities.MainActivity;
 import com.example.habbit.fragments.HabitDetailsFragment;
 import com.example.habbit.handlers.HabitInteractionHandler;
 import com.example.habbit.models.Habit;
@@ -41,7 +38,7 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
     private final Context context;
 
     /**
-     * This is a {@link boolean}
+     * This is a {@link boolean} representing whether or not checkboxes will be visible
      */
     private final boolean checkboxesVisible;
 
@@ -71,7 +68,6 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
                 frequency += 1;
             }
         }
-        System.out.println("Frequency is:" + frequency);
 
         // Extract day of the week
         // 1 is Sunday
@@ -89,14 +85,14 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
         } else if (day == 1 && !habit.isChecked()) {
             habit.setProgress(0);
         } else {
-        progress = (habit.getProgress()*100/frequency);
-        holder.progressBar.setProgress(0);
-        holder.progressBar.setProgress(progress);
+            progress = (habit.getProgress()*100/frequency);
+            holder.progressBar.setProgress(0);
+            holder.progressBar.setProgress(progress);
         }
         handler.updateHabit(habit);
-        // System.out.println("Habit = "+ habit.getId()+", progress = "+progress+ ", progressINT = "+habit.getProgress());
 
 
+        // handle checkbox/progressbar display behaviour
         if (checkboxesVisible) {
             // set visibility of checkbox
             holder.checkBox.setVisibility(View.VISIBLE);
@@ -143,6 +139,7 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
 
 
     /**
+     * Constructor for the custom habit list
      *
      * @param context the context the custom habit list is called in
      * @param habits the list of habits to display
@@ -156,8 +153,9 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
     }
 
 
-
-
+    /**
+     * Viewholder for habit list so we can take advantage of recyclerview
+     */
     public class ViewHolder  extends RecyclerView.ViewHolder{
         // Linking xml text fields to text views in CustomHabitList.java
         private TextView habitTitle;
@@ -168,6 +166,12 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
         private CheckBox checkBox;
         private ProgressBar progressBar;
 
+
+        /**
+         * Constructor for ViewHolder
+         *
+         * @param view
+         */
         public ViewHolder(@NonNull View view){
             super(view);
             this.parentView = view;

@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
-import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -19,7 +18,6 @@ import com.example.habbit.adapters.CustomHabitEventList;
 import com.example.habbit.fragments.HabitEventDetailsFragment;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
-import com.example.habbit.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -36,7 +34,6 @@ public class HabitEventsActivity extends AppCompatActivity {
     // get entities to be used throughout the class
     CustomHabitEventList habitEventAdapter;
     ArrayList<HabitEvent> habitEventDataList;
-//    String username;
     FirebaseAuth userAuth;
     FirebaseUser user;
     String userID;

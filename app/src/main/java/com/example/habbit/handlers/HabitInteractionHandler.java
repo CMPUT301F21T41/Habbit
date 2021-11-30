@@ -1,24 +1,18 @@
 package com.example.habbit.handlers;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
 import com.example.habbit.models.Habit;
-import com.example.habbit.models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 
+/**
+ * This class handles Firestore interactions with the habit objects
+ */
 public class HabitInteractionHandler {
     /**
      * This var is of type {@link CollectionReference} and contains the users collection in firestore

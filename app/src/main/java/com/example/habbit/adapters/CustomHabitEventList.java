@@ -11,15 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.habbit.R;
 import com.example.habbit.handlers.HabitEventInteractionHandler;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
-import com.example.habbit.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * This class represents a list of habit events
@@ -38,9 +37,13 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
      */
     private final Context context;
 
+    /**
+     * This is a {@link Habit}
+     */
     private Habit habit;
 
     /**
+     * Constructor for CustomHabitEventList
      *
      * @param context the context the custom list is launched in
      * @param habitEvents the list of habit events to display
@@ -62,6 +65,7 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
             view = LayoutInflater.from(context).inflate(R.layout.habit_event_list_content, parent,false);
         }
 
+        // get the location information about habit event
         HabitEvent habitEvent = habitEvents.get(position);
         String city = habitEvent.getCity();
         String province = habitEvent.getProvince();
@@ -70,9 +74,10 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
         TextView habitEventComment = view.findViewById(R.id.habit_event_comment);
         TextView locText = view.findViewById(R.id.location_text_list_v);
 
-//        TextView habitEventCompletedOnTime = view.findViewById(R.id.habit_event_completed_on_time);
+        // get the date completed
         TextView habitEventDateCompleted = view.findViewById(R.id.habit_event_date);
 
+        // get the photo
         ImageView eventPhoto = view.findViewById(R.id.habit_event_photo);
         HabitEventInteractionHandler handler = new HabitEventInteractionHandler(habit);
 
@@ -98,22 +103,13 @@ public class CustomHabitEventList extends ArrayAdapter<HabitEvent> {
             dateCompleted = new SimpleDateFormat(myFormat).format(Calendar.getInstance().getTime());
         }
 
-//        String completedOntTimeTxt;
-//
-//        // TODO: take random string from a list of strings for completion/noncompletion messages
-//        if(habitEvent.isCompletedOnTime()){
-//            completedOntTimeTxt = "Completed on time :)";
-//        } else {
-//            completedOntTimeTxt = "Not completed on time :(";
-//        }
+        // set the comment and city
         habitEventComment.setText(commentTxt);
         if(!city.equals("none") && !city.equals("none")){
             locText.setText(city+", "+province);
         }
 
-
         habitEventDateCompleted.setText(dateCompleted);
-//        habitEventCompletedOnTime.setText(completedOntTimeTxt);
 
         return view;
     }

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -18,22 +17,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 
-import com.example.habbit.BuildConfig;
 import com.example.habbit.R;
 import com.example.habbit.fragments.MapFragment;
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
-import com.squareup.picasso.Picasso;
 
 import org.osmdroid.config.Configuration;
-import org.osmdroid.config.IConfigurationProvider;
-
-import java.util.ArrayList;
 
 /**
  * Default map view activity.

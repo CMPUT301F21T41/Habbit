@@ -2,7 +2,6 @@ package com.example.habbit.adapters;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +16,11 @@ import com.example.habbit.R;
 import com.example.habbit.handlers.UserInteractionHandler;
 import com.example.habbit.models.Habbitor;
 import com.example.habbit.models.User;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 /**
- * This class represents a list of friends
+ * This class represents a list of Habbitors
  */
 public class CustomHabbitorList extends ArrayAdapter<Habbitor> {
 
@@ -60,6 +55,8 @@ public class CustomHabbitorList extends ArrayAdapter<Habbitor> {
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.friend_list_content, parent, false);
         }
+
+        // get relevant habbitor
         Habbitor habbitor = habbitors.get(position);
 
         // get name of friend to display
@@ -79,16 +76,20 @@ public class CustomHabbitorList extends ArrayAdapter<Habbitor> {
         followButton.setText(followStatus);
 
         followButton.setOnClickListener(view1 -> {
+            // forward declaration of the new relationship we want our user to have to the given habbitor
             Integer newRelationship;
 
             if (habbitor.isStranger()) {
+                // change follow status on button
                 followButton.setText("Pending");
+
+                // get new relationship type and store it
                 newRelationship = Habbitor.relationshipTypes.get("Acquaintance");
                 User.addRelationship(habbitor.getUserID(), newRelationship);
                 habbitor.setRelationship(newRelationship);
+
+                // push the changes to firestore
                 UserInteractionHandler handler = new UserInteractionHandler();
-                Log.d("CustomFriendList:", habbitor.getUserID());
-                Log.d("CustomFriendList:", String.valueOf(User.getRelationships().get(habbitor.getUserID())));
                 handler.updateUserRelationships(User.getUserID(), User.getRelationships());
                 handler.addRequest(User.getUserID(), habbitor.getUserID());
             }

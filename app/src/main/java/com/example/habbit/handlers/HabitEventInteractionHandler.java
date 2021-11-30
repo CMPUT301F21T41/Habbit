@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 
 import com.example.habbit.models.Habit;
 import com.example.habbit.models.HabitEvent;
-import com.example.habbit.models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,10 +27,12 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+/**
+ * This class mainly handles the firestore interactions with the habit event objects
+ */
 public class HabitEventInteractionHandler {
     /**
      * This var is of type {@link CollectionReference} and contains the users collection in firestore
@@ -42,7 +43,6 @@ public class HabitEventInteractionHandler {
     /**
      * This var is of type {@link String} and contains the username
      */
-//    String username;
     FirebaseAuth userAuth = FirebaseAuth.getInstance();
     FirebaseUser user = userAuth.getCurrentUser();
     String userID;
@@ -64,7 +64,6 @@ public class HabitEventInteractionHandler {
      * @param habit provided a {@link Habit}, initialize everything based on it's attributes
      */
     public HabitEventInteractionHandler(Habit habit) {
-//        username = User.getUsername();
         userID = user.getUid();
         habitHandler = new HabitInteractionHandler();
         this.habit = habit;
@@ -258,27 +257,4 @@ public class HabitEventInteractionHandler {
         userDoc.collection("Habit Events").document(habitEvent.getId())
                 .update("longitude", lon);
     }
-
-    /*public double getHabitEventLatitude(HabitEvent habitEvent){
-        DocumentReference userDoc = userCollectionReference.document(username)
-                .collection("Habits").document(habit.getId());
-
-        userDoc.collection("Habit Events").document(habitEvent.getId())
-                .get();
-        userDoc.collection("Habit Events").document(habitEvent.getId())
-                .update("longitude", lon);
-
-    }
-
-    public  getHabitEventLongitude(HabitEvent habitEvent){
-        DocumentReference userDoc = userCollectionReference.document(username)
-                .collection("Habits").document(habit.getId());
-
-        userDoc.collection("Habit Events").document(habitEvent.getId())
-                .get("latitude"
-        userDoc.collection("Habit Events").document(habitEvent.getId())
-                .update("longitude", lon);
-
-    }*/
-
 }

@@ -60,37 +60,57 @@ public class UserInteractionHandler {
                 .set(userData);
     }
 
+    /**
+     * Updates the Firestore'd version of the user's relationships
+     *
+     * @param userID the userID whose relationships we want to set
+     * @param relationships the relationship hashmap
+     */
     public void updateUserRelationships(String userID, HashMap<String, Integer> relationships) {
         Map<String, Object> userData = new HashMap<>();
         userData.put("Relationships", relationships);
         userCollectionReference.document(userID).update(userData);
     }
 
+    /**
+     * Updates the firestore'd version of the user's follow requests
+     *
+     * @param userID The userID whose requests we want to set
+     * @param requests the requests arraylist
+     */
     public void updateUserRequests(String userID, ArrayList<String> requests) {
         Map<String, Object> userData = new HashMap<>();
         userData.put("Requests", requests);
         userCollectionReference.document(userID).update(userData);
     }
 
+    /**
+     * Sends a follow request from userID to habbitorID
+     *
+     * @param userID The userID who is sending the follow request
+     * @param habbitorID The habbitorID who is receiving the follow request
+     */
     public void addRequest(String userID, String habbitorID) {
         DocumentReference docRef = userCollectionReference.document(habbitorID);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                ArrayList<String> requests;
-                if (documentSnapshot.get("Requests") == null) {
-                    requests = new ArrayList<String>();
-                } else {
-                    requests = (ArrayList<String>) documentSnapshot.get("Requests");
-                }
-                requests.add(userID);
-                Map<String, Object> userData = new HashMap<>();
-                userData.put("Requests", requests);
-                userCollectionReference.document(habbitorID).update(userData);
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            ArrayList<String> requests;
+            if (documentSnapshot.get("Requests") == null) {
+                requests = new ArrayList<String>();
+            } else {
+                requests = (ArrayList<String>) documentSnapshot.get("Requests");
             }
+            requests.add(userID);
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("Requests", requests);
+            userCollectionReference.document(habbitorID).update(userData);
         });
     }
 
+    /**
+     * Displays the name on a textview given a habbitorID
+     * @param habbitorID The habbitorID whose name we want to display
+     * @param nameView The textview we are using to display it
+     */
     public void displayName(String habbitorID, TextView nameView) {
         userCollectionReference.document(habbitorID)
                 .get().addOnSuccessListener(documentSnapshot -> {
@@ -99,6 +119,11 @@ public class UserInteractionHandler {
         });
     }
 
+    /**
+     * Handles the accepting of a follow request. habbitorID can now see all of userID's public habits
+     * @param userID The userID who has accepted the follow request
+     * @param habbitorID The habbitorID who is now following the userID
+     */
     public void acceptRequest(String userID, String habbitorID) {
         // change relationship from habbitor to user as friend
         Integer newRelationship = Habbitor.relationshipTypes.get("Friend");

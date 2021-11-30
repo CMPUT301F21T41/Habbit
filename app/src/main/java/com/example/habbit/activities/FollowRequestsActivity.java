@@ -1,30 +1,26 @@
 package com.example.habbit.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Bundle;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.habbit.R;
-import com.example.habbit.adapters.CustomHabbitorList;
 import com.example.habbit.adapters.CustomRequestList;
-import com.example.habbit.models.Habbitor;
 import com.example.habbit.models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 
+
+/**
+ * Class that handles the display behaviour of the follow requests page
+ */
 public class FollowRequestsActivity extends AppCompatActivity {
 
+    // get instance of firestore
     final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
 
     // adapters and arraylist for friend list
