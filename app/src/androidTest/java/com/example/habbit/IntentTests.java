@@ -63,6 +63,16 @@ public class IntentTests {
         View addHabitButton = solo.getView(R.id.add_habit_button);
         solo.clickOnView(addHabitButton);
 
+        // get day picker toggle views
+        View dayPickerSun = solo.getView(R.id.tSun);
+        View dayPickerMon = solo.getView(R.id.tMon);
+        View dayPickerTue = solo.getView(R.id.tTue);
+        View dayPickerWed = solo.getView(R.id.tWed);
+        View dayPickerThu = solo.getView(R.id.tThu);
+        View dayPickerFri = solo.getView(R.id.tFri);
+        View dayPickerSat = solo.getView(R.id.tSat);
+
+
         // get privacy toggle
         View privacyToggle = solo.getView(R.id.edit_publicity_switch);
 
@@ -72,7 +82,17 @@ public class IntentTests {
         // get view for edit text for each field and enter in values
         solo.enterText((EditText) solo.getView(R.id.edit_habit_title), "Sample Title");
         solo.clickOnView(privacyToggle);
+
+        solo.clickOnView(dayPickerSun);
+        solo.clickOnView(dayPickerMon);
+        solo.clickOnView(dayPickerTue);
+        solo.clickOnView(dayPickerWed);
+        solo.clickOnView(dayPickerThu);
+        solo.clickOnView(dayPickerFri);
+        solo.clickOnView(dayPickerSat);
+
         solo.clickOnView(editDateView);
+
         solo.setDatePicker(0, 2021, 2, 16);
         solo.clickOnText("OK");
         solo.enterText((EditText) solo.getView(R.id.edit_habit_reason), "Sample Habit Reason");
@@ -82,7 +102,7 @@ public class IntentTests {
         assertTrue(solo.waitForText("Sample Title", 1, 2000));
 
         // verify habit details
-        solo.clickInList(1);
+        solo.clickOnText("Sample Title");
         assertTrue(solo.waitForText("Sample Title", 1, 2000));
         assertTrue(solo.searchText("Public"));
         assertTrue(solo.searchText("2021-03-16"));
@@ -90,27 +110,24 @@ public class IntentTests {
         solo.clickOnText("Close");
 
         // edit the habit
-        solo.clickInList(1);
+        solo.clickOnText("Sample Title");
         solo.clickOnText("Edit");
         solo.clearEditText((EditText) solo.getView(R.id.edit_habit_title));
         solo.enterText((EditText) solo.getView(R.id.edit_habit_title), "Edited Title");
-        solo.clearEditText((EditText) solo.getView(R.id.edit_habit_date));
-        solo.clickOnView(editDateView);
-        solo.setDatePicker(0, 2021, 3, 16);
-        solo.clickOnText("OK");
+
         solo.clearEditText((EditText) solo.getView(R.id.edit_habit_reason));
         solo.enterText((EditText) solo.getView(R.id.edit_habit_reason), "Edited Habit Reason");
         solo.clickOnButton("Confirm");
 
         // verify edited habit
-        solo.clickInList(1);
+        solo.clickOnText("Edited Title");
         assertTrue(solo.waitForText("Edited Title", 1, 2000));
-        assertTrue(solo.searchText("2021-04-16"));
+
         assertTrue(solo.searchText("Edited Habit Reason"));
         solo.clickOnText("Close");
 
         // delete item from list
-        solo.clickInList(1);
+        solo.clickOnText("Edited Title");
         solo.clickOnText("Delete");
         assertFalse(solo.searchText("Sample Title"));
     }
@@ -130,8 +147,31 @@ public class IntentTests {
         // get calendar view
         View editDateView = solo.getView(R.id.edit_habit_date);
 
+        // get privacy toggle
+        View privacyToggle = solo.getView(R.id.edit_publicity_switch);
+
+        // get day picker toggle views
+        View dayPickerSun = solo.getView(R.id.tSun);
+        View dayPickerMon = solo.getView(R.id.tMon);
+        View dayPickerTue = solo.getView(R.id.tTue);
+        View dayPickerWed = solo.getView(R.id.tWed);
+        View dayPickerThu = solo.getView(R.id.tThu);
+        View dayPickerFri = solo.getView(R.id.tFri);
+        View dayPickerSat = solo.getView(R.id.tSat);
+
         // get view for edit text for each field and enter in values
         solo.enterText((EditText) solo.getView(R.id.edit_habit_title), "Sample Title");
+
+        solo.clickOnView(privacyToggle);
+
+        solo.clickOnView(dayPickerSun);
+        solo.clickOnView(dayPickerMon);
+        solo.clickOnView(dayPickerTue);
+        solo.clickOnView(dayPickerWed);
+        solo.clickOnView(dayPickerThu);
+        solo.clickOnView(dayPickerFri);
+        solo.clickOnView(dayPickerSat);
+
         solo.clickOnView(editDateView);
         solo.setDatePicker(0, 2021, 2, 16);
         solo.clickOnText("OK");
@@ -139,15 +179,15 @@ public class IntentTests {
         solo.clickOnButton("Confirm");
 
         // view habit events button
-        solo.clickInList(1);
-        solo.clickOnButton("See Habit Events");
+        solo.clickOnText("Sample Title");
+        solo.clickOnText("View Habit Events");
 
         // check that we have entered a new activity
         solo.assertCurrentActivity("Wrong Activity", HabitEventsActivity.class);
 
         // go back
         solo.goBack();
-        solo.clickInList(1);
+        solo.clickOnText("Sample Title");
         solo.clickOnText("Delete");
     }
 
@@ -159,6 +199,9 @@ public class IntentTests {
         // asserts that the current activity is MainActivity, otherwise notify that it is the wrong activity
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
 
+        solo.clickOnText("All Habits");
+        solo.clickOnText("Today's Habits");
+
         // click on add habit button
         View addHabitButton = solo.getView(R.id.add_habit_button);
         solo.clickOnView(addHabitButton);
@@ -166,8 +209,32 @@ public class IntentTests {
         // get calendar view
         View editDateView = solo.getView(R.id.edit_habit_date);
 
+
+        // get privacy toggle
+        View privacyToggle = solo.getView(R.id.edit_publicity_switch);
+
+        // get day picker toggle views
+        View dayPickerSun = solo.getView(R.id.tSun);
+        View dayPickerMon = solo.getView(R.id.tMon);
+        View dayPickerTue = solo.getView(R.id.tTue);
+        View dayPickerWed = solo.getView(R.id.tWed);
+        View dayPickerThu = solo.getView(R.id.tThu);
+        View dayPickerFri = solo.getView(R.id.tFri);
+        View dayPickerSat = solo.getView(R.id.tSat);
+
         // get view for edit text for each field and enter in values
         solo.enterText((EditText) solo.getView(R.id.edit_habit_title), "Sample Title");
+
+        solo.clickOnView(privacyToggle);
+
+        solo.clickOnView(dayPickerSun);
+        solo.clickOnView(dayPickerMon);
+        solo.clickOnView(dayPickerTue);
+        solo.clickOnView(dayPickerWed);
+        solo.clickOnView(dayPickerThu);
+        solo.clickOnView(dayPickerFri);
+        solo.clickOnView(dayPickerSat);
+
         solo.clickOnView(editDateView);
         solo.setDatePicker(0, 2021, 2, 16);
         solo.clickOnText("OK");
@@ -182,8 +249,8 @@ public class IntentTests {
         solo.clickOnText("Confirm");
 
         // view habit events button
-        solo.clickInList(1);
-        solo.clickOnButton("See Habit Events");
+        solo.clickOnText("Sample Title");
+        solo.clickOnText("View Habit Events");
 
         // check that we have entered a new activity
         solo.assertCurrentActivity("Wrong Activity", HabitEventsActivity.class);
@@ -192,7 +259,7 @@ public class IntentTests {
         assertTrue(solo.waitForText("Sample comment", 1, 2000));
 
         // check habit event details
-        solo.clickInList(0);
+        solo.clickOnText("Sample comment");
         assertTrue(solo.waitForText("Sample comment", 1, 2000));
 
         // edit habit event details
@@ -202,7 +269,7 @@ public class IntentTests {
         solo.clickOnButton("Confirm");
 
         // verify it was edited
-        solo.clickInList(0);
+        solo.clickOnText("Edited comment");
         assertTrue(solo.waitForText("Edited comment", 1, 2000));
 
         // delete the habit event
@@ -211,7 +278,7 @@ public class IntentTests {
 
         // go back
         solo.goBack();
-        solo.clickInList(0);
+        solo.clickOnText("Sample Title");
         solo.clickOnText("Delete");
     }
 
