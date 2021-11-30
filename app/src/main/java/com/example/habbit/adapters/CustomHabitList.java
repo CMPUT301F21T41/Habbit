@@ -130,11 +130,6 @@ public class CustomHabitList extends RecyclerView.Adapter<CustomHabitList.ViewHo
             }
         });
 
-        // set a listener for habitList that will open a HabitDetailsFragment when a Habit is selected
-        //habitRecyclerView.setOnItemClickListener((adapterView, view, i, l) -> {
-        //    Habit viewHabit = relevantAdapter.getItem(i);
-        //    HabitDetailsFragment.newInstance(viewHabit).show(getSupportFragmentManager(),"VIEW_HABIT");
-        //});
     }
 
     @Override

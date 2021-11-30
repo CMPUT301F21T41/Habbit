@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,7 +56,22 @@ public class CustomHabitFriendList extends ArrayAdapter<Habit> {
         // remove checkboxes
         view.findViewById(R.id.habit_checkbox).setVisibility(View.GONE);
 
+
         Habit habit = habits.get(position);
+
+        // set progress bar
+
+        //Calculate Frequency
+        int frequency = 0;
+
+        for (Boolean value : habit.getSchedule().values()) {
+            if (value) {
+                frequency += 1;
+            }
+        }
+
+        ProgressBar progressBar = view.findViewById(R.id.habit_progressbar);
+        progressBar.setProgress(habit.getProgress()*100/frequency);
 
         // Linking xml text fields to text views in CustomHabitList.java
         TextView habitTitle = view.findViewById(R.id.habit_title);
