@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity
         // If no one is logged in, set the current user to the default
         user = userAuth.getCurrentUser();
         if(user==null){
-            userID = "AlF39kSveNM3BYaUmSQfWqvtsxt1";
+            userID = "BoRmcpgCYPcUkK5DRZovVxzRDb23";
         } else {
             userID = user.getUid();
         }

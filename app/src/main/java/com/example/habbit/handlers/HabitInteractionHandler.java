@@ -30,7 +30,12 @@ public class HabitInteractionHandler {
      * sets the username to the current user's username
      */
     public HabitInteractionHandler() {
-        userID = user.getUid();
+        if(user==null){
+            userID = "BoRmcpgCYPcUkK5DRZovVxzRDb23";
+        } else {
+            userID = user.getUid();
+        }
+        User.setUserID(userID);;
     }
 
     /**
