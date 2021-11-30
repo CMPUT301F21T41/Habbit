@@ -17,10 +17,12 @@ public class HabitUnitTest {
     String sampleDate = "2020-04-12";
     HashMap<String, Boolean> schedule;
     boolean isPublic = true;
+    int progress = 0;
 
     private Habit mockHabit() {
-        return new Habit(sampleTitle, sampleReason, sampleDate, schedule, isPublic);
+        return new Habit(sampleTitle, sampleReason, sampleDate, schedule, isPublic, progress);
     }
+
 
     @Test
     public void testGetters() {

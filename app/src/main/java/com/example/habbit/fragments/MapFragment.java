@@ -70,11 +70,21 @@ import java.util.Objects;
 
 /**
  * Habbit map view Fragment.
- * @author cmput301 team 41
- * orginal code from:
+ * @author CMPUT301Team41
+ * osmdroid from:
  * @author Marc Kurtz
  * @author Manuel Stahl
+ *
+ *
  */
+
+
+  /**
+   * A Map {@link Fragment} class.
+   * Use the {@link MapFragment#newInstance} factory method to
+   * create an instance of this fragment.
+  */
+
 public class MapFragment extends Fragment {
     // ===========================================================
     // Constants
@@ -105,34 +115,29 @@ public class MapFragment extends Fragment {
     private MapListener mMapListener;
 
     private float[] lastTouchDownXY = new float[2];
-
     private Handler mHandler = new Handler(Looper.getMainLooper());
-
-    MarkerInfoWindow markerInfoWindow;
-
     float disX;
     float disY;
     long prevTime = 0;
     long eTime;
-
     GeoPoint defCurrPoint;
     GeoPoint selectedPoint;
-
-
     Marker startMarker;
-
     HabitEvent habitEvent;
     Habit habit;
     int justView;
-
     double Latitude;
     double Longitude;
-
     boolean touched = false;
     boolean lockTillLocFound = true;
 
-    //Bundle bundle = new Bundle();
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment
+     *
+     * @return A new instance of fragment MapFragment.
+     */
     public static MapFragment newInstance() {
         return new MapFragment();
     }
@@ -165,10 +170,6 @@ public class MapFragment extends Fragment {
 
         startMarker = new Marker(mMapView);
 
-        //View v = getView().findViewById(R.id.info_window);
-        //markerInfoWindow = new MarkerInfoWindow(R.id.info_window,mMapView);
-
-
         Drawable myDrawable;
         Resources res = getResources();
         try {
@@ -180,10 +181,9 @@ public class MapFragment extends Fragment {
                 @Override
                 public boolean onMarkerClick(Marker marker, MapView mapView) {
                     if(touched){
+                        //if second touch, get coordinates and send back to activity
                         double lat = selectedPoint.getLatitude();
                         double lon = selectedPoint.getLongitude();
-                        Log.d("lookee",String.valueOf(lat));
-                        Log.d("lookee",String.valueOf(lon));
                         habitEvent.setLatitude(lat);
                         habitEvent.setLongitude(lon);
 
@@ -193,13 +193,9 @@ public class MapFragment extends Fragment {
 
                         requireActivity().getSupportFragmentManager().setFragmentResult("requestKey", bundle);
 
-                        //HabitEventInteractionHandler h = new HabitEventInteractionHandler(habit);
-                        //h.addHabitEventLocation(habitEvent);
-                        //getActivity().finish();
-
                     }
+                    //if first touch, set next touch to get coordinates
                     touched = true;
-                   // marker.setInfoWindow(markerInfoWindow);
                     marker.setTitle("Click Me Again to Confirm Location!");
                     marker.showInfoWindow();
 
@@ -239,15 +235,14 @@ public class MapFragment extends Fragment {
             }
         });
 
-
+        //set double tap to set marker
         mMapView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        // Do something here for touch point down event
-                        Log.d("look", "touched!");
+                        // One click event
                         if (Arrays.equals(lastTouchDownXY, new float[]{0.0F, 0.0F}) && prevTime == 0) {
                             lastTouchDownXY[0] = event.getX();
                             lastTouchDownXY[1] = event.getY();
@@ -260,11 +255,8 @@ public class MapFragment extends Fragment {
                             lastTouchDownXY[1] = event.getY();
                             prevTime = event.getEventTime();
                             if (eTime > 80 && eTime < 400 && disX < 200 && disY < 200) {
-                                Log.d("look", "click seen");
                                 touched = false;
-                                Log.d("look", "pointX: "+lastTouchDownXY[0]+" "+"pointY: "+lastTouchDownXY[1]);
                                 InfoWindow.closeAllInfoWindowsOn(mMapView);
-
                                 GeoPoint mark = (GeoPoint) mMapView.getProjection().fromPixels(
                                         (int) lastTouchDownXY[0],
                                         (int) lastTouchDownXY[1]);
@@ -274,17 +266,14 @@ public class MapFragment extends Fragment {
                                 mMapView.getOverlays().add(startMarker);
                                 return true;
                             }
-                            Log.d("look", String.valueOf(eTime));
-                            Log.d("look", String.valueOf(disX));
-                            Log.d("look", String.valueOf(disY));
-
-
                         }
                 }
                 return false;
             }
         });
 
+        //if we are in view mode, or no location has been selected, lock touch on map
+        //if in search mode, will unlock once location is found
         if(justView == 1 || (Latitude == 0 && Longitude == 0)) {
             mMapView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -315,13 +304,12 @@ public class MapFragment extends Fragment {
         mLocationOverlay = new MyLocationNewOverlay(provider, mMapView);
         mLocationOverlay.enableMyLocation();
 
+        //if location not selected yet, find location and set marker
         if( (habitEvent.getLatitude() == 0 && habitEvent.getLongitude() == 0) || habitEvent == null) {
             final Toast t = Toast.makeText(getContext(),"Searching ...",Toast.LENGTH_LONG);
             t.show();
             mLocationOverlay.runOnFirstFix(new Runnable() {
                 public void run() {
-                    Log.d("SeeWhoFirst", String.format("First location fix: %s", mLocationOverlay.getLastFix()));
-                    Log.d("SeeWhoFirst", "Orientation"+mMapView.getMapOrientation());
                     GeoPoint mark = new GeoPoint(mLocationOverlay.getLastFix());
                     selectedPoint = mark.clone();
 
@@ -338,18 +326,16 @@ public class MapFragment extends Fragment {
                             controller.setCenter(selectedPoint);
                             t.cancel();
                             Toast.makeText(getContext(),"Location Found!",Toast.LENGTH_SHORT).show();
-                            //startMarker.setInfoWindow(markerInfoWindow);
                             startMarker.setTitle("Click me to confirm location, or double-tap to select another!");
                             startMarker.showInfoWindow();
                             lockTillLocFound = false;
                             mMapView.setOnTouchListener(new View.OnTouchListener() {
                                 @Override
                                 public boolean onTouch(View view, MotionEvent event) {
-
+                                    //unlock screen and set double tap to set marker
                                     switch (event.getAction()) {
                                         case MotionEvent.ACTION_DOWN:
                                             // Do something here for touch point down event
-                                            Log.d("look", "touched!");
                                             if (Arrays.equals(lastTouchDownXY, new float[]{0.0F, 0.0F}) && prevTime == 0) {
                                                 lastTouchDownXY[0] = event.getX();
                                                 lastTouchDownXY[1] = event.getY();
@@ -374,11 +360,6 @@ public class MapFragment extends Fragment {
                                                     mMapView.getOverlays().add(startMarker);
                                                     return true;
                                                 }
-                                                Log.d("look", String.valueOf(eTime));
-                                                Log.d("look", String.valueOf(disX));
-                                                Log.d("look", String.valueOf(disY));
-
-
                                             }
                                     }
                                     return false;
@@ -391,7 +372,8 @@ public class MapFragment extends Fragment {
         }
 
 
-        //Mini map
+        //Mini map if wanted
+
         /*mMinimapOverlay = new MinimapOverlay(context, mMapView.getTileRequestCompleteHandler());
         mMinimapOverlay.setWidth(dm.widthPixels / 5);
         mMinimapOverlay.setHeight(dm.heightPixels / 5);
@@ -419,10 +401,12 @@ public class MapFragment extends Fragment {
         mMapView.getOverlays().add(this.mScaleBarOverlay);
 
 
-        //support for map rotation
+        //support for map rotation if wanted
+
        /* mRotationGestureOverlay = new RotationGestureOverlay(mMapView);
         mRotationGestureOverlay.setEnabled(true);
         mMapView.getOverlays().add(this.mRotationGestureOverlay);*/
+
         mMapView.setMapOrientation(0.0F);
 
 
@@ -431,8 +415,6 @@ public class MapFragment extends Fragment {
 
         //scales tiles to the current screen's DPI, helps with readability of labels
         mMapView.setTilesScaledToDpi(true);
-
-        //Info window stuff
 
 
 
@@ -444,6 +426,8 @@ public class MapFragment extends Fragment {
         final double latitude = Double.valueOf(latitudeString);
         final double longitude = Double.valueOf(longitudeString);
         mMapView.setExpectedCenter(new GeoPoint(latitude, longitude));
+
+        //if location already exists, set marker there.
         if( (habitEvent.getLatitude() != 0 || habitEvent.getLongitude() != 0) ){
             selectedPoint = new GeoPoint(Latitude,Longitude);
             startMarker.setPosition(selectedPoint);
@@ -458,6 +442,11 @@ public class MapFragment extends Fragment {
         }
     }
 
+
+    /**
+     * store current map info on pause
+     *
+     */
     @Override
     public void onPause() {
         //save the current location
@@ -474,6 +463,9 @@ public class MapFragment extends Fragment {
         mLocationOverlay.disableMyLocation();
     }
 
+    /**
+     * call to destroy current view
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -483,6 +475,10 @@ public class MapFragment extends Fragment {
 
     }
 
+
+    /**
+     * set tile source on resume, MAPNIK should always be the one
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -500,6 +496,7 @@ public class MapFragment extends Fragment {
     }
 
 
+    //options menu if wanted
 
    /* @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -542,14 +539,23 @@ public class MapFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }*/
 
+    /**
+     * call to zoom mapview in
+     */
     public void zoomIn() {
         mMapView.getController().zoomIn();
     }
 
+    /**
+     * call to zoom mapview out
+     */
     public void zoomOut() {
         mMapView.getController().zoomOut();
     }
 
+    /**
+     * invalidate map view, needed to run smoothly
+     */
     public void invalidateMapView() {
         mMapView.invalidate();
     }
