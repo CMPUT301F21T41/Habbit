@@ -1,12 +1,14 @@
 package com.example.habbit;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Activity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -280,6 +282,60 @@ public class IntentTests {
         solo.goBack();
         solo.clickOnText("Sample Title");
         solo.clickOnText("Delete");
+    }
+
+    /**
+     * Check photo in habit event function
+     */
+    @Test
+    public void habitEventPhotoTest() {
+        // asserts that the current activity is MainActivity, otherwise notify that it is the wrong activity
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        // change view to day view
+        solo.clickOnText("All Habits");
+        solo.waitForText("Today's Habits");
+        solo.clickOnText("Today's Habits");
+        // go to habit event entry
+        solo.clickOnCheckBox(0);
+        // start testing photo fragment
+        solo.clickOnButton("attach image");
+        // image in photo fragment
+        assertTrue(solo.getCurrentActivity().getResources().getDrawable(R.drawable.placeholder).isVisible());
+        // check fail condition
+        solo.clickOnText("Submit");
+        assertTrue(solo.waitForText("Please select a photo"));
+        // image in habit event fragment
+        assertTrue(solo.getCurrentActivity().getResources().getDrawable(R.drawable.placeholder).isVisible());
+    }
+
+    /**
+     * Check progress bar function
+     */
+    @Test
+    public void habitProgressBarTest() {
+        // asserts that the current activity is MainActivity, otherwise notify that it is the wrong activity
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        // assertTrue(solo.getCurrentActivity().getResources().getDrawable(R.id.progress_circular).isVisible());
+        // change view to day view
+        solo.clickOnText("All Habits");
+        solo.waitForText("Today's Habits");
+        solo.clickOnText("Today's Habits");
+        solo.clickOnCheckBox(0);
+        solo.enterText((EditText) solo.getView(R.id.edit_habit_event_comment), "Sample comment");
+        solo.clickOnButton("Confirm");
+        solo.clickOnText("Today's Habits");
+        solo.waitForText("All Habits");
+        solo.clickOnText("All Habits");
+        solo.getView(R.id.habit_progressbar);
+        assertFalse(solo.getCurrentViews(ProgressBar.class).isEmpty());
+        solo.clickInList(0);
+        solo.clickOnText("View Habit Events");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventsActivity.class);
+        solo.clickInList(0);
+        solo.clickOnButton("Delete");
+        solo.goBack();
+        solo.getView(R.id.habit_progressbar);
+        assertTrue(solo.getCurrentViews(ProgressBar.class).isEmpty());
     }
 
     /**
