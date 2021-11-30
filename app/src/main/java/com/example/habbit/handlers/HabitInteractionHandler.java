@@ -35,7 +35,6 @@ public class HabitInteractionHandler {
         } else {
             userID = user.getUid();
         }
-        User.setUserID(userID);;
     }
 
     /**
